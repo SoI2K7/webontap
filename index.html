@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Không Gian Chill - Multi Music</title>
+    <title>Không Gian Chill - Final Audio Config</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
@@ -11,6 +11,7 @@
     
     <style>
         :root {
+            /* KÍNH LỎNG (LIQUID GLASS) */
             --card-bg: rgba(255, 255, 255, 0.25);
             --glass-border: 1px solid rgba(255, 255, 255, 0.3);
             --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
@@ -275,8 +276,8 @@
                             </div>
                         </div>
                         <div style="display: flex; align-items: center; gap: 10px;">
-                            <i class="fa-solid fa-volume-xmark" id="mute-btn" style="cursor: pointer; width: 20px; color: var(--accent-color);" onclick="toggleMute(); playSFX('click')"></i>
-                            <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0" title="Ambient Volume" oninput="changeVolume(this.value)">
+                            <i class="fa-solid fa-volume-high" id="mute-btn" style="cursor: pointer; width: 20px; color: var(--accent-color);" onclick="toggleMute(); playSFX('click')"></i>
+                            <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.5" title="Ambient Volume" oninput="changeVolume(this.value)">
                         </div>
                     </div>
                 </div>
@@ -286,7 +287,7 @@
                         <i class="fa-brands fa-youtube"></i> Nhập link YouTube/Spotify/SoundCloud
                     </div>
                     <div class="spotify-input-group" id="spotify-input-group">
-                        <input type="text" id="spotify-url" class="spotify-input" placeholder="Dán link YouTube/Spotify/SoundCloud...">
+                        <input type="text" id="spotify-url" class="spotify-input" placeholder="Dán link YouTube (Full bài) hoặc Spotify...">
                         <button class="btn-spotify-load" onclick="loadCustomEmbed(); playSFX('click')">Phát</button>
                     </div>
                     <div id="embed-container">
@@ -406,16 +407,17 @@
     </div>
 
     <script>
-        // --- DATA ---
+        // --- CẤU HÌNH ÂM THANH LOCAL (ĐÃ CẬP NHẬT THEO YÊU CẦU) ---
         const THEMES = {
-            morning: { emoji: "🌤️", type: "local", bg: "media/8.mp4", track: "Sớm Mai", color: "#f3a683", audio: "https://cdn.pixabay.com/download/audio/2022/02/07/audio_18bf8f6b02.mp3?filename=forest-birds-11107.mp3" },
-            cafe: { emoji: "☕", type: "local", bg: "media/4.mp4", track: "Quán Cà Phê", color: "#cf6a87", audio: "https://cdn.pixabay.com/download/audio/2022/03/09/audio_822f7736b7.mp3?filename=coffee-shop-chatter-14787.mp3" },
-            rain: { emoji: "🌧️", type: "local", bg: "media/2.mp4", track: "Ngày Mưa", color: "#546de5", audio: "https://cdn.pixabay.com/download/audio/2021/09/06/audio_9893d56d5d.mp3?filename=soft-rain-ambient-111154.mp3" },
-            forest: { emoji: "🌲", type: "local", bg: "media/3.mp4", track: "Rừng Sâu", color: "#63cdda", audio: "https://cdn.pixabay.com/download/audio/2021/08/09/audio_27bd22e959.mp3?filename=forest-wind-and-birds-6881.mp3" },
-            sunset: { emoji: "🌇", type: "local", bg: "media/5.mp4", track: "Hoàng Hôn", color: "#e77f67", audio: "https://cdn.pixabay.com/download/audio/2021/08/04/audio_12b0c7443c.mp3?filename=night-crickets-1536.mp3" },
-            night: { emoji: "🌙", type: "local", bg: "media/6.mp4", track: "Bầu Trời Đêm", color: "#596275", audio: "https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3?filename=night-ambience-17064.mp3" },
-            library: { emoji: "📚", type: "local", bg: "media/7.mp4", track: "Thư Viện", color: "#d1d8e0", audio: "https://cdn.pixabay.com/download/audio/2022/03/10/audio_5b38d33077.mp3?filename=room-tone-30691.mp3" }
+            morning: { emoji: "🌤️", type: "local", bg: "media/8.mp4", track: "Sớm Mai", color: "#f3a683", audio: "audio/a2.m4a" }, 
+            cafe: { emoji: "☕", type: "local", bg: "media/4.mp4", track: "Quán Cà Phê", color: "#cf6a87", audio: "audio/a5.mp3" }, // Đã đổi a5.mp3
+            rain: { emoji: "🌧️", type: "local", bg: "media/2.mp4", track: "Ngày Mưa", color: "#546de5", audio: "audio/a1.m4a" }, 
+            forest: { emoji: "🌲", type: "local", bg: "media/3.mp4", track: "Rừng Sâu", color: "#63cdda", audio: "audio/a7.m4a" }, // Đã đổi a7.m4a
+            sunset: { emoji: "🌇", type: "local", bg: "media/5.mp4", track: "Hoàng Hôn", color: "#e77f67", audio: "audio/a4.m4a" }, // Đã đổi a4.m4a
+            night: { emoji: "🌙", type: "local", bg: "media/6.mp4", track: "Bầu Trời Đêm", color: "#596275", audio: "audio/a3.m4a" }, // Đã đổi a3.m4a
+            library: { emoji: "📚", type: "local", bg: "media/7.mp4", track: "Thư Viện", color: "#d1d8e0", audio: "audio/a6.m4a" } // Đã đổi a6.m4a
         };
+        
         const BUDDIES = {
             lofi: { type: "local", url: "media/lofigirl-loop-audio.mp4", name: "Lofi Girl (Bản Local)", thumb: "https://img.youtube.com/vi/jfKfPfyJRdk/0.jpg" }
         };
@@ -429,9 +431,8 @@
         const exploreGrid = document.getElementById('explore-grid'), buddyGrid = document.getElementById('buddy-grid'), root = document.documentElement;
         const videoContainer = document.getElementById('video-bg-container');
         const ambientPlayer = document.getElementById('ambient-audio');
-        let isMuted = true; let lastVolume = 0.5; let transitionTimeout;
+        let isMuted = false; let lastVolume = 0.5; let transitionTimeout; 
         
-        // --- YOUTUBE AUDIO API ---
         let youtubeAudioPlayer = null;
         let isYouTubeAudioPlaying = false;
 
@@ -439,28 +440,29 @@
             youtubeAudioPlayer = new YT.Player('youtube-audio-container', {
                 height: '0', width: '0',
                 playerVars: { 'autoplay': 0, 'controls': 0, 'loop': 1 },
-                events: {
-                    'onReady': onPlayerReady
-                }
+                events: { 'onReady': onPlayerReady }
             });
         }
-        function onPlayerReady(event) {
-             // Ready state
-        }
+        function onPlayerReady(event) { }
 
         function playSFX(type) {
             const sound = document.getElementById(`sfx-${type}`);
             if(sound) { sound.currentTime = 0; sound.play().catch(e => {}); }
         }
 
-        // --- MUSIC PLAYER LOGIC ---
+        // --- CƠ CHẾ MỞ KHÓA AUDIO ---
+        document.addEventListener('click', function() {
+            if (ambientPlayer.paused && !isYouTubeAudioPlaying) {
+                 // Không làm gì, để hàm setTheme tự xử lý
+            }
+        }, { once: true });
+
         function toggleSpotifyInput() {
             const group = document.getElementById('spotify-input-group');
             group.style.display = group.style.display === 'flex' ? 'none' : 'flex';
         }
 
         function getYouTubeId(url) {
-             // Regex mạnh mẽ hơn để bắt ID kể cả khi có tham số phụ (?si=...)
             const regExp = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
             const match = url.match(regExp);
             return match ? match[1] : null;
@@ -472,7 +474,6 @@
             
             if(!url) return alert("Vui lòng nhập Link!");
             
-            // 1. Ưu tiên YouTube (Audio Only)
             const youtubeId = getYouTubeId(url);
             if (youtubeId) {
                 if(youtubeAudioPlayer) {
@@ -482,22 +483,18 @@
                     
                     container.innerHTML = `<div style="padding:15px; font-size:13px; font-weight:bold; color:var(--accent-color); background:rgba(255,255,255,0.8); border-radius:12px; text-align:center;"><i class="fa-brands fa-youtube" style="color:red;"></i> Đang phát nhạc từ YouTube...<br><span style="font-size:10px; font-weight:normal; color:#666;">(Điều chỉnh âm lượng bằng thanh trượt bên trên)</span></div>`;
                     container.style.display = 'block';
-                    
-                    // Tắt nhạc nền
                     ambientPlayer.pause();
-                    document.getElementById('local-player-controls').style.opacity = '1'; // Giữ sáng để chỉnh volume
+                    document.getElementById('local-player-controls').style.opacity = '1';
                     localStorage.setItem('saved_music_url', url);
                     return;
                 }
             }
             
-            // 2. Xử lý SoundCloud (New)
             else if (url.includes('soundcloud.com')) {
                 const encodedUrl = encodeURIComponent(url);
                 const embedSrc = `https://w.soundcloud.com/player/?url=${encodedUrl}&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true`;
                 container.innerHTML = `<iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="${embedSrc}" style="border-radius:12px; margin-top:5px;"></iframe>`;
                 container.style.display = 'block';
-                
                 if(isYouTubeAudioPlaying && youtubeAudioPlayer) { youtubeAudioPlayer.stopVideo(); isYouTubeAudioPlaying = false; }
                 ambientPlayer.pause();
                 document.getElementById('local-player-controls').style.opacity = '0.3'; 
@@ -505,7 +502,6 @@
                 return;
             }
 
-            // 3. Xử lý Spotify (Cũ)
             let embedSrc = "";
             if(url.includes('spotify.com')) {
                 if(!url.includes('/embed')) {
@@ -515,10 +511,8 @@
             } 
             
             if(embedSrc) {
-                // FIXED: Tăng chiều cao lên 152px để hiện full nút Play
                 container.innerHTML = `<iframe src="${embedSrc}" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
                 container.style.display = 'block';
-                
                 if(isYouTubeAudioPlaying && youtubeAudioPlayer) { youtubeAudioPlayer.stopVideo(); isYouTubeAudioPlaying = false; }
                 ambientPlayer.pause();
                 document.getElementById('local-player-controls').style.opacity = '0.3'; 
@@ -535,12 +529,7 @@
             ambientPlayer.volume = val;
             isMuted = (val == 0);
             if (!isMuted) lastVolume = val;
-            
-            // Sync volume với YouTube Audio nếu đang chạy
-            if(isYouTubeAudioPlaying && youtubeAudioPlayer) {
-                youtubeAudioPlayer.setVolume(val * 100);
-            }
-            
+            if(isYouTubeAudioPlaying && youtubeAudioPlayer) { youtubeAudioPlayer.setVolume(val * 100); }
             updateMuteIcon();
             document.getElementById('local-player-controls').style.opacity = '1';
         }
@@ -563,11 +552,12 @@
 
         function updateMuteIcon() {
             const btn = document.getElementById('mute-btn');
-            if (isMuted || ambientPlayer.volume === 0) {
-                btn.className = 'fa-solid fa-volume-xmark';
-            } else {
-                btn.className = 'fa-solid fa-volume-high';
-            }
+            const vol = ambientPlayer.volume;
+            btn.className = '';
+            if (isMuted || vol === 0) { btn.className = 'fa-solid fa-volume-xmark'; }
+            else if (vol < 0.5) { btn.className = 'fa-solid fa-volume-low'; }
+            else { btn.className = 'fa-solid fa-volume-high'; }
+            btn.style.cursor = 'pointer'; btn.style.width = '20px'; btn.style.color = 'var(--accent-color)';
         }
 
         function switchView(view) {
@@ -583,7 +573,9 @@
 
         function initApp() { 
             initExplore(); initLearningDropdowns(); updateDisplay(); updateCount(); 
-            ambientPlayer.volume = 0; document.getElementById('volume-slider').value = 0; updateMuteIcon();
+            ambientPlayer.volume = 0.5; 
+            document.getElementById('volume-slider').value = 0.5; 
+            updateMuteIcon();
         }
 
         function initLearningDropdowns() {
@@ -758,19 +750,13 @@
         function setTheme(key) {
             const data = THEMES[key]; 
             const vidContainer = document.getElementById('video-bg-container');
-            
-            // 1. Fade Out
             vidContainer.classList.remove('active');
 
             if (transitionTimeout) clearTimeout(transitionTimeout);
 
             transitionTimeout = setTimeout(() => {
                 if(data.type === "local") {
-                    vidContainer.innerHTML = `
-                        <video id="bg-video-player" autoplay muted loop playsinline>
-                            <source src="${data.bg}" type="video/mp4">
-                        </video>
-                    `;
+                    vidContainer.innerHTML = `<video id="bg-video-player" autoplay muted loop playsinline><source src="${data.bg}" type="video/mp4"></video>`;
                     vidContainer.classList.add('active');
                     document.body.style.backgroundImage = 'none';
                 }
@@ -787,35 +773,33 @@
                 
                 if(!isYouTubeAudioPlaying) {
                     ambientPlayer.src = data.audio;
-                    if (!isMuted) { ambientPlayer.play().catch(e=>{}); }
+                    // SỬA LỖI: Buộc phát lại khi đổi theme (nếu đang bật tiếng)
+                    if (!isMuted) { 
+                        ambientPlayer.play().then(() => {
+                            // Phát thành công
+                        }).catch(e => {
+                            console.log("Audio autoplay blocked, user interaction needed.");
+                        }); 
+                    }
                 }
 
                 resetStates(); document.getElementById(`theme-${key}`).classList.add('active'); 
                 document.getElementById(`theme-${key}`).style.backgroundColor = data.color;
-
             }, 800);
         }
 
         function setBodyDoubling(key) {
             const data = BUDDIES[key]; 
             const vidContainer = document.getElementById('video-bg-container');
-            
-            // Fade Out
             vidContainer.classList.remove('active');
 
             if (transitionTimeout) clearTimeout(transitionTimeout);
-
             transitionTimeout = setTimeout(() => {
                 if(data.type === "local") {
-                    vidContainer.innerHTML = `
-                        <video id="bg-video-player" autoplay muted loop playsinline>
-                            <source src="${data.url}" type="video/mp4">
-                        </video>
-                    `;
+                    vidContainer.innerHTML = `<video id="bg-video-player" autoplay muted loop playsinline><source src="${data.url}" type="video/mp4"></video>`;
                     vidContainer.classList.add('active');
                     document.body.style.backgroundImage = 'none';
                 }
-                
                 resetStates(); document.getElementById(`buddy-${key}`).classList.add('active');
                 if(document.getElementById('track-name')) document.getElementById('track-name').innerText = `Học cùng ${data.name}`;
             }, 800);
