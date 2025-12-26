@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Không Gian Chill - Mobile Fixed</title>
+    <title>Không Gian Chill - Fire Edition</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
@@ -33,22 +33,17 @@
             position: relative;
         }
 
-        /* --- VIDEO BACKGROUND (FIX KHUYẾT HÌNH) --- */
+        /* --- VIDEO BACKGROUND --- */
         #video-bg-container {
-            position: fixed; top: 0; left: 0; width: 100%; 
-            /* Dùng dvh để fix lỗi thanh địa chỉ trên mobile */
-            height: 100dvh; 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100dvh;
             z-index: 0; overflow: hidden; background-color: #000; pointer-events: none;
             opacity: 0; transition: opacity 1s ease-in-out;
         }
         #video-bg-container.active { opacity: 1; }
         
         #bg-video-player {
-            position: absolute; top: 50%; left: 50%; 
-            min-width: 100%; min-height: 100%;
-            width: auto; height: auto;
-            /* Phóng to 1.1 để bù trừ phần khuyết khi lướt web trên mobile */
-            transform: translate(-50%, -50%) scale(1.1); 
+            position: absolute; top: 50%; left: 50%; min-width: 100%; min-height: 100%;
+            width: auto; height: auto; transform: translate(-50%, -50%) scale(1.1);
             object-fit: cover;
         }
 
@@ -59,21 +54,47 @@
         .left-sidebar *, .right-area *, .top-nav-container * { pointer-events: auto; }
         #intro-overlay, #zen-overlay { pointer-events: auto !important; }
         
-        /* --- NAV BAR (DESKTOP) --- */
+        /* --- NAV BAR --- */
         .top-nav-container {
-            position: absolute; /* Desktop dùng absolute */
+            position: absolute;
             background: var(--card-bg);
             backdrop-filter: blur(20px) saturate(150%);
             -webkit-backdrop-filter: blur(20px) saturate(150%);
             border: var(--glass-border); box-shadow: var(--glass-shadow);
             top: 25px; left: 50%; transform: translateX(-50%); 
             display: flex; gap: 12px; padding: 8px; border-radius: 50px; z-index: 999;
-            transition: all 0.5s ease;
-            opacity: 0; pointer-events: none; /* Mặc định ẩn */
+            transition: all 0.5s ease; opacity: 0; pointer-events: none;
+        }
+        .top-nav-container.visible { opacity: 1; pointer-events: auto; }
+
+        /* --- HIỆU ỨNG "LỬA" --- */
+        .nav-pill.fire-effect {
+            background: linear-gradient(135deg, #ff4d4d, #ff9f43);
+            color: white;
+            font-weight: 800;
+            box-shadow: 0 0 15px rgba(255, 77, 77, 0.6);
+            animation: firePulse 1.5s infinite alternate;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        @keyframes firePulse {
+            0% { box-shadow: 0 0 10px rgba(255, 77, 77, 0.5); transform: scale(1); }
+            100% { box-shadow: 0 0 25px rgba(255, 159, 67, 0.8); transform: scale(1.05); }
         }
 
-        .top-nav-container.visible {
-            opacity: 1; pointer-events: auto;
+        /* --- HIỆU ỨNG HOVER GLOW TOÀN BỘ (CHỈ PC) --- */
+        @media (hover: hover) {
+            .nav-pill:not(.active):not(.fire-effect):hover, 
+            .btn-tool:hover, .mood-btn:hover, .btn-fc:hover, 
+            .btn-timer:hover, .spotify-toggle:hover, 
+            .explore-item:hover, .buddy-item:hover,
+            .btn-spotify-load:hover, .btn-spotify-mute:hover,
+            .btn-save-card:hover, .btn-add-confirm:hover,
+            .btn-close-zen:hover, .btn-adjust:hover, .btn-set-confirm:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 0 15px rgba(162, 155, 254, 0.6); /* Hào quang tím */
+                transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+                z-index: 2;
+            }
         }
 
         /* --- PANEL STYLES --- */
@@ -107,6 +128,7 @@
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.5); border-radius: 10px; }
+        :hover::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.8); }
 
         /* Controls */
         .learning-filter { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
@@ -136,6 +158,7 @@
         .btn-fc { flex: 1; padding: 10px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; font-size: 13px; transition: 0.2s; }
         .btn-fc-review { background: rgba(255,255,255,0.8); color: #333; }
         .btn-fc-master { background: var(--accent-color); color: white; }
+        .btn-fc-restart { background: #333; color: white; width: 100%; } 
         .fc-progress { height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; margin-bottom: 15px; overflow: hidden; }
         .fc-bar { height: 100%; background: var(--accent-color); width: 0%; transition: width 0.3s ease; }
 
@@ -203,10 +226,21 @@
         .spotify-toggle:hover { opacity: 1; color: var(--accent-color); }
         .spotify-input-group { display: none; gap: 5px; margin-bottom: 10px; }
         .spotify-input { flex-grow: 1; padding: 6px; border-radius: 8px; border: none; font-size: 11px; outline: none; background: rgba(255,255,255,0.8); color: #333; }
-        .btn-spotify-load { padding: 6px 10px; background: #1DB954; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; font-size: 11px; }
+        .btn-spotify-load, .btn-spotify-mute { padding: 6px 10px; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; font-size: 11px; }
+        .btn-spotify-load { background: #1DB954; }
+        .btn-spotify-mute { background: #e74c3c; margin-left: 2px; }
         #embed-container iframe { width: 100%; border-radius: 12px; border: none; margin-top: 5px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         
         #youtube-audio-container { position: absolute; top: -9999px; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+
+        /* MODE TOGGLE */
+        .audio-mode-toggle { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-size: 11px; color: rgba(255,255,255,0.8); }
+        .toggle-switch { position: relative; display: inline-block; width: 34px; height: 18px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.3); transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--accent-color); }
+        input:checked + .slider:before { transform: translateX(16px); }
 
         /* FOCUS MODE - DESKTOP */
         body.focus-active .left-sidebar { display: none !important; }
@@ -214,7 +248,7 @@
         body.focus-active .right-area { width: 100%; justify-content: center; align-items: center; height: 100%; overflow: hidden; }
         body.focus-active #panel-timer { transform: scale(1.4); transition: transform 0.5s ease; z-index: 50; }
 
-        /* --- MOBILE OPTIMIZATION (FIXED) --- */
+        /* --- MOBILE OPTIMIZATION (FIXED NAV & LAYOUT) --- */
         @media (max-width: 768px) {
             body { 
                 flex-direction: column; 
@@ -224,24 +258,25 @@
                 padding: 15px;
                 gap: 20px;
                 justify-content: flex-start;
-                padding-top: 60px; /* Chừa chỗ cho Nav Fixed */
+                padding-top: 70px;
             }
             .top-nav-container { 
-                position: fixed; /* Ghim chặt lên đầu */
-                top: 15px; left: 50%; transform: translateX(-50%) translateY(-150%); /* Mặc định ẩn lên trên */
+                position: fixed; 
+                top: 15px; left: 50%; transform: translateX(-50%) translateY(-150%);
                 margin-bottom: 0; 
-                flex-wrap: nowrap; /* Không xuống dòng */
+                flex-wrap: nowrap; 
                 justify-content: center; 
                 width: 90%;
+                max-width: 400px;
                 transition: transform 0.5s ease, opacity 0.5s ease;
                 opacity: 0;
                 pointer-events: none;
-                box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+                box-shadow: 0 8px 32px rgba(0,0,0,0.3);
             }
             .top-nav-container.visible {
                 opacity: 1;
                 pointer-events: auto;
-                transform: translateX(-50%) translateY(0); /* Trượt xuống */
+                transform: translateX(-50%) translateY(0);
             }
             .nav-pill {
                 font-size: 11px;
@@ -249,12 +284,7 @@
                 min-height: auto;
                 white-space: nowrap;
             }
-            .left-sidebar, .right-area { 
-                width: 100%; 
-                max-height: none; 
-                padding: 0; 
-                overflow: visible;
-            }
+            .left-sidebar, .right-area { width: 100%; max-height: none; padding: 0; overflow: visible; }
             .cozy-panel { margin-bottom: 15px; width: 100%; }
             #video-bg-container { position: fixed; }
             
@@ -263,7 +293,7 @@
             #intro-overlay .mood-grid { grid-template-columns: repeat(2, 1fr); }
 
             /* FOCUS MODE MOBILE FIX */
-            body.focus-active { padding-top: 80px; align-items: center; justify-content: flex-start; }
+            body.focus-active { padding-top: 90px; align-items: center; justify-content: flex-start; }
             body.focus-active .right-area { height: auto; overflow: visible; display: flex; flex-direction: column; align-items: center; width: 100%; }
             body.focus-active #panel-timer { transform: none !important; width: 100% !important; margin-top: 10px; max-width: 400px; }
             
@@ -307,7 +337,7 @@
     </div>
 
     <div class="top-nav-container" id="main-nav">
-        <div class="nav-pill" onclick="playSFX('click')">Lửa</div>
+        <div class="nav-pill fire-effect" onclick="playSFX('click')"><i class="fa-solid fa-fire"></i> Lửa</div>
         <div class="nav-pill active" id="btn-myspace" onclick="switchView('myspace'); playSFX('click')">Không gian</div>
         <div class="nav-pill" id="btn-focus" onclick="switchView('focus'); playSFX('click')">Tập trung</div>
         <div class="nav-pill sos-btn" onclick="openZenMode(); playSFX('click')">SOS Stress 🆘</div>
@@ -337,7 +367,7 @@
                             </div>
                         </div>
                         <div style="display: flex; align-items: center; gap: 10px;">
-                            <i class="fa-solid fa-volume-high" id="mute-btn" onclick="toggleMute(); playSFX('click')" ontouchstart="toggleMute(); playSFX('click')" style="cursor: pointer; width: 30px; text-align:center; color: var(--accent-color);"></i>
+                            <i class="fa-solid fa-volume-high" id="mute-btn" onclick="toggleMute(); playSFX('click')" style="cursor: pointer; width: 30px; text-align:center; color: var(--accent-color);"></i>
                             <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.5" title="Ambient Volume" oninput="changeVolume(this.value)">
                         </div>
                     </div>
@@ -348,9 +378,20 @@
                         <i class="fa-brands fa-youtube"></i> Nhập link YouTube/Spotify/SoundCloud
                     </div>
                     <div class="spotify-input-group" id="spotify-input-group">
-                        <input type="text" id="spotify-url" class="spotify-input" placeholder="Dán link YouTube (Full bài) hoặc Spotify...">
+                        <input type="text" id="spotify-url" class="spotify-input" placeholder="Dán link...">
                         <button class="btn-spotify-load" onclick="loadCustomEmbed(); playSFX('click')">Phát</button>
+                        <button class="btn-spotify-mute" id="btn-ext-mute" onclick="toggleExternalMusic(); playSFX('click')" style="display:none;"><i class="fa-solid fa-volume-high"></i></button>
                     </div>
+                    
+                    <div class="audio-mode-toggle">
+                        <span>Chế độ: <strong>Trộn âm</strong></span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="audio-exclusive-mode" onchange="toggleAudioMode()">
+                            <span class="slider"></span>
+                        </label>
+                        <span><strong>Chỉ một</strong></span>
+                    </div>
+
                     <div id="embed-container"></div>
                 </div>
 
@@ -457,7 +498,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="fc-controls">
+                <div class="fc-controls" id="fc-controls-area">
                     <button class="btn-fc btn-fc-review" onclick="nextCard(false); playSFX('click')">Cần ôn lại 🧠</button>
                     <button class="btn-fc btn-fc-master" onclick="nextCard(true); playSFX('success')">Đã thuộc ✅</button>
                 </div>
@@ -489,10 +530,24 @@
         const exploreGrid = document.getElementById('explore-grid'), buddyGrid = document.getElementById('buddy-grid'), root = document.documentElement;
         const videoContainer = document.getElementById('video-bg-container');
         const ambientPlayer = document.getElementById('ambient-audio');
-        let isMuted = false; let lastVolume = 0.5; let transitionTimeout; 
+        let isMuted = false; let lastVolume = 0.5; 
         
         let youtubeAudioPlayer = null;
         let isYouTubeAudioPlaying = false;
+        let currentExternalType = null; 
+        
+        // --- LOGIC CHẾ ĐỘ ÂM THANH ---
+        let isExclusiveMode = false; // Mặc định là Mix (false)
+
+        function toggleAudioMode() {
+            isExclusiveMode = document.getElementById('audio-exclusive-mode').checked;
+            // Nếu bật chế độ Chỉ một, và đang có cả 2 nguồn phát, tắt một cái
+            if (isExclusiveMode && !ambientPlayer.paused && isYouTubeAudioPlaying) {
+                // Ưu tiên nhạc ngoài, tắt nhạc nền
+                ambientPlayer.pause();
+                document.getElementById('local-player-controls').style.opacity = '0.3';
+            }
+        }
 
         function onYouTubeIframeAPIReady() {
             youtubeAudioPlayer = new YT.Player('youtube-audio-container', {
@@ -508,8 +563,10 @@
             if(sound) { sound.currentTime = 0; sound.play().catch(e => {}); }
         }
 
-        document.addEventListener('click', function() {
-            if (ambientPlayer.paused && !isYouTubeAudioPlaying) { }
+        document.addEventListener('touchstart', function() {
+            if (ambientPlayer.paused && !isYouTubeAudioPlaying) { 
+                ambientPlayer.play().then(() => ambientPlayer.pause());
+            }
         }, { once: true });
 
         function toggleSpotifyInput() {
@@ -523,50 +580,89 @@
             return match ? match[1] : null;
         }
 
+        function toggleExternalMusic() {
+            const btn = document.getElementById('btn-ext-mute');
+            
+            if (currentExternalType === 'youtube' && youtubeAudioPlayer) {
+                if (youtubeAudioPlayer.isMuted()) {
+                    youtubeAudioPlayer.unMute();
+                    btn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
+                } else {
+                    youtubeAudioPlayer.mute();
+                    btn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
+                }
+            } else {
+                document.getElementById('embed-container').innerHTML = '';
+                document.getElementById('embed-container').style.display = 'none';
+                currentExternalType = null;
+                btn.style.display = 'none';
+                isYouTubeAudioPlaying = false;
+                
+                // Nếu ở chế độ Chỉ một, khi tắt nhạc ngoài thì tự bật lại nhạc nền
+                if (isExclusiveMode) {
+                    ambientPlayer.play();
+                    document.getElementById('local-player-controls').style.opacity = '1';
+                }
+            }
+        }
+
         function loadCustomEmbed() {
             let url = document.getElementById('spotify-url').value.trim();
             const container = document.getElementById('embed-container');
+            const muteBtn = document.getElementById('btn-ext-mute');
             
             if(!url) return alert("Vui lòng nhập Link!");
             
+            if(isYouTubeAudioPlaying && youtubeAudioPlayer) { youtubeAudioPlayer.stopVideo(); isYouTubeAudioPlaying = false; }
+            container.innerHTML = '';
+            
+            // Xử lý logic CHẾ ĐỘ ÂM THANH
+            if (isExclusiveMode) {
+                ambientPlayer.pause();
+                document.getElementById('local-player-controls').style.opacity = '0.3';
+            }
+
             const youtubeId = getYouTubeId(url);
+            
             if (youtubeId) {
                 if(youtubeAudioPlayer) {
                     youtubeAudioPlayer.loadVideoById(youtubeId);
                     youtubeAudioPlayer.setVolume(lastVolume * 100);
                     isYouTubeAudioPlaying = true;
+                    currentExternalType = 'youtube';
                     
-                    container.innerHTML = `<div style="padding:15px; font-size:13px; font-weight:bold; color:var(--accent-color); background:rgba(255,255,255,0.8); border-radius:12px; text-align:center;"><i class="fa-brands fa-youtube" style="color:red;"></i> Đang phát nhạc từ YouTube...<br><span style="font-size:10px; font-weight:normal; color:#666;">(Điều chỉnh âm lượng bằng thanh trượt bên trên)</span></div>`;
+                    container.innerHTML = `<div style="padding:15px; font-size:13px; font-weight:bold; color:var(--accent-color); background:rgba(255,255,255,0.8); border-radius:12px; text-align:center;"><i class="fa-brands fa-youtube" style="color:red;"></i> Đang phát từ YouTube...</div>`;
                     container.style.display = 'block';
+                    
+                    muteBtn.style.display = 'inline-block';
+                    muteBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
                     
                     localStorage.setItem('saved_music_url', url);
                     return;
                 }
             }
             
-            else if (url.includes('soundcloud.com')) {
-                const encodedUrl = encodeURIComponent(url);
-                const embedSrc = `https://w.soundcloud.com/player/?url=${encodedUrl}&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true`;
-                container.innerHTML = `<iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="${embedSrc}" style="border-radius:12px; margin-top:5px;"></iframe>`;
-                container.style.display = 'block';
-                if(isYouTubeAudioPlaying && youtubeAudioPlayer) { youtubeAudioPlayer.stopVideo(); isYouTubeAudioPlaying = false; }
-                localStorage.setItem('saved_music_url', url);
-                return;
-            }
-
             let embedSrc = "";
-            if(url.includes('spotify.com')) {
+            if (url.includes('soundcloud.com')) {
+                const encodedUrl = encodeURIComponent(url);
+                embedSrc = `https://w.soundcloud.com/player/?url=${encodedUrl}&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true`;
+                currentExternalType = 'soundcloud';
+            } else if(url.includes('spotify.com')) {
                 if(!url.includes('/embed')) {
                     url = url.replace('spotify.com/', 'https://open.spotify.com/embed/playlist/$2');
                 }
                 embedSrc = url;
+                currentExternalType = 'spotify';
             } 
             
             if(embedSrc) {
                 container.innerHTML = `<iframe src="${embedSrc}" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
                 container.style.display = 'block';
-                if(isYouTubeAudioPlaying && youtubeAudioPlayer) { youtubeAudioPlayer.stopVideo(); isYouTubeAudioPlaying = false; }
-                localStorage.setItem('saved_music_url', document.getElementById('spotify-url').value);
+                
+                muteBtn.style.display = 'inline-block';
+                muteBtn.innerHTML = '<i class="fa-solid fa-stop"></i>';
+                
+                localStorage.setItem('saved_music_url', url);
             }
         }
 
@@ -584,31 +680,40 @@
         }
 
         function toggleMute() {
-            // Logic mới cho mobile: Nếu đang tắt -> bật về 50%. Nếu đang bật -> tắt.
-            if (isMuted) {
+            // FIX MOBILE: Dùng thuộc tính muted trực tiếp
+            if (ambientPlayer.muted || ambientPlayer.volume === 0) {
+                ambientPlayer.muted = false;
                 ambientPlayer.volume = lastVolume > 0 ? lastVolume : 0.5;
                 document.getElementById('volume-slider').value = ambientPlayer.volume;
+                ambientPlayer.play().catch(e => console.log(e));
                 isMuted = false;
-                if(isYouTubeAudioPlaying && youtubeAudioPlayer) youtubeAudioPlayer.unMute();
-                ambientPlayer.play().catch(e => console.log('Auto-play prevented'));
             } else {
-                lastVolume = ambientPlayer.volume;
-                ambientPlayer.volume = 0;
+                ambientPlayer.muted = true;
                 document.getElementById('volume-slider').value = 0;
                 isMuted = true;
-                if(isYouTubeAudioPlaying && youtubeAudioPlayer) youtubeAudioPlayer.mute();
             }
+            if(isYouTubeAudioPlaying && youtubeAudioPlayer) {
+                if(isMuted) youtubeAudioPlayer.mute();
+                else youtubeAudioPlayer.unMute();
+            }
+            
+            // Logic Chế độ: Nếu bật tiếng môi trường mà đang ở Exclusive -> Tắt nhạc ngoài
+            if (!isMuted && isExclusiveMode && isYouTubeAudioPlaying) {
+                toggleExternalMusic(); // Tắt nhạc ngoài
+            }
+
             updateMuteIcon();
         }
 
         function updateMuteIcon() {
             const btn = document.getElementById('mute-btn');
-            const vol = ambientPlayer.volume;
-            btn.className = '';
-            if (isMuted || vol === 0) { btn.className = 'fa-solid fa-volume-xmark'; }
-            else if (vol < 0.5) { btn.className = 'fa-solid fa-volume-low'; }
-            else { btn.className = 'fa-solid fa-volume-high'; }
-            btn.style.cursor = 'pointer'; btn.style.width = '20px'; btn.style.color = 'var(--accent-color)';
+            if (isMuted || ambientPlayer.muted || ambientPlayer.volume === 0) { 
+                btn.className = 'fa-solid fa-volume-xmark'; 
+            } else if (ambientPlayer.volume < 0.5) { 
+                btn.className = 'fa-solid fa-volume-low'; 
+            } else { 
+                btn.className = 'fa-solid fa-volume-high'; 
+            }
         }
 
         function switchView(view) {
@@ -710,7 +815,16 @@
             if(q && a) {
                 LEARNING_DATABASE[currentSubject][currentLevel].push({q:q, a:a});
                 studyQueue.push({q:q, a:a}); totalCards++;
-                document.getElementById('new-card-q').value=''; document.getElementById('new-card-a').value=''; toggleAddCardForm(); renderCard();
+                
+                if (studyQueue.length === 1 && totalCards === 1) {
+                    masteredCount = 0;
+                    renderCard();
+                } else {
+                    document.getElementById('new-card-q').value=''; 
+                    document.getElementById('new-card-a').value=''; 
+                    toggleAddCardForm(); 
+                    renderCard();
+                }
                 playSFX('success');
             }
         }
@@ -750,34 +864,56 @@
 
         function renderCard() {
             const container = document.querySelector('.flashcard-container');
+            const controlsArea = document.getElementById('fc-controls-area');
+            
             container.classList.remove('flipped');
+            
             setTimeout(() => {
                 if (studyQueue.length === 0) {
                     const isEmpty = totalCards === 0;
                     document.getElementById('fc-cat-front').innerText = currentSubject || "Trống";
                     document.getElementById('fc-q').innerText = isEmpty ? "Chưa có thẻ nào" : "Đã xong!";
                     document.getElementById('fc-cat-back').innerText = "";
-                    document.getElementById('fc-a').innerText = isEmpty ? "Bấm + để thêm" : "Chọn môn khác";
+                    document.getElementById('fc-a').innerText = isEmpty ? "Bấm + để thêm" : "Bạn đã học hết bộ này!";
+                    
+                    if (!isEmpty) {
+                        controlsArea.innerHTML = `<button class="btn-fc btn-fc-restart" onclick="resetLearning(); playSFX('click')">Học lại từ đầu ↺</button>`;
+                    } else {
+                        controlsArea.innerHTML = '';
+                    }
                     return;
                 }
+                
+                controlsArea.innerHTML = `
+                    <button class="btn-fc btn-fc-review" onclick="nextCard(false); playSFX('click')">Cần ôn lại 🧠</button>
+                    <button class="btn-fc btn-fc-master" onclick="nextCard(true); playSFX('success')">Đã thuộc ✅</button>
+                `;
+                
                 const current = studyQueue[0];
                 document.getElementById('fc-cat-front').innerText = currentSubject;
                 document.getElementById('fc-q').innerText = current.q;
                 document.getElementById('fc-cat-back').innerText = currentLevel;
                 document.getElementById('fc-a').innerText = current.a;
             }, 200);
+            
             const percent = totalCards > 0 ? (masteredCount / totalCards) * 100 : 0;
             document.getElementById('fc-bar').style.width = `${percent}%`;
             document.getElementById('mini-fc').innerText = `${masteredCount}/${totalCards} Done`;
         }
 
         function flipCard(el) { if (studyQueue.length > 0) { el.classList.toggle('flipped'); playSFX('click'); } }
+        
         function nextCard(isMastered) {
             if (studyQueue.length === 0) return;
-            const card = studyQueue.shift();
-            if (isMastered) masteredCount++; else studyQueue.push(card);
-            renderCard();
+            document.querySelector('.flashcard-container').classList.remove('flipped');
+            setTimeout(() => {
+                const card = studyQueue.shift();
+                if (isMastered) masteredCount++; else studyQueue.push(card);
+                renderCard();
+            }, 300);
         }
+        
+        function resetLearning() { changeTopic(); }
 
         function initExplore() {
             exploreGrid.innerHTML = '';
@@ -797,6 +933,8 @@
                 buddyGrid.appendChild(item);
             }
         }
+
+        let transitionTimeout;
 
         function setTheme(key) {
             const data = THEMES[key]; 
@@ -822,15 +960,14 @@
                 root.style.setProperty('--accent-color', data.color);
                 if(document.getElementById('track-name')) document.getElementById('track-name').innerText = data.track;
                 
-                // ĐÃ SỬA: Sửa lại phần hiển thị Album Art bằng Emoji
                 const art = document.getElementById('album-art');
                 art.style.backgroundImage = 'none';
                 art.innerHTML = data.emoji;
 
                 if(!isYouTubeAudioPlaying) {
                     ambientPlayer.src = data.audio;
-                    if (!isMuted) { 
-                        ambientPlayer.play().then(() => {}).catch(e => { console.log("Blocked autplay"); }); 
+                    if (!ambientPlayer.muted && ambientPlayer.volume > 0) { 
+                        ambientPlayer.play().catch(e => {}); 
                     }
                 }
 
@@ -860,8 +997,7 @@
             document.querySelectorAll('.explore-item').forEach(el => { el.classList.remove('active'); el.style.backgroundColor = ''; el.style.boxShadow = ''; });
             document.querySelectorAll('.buddy-item').forEach(el => el.classList.remove('active'));
         }
-        
-        // ĐÃ SỬA: Ẩn intro, hiện NAV
+
         function selectMood(m) { 
             setTheme(m); 
             document.getElementById('intro-overlay').classList.add('hidden-intro');
