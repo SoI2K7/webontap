@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Không Gian Chill - Audio Switch & Video Fix</title>
+    <title>Không Gian Chill - Audio Mix Fix</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
@@ -34,22 +34,17 @@
             position: relative;
         }
 
-        /* --- VIDEO BACKGROUND (FIXED SCALE) --- */
+        /* --- VIDEO BACKGROUND --- */
         #video-bg-container {
             position: fixed; top: 0; left: 0; width: 100%; height: 100dvh;
             z-index: 0; overflow: hidden; background-color: #000; pointer-events: none;
-            opacity: 0; 
-            transition: opacity 1s ease-in-out, filter 0.5s ease;
+            opacity: 0; transition: opacity 1s ease-in-out, filter 0.5s ease;
         }
         #video-bg-container.active { opacity: 1; }
         
         #bg-video-player {
-            position: absolute; 
-            top: 50%; left: 50%; 
-            transform: translate(-50%, -50%);
-            min-width: 100%; min-height: 100%; 
-            width: auto; height: auto;
-            /* QUAN TRỌNG: Giữ tỷ lệ chuẩn, bao phủ toàn màn hình */
+            position: absolute; top: 50%; left: 50%; min-width: 100%; min-height: 100%;
+            width: auto; height: auto; transform: translate(-50%, -50%); /* Giữ tỷ lệ gốc */
             object-fit: cover; 
         }
 
@@ -92,7 +87,7 @@
             .btn-tool:hover, .mood-btn:hover, .btn-fc:hover, 
             .btn-timer:hover, .spotify-toggle:hover, 
             .explore-item:hover, .buddy-item:hover,
-            .btn-spotify-load:hover, .btn-spotify-stop:hover,
+            .btn-spotify-load:hover, .btn-spotify-mute:hover,
             .btn-save-card:hover, .btn-add-confirm:hover,
             .btn-close-zen:hover, .btn-adjust:hover, .btn-set-confirm:hover {
                 transform: translateY(-3px);
@@ -256,7 +251,7 @@
         body.focus-active .right-area { width: 100%; justify-content: center; align-items: center; height: 100%; overflow: hidden; }
         body.focus-active #panel-timer { transform: scale(1.4); transition: transform 0.5s ease; z-index: 50; }
 
-        /* --- MOBILE OPTIMIZATION --- */
+        /* --- MOBILE OPTIMIZATION (FIXED NAV & LAYOUT) --- */
         @media (max-width: 768px) {
             body { 
                 flex-direction: column; 
@@ -300,10 +295,12 @@
             .btn-adjust { width: 40px; height: 40px; }
             #intro-overlay .mood-grid { grid-template-columns: repeat(2, 1fr); }
 
+            /* FOCUS MODE MOBILE FIX */
             body.focus-active { padding-top: 90px; align-items: center; justify-content: flex-start; }
             body.focus-active .right-area { height: auto; overflow: visible; display: flex; flex-direction: column; align-items: center; width: 100%; }
             body.focus-active #panel-timer { transform: none !important; width: 100% !important; margin-top: 10px; max-width: 400px; }
             
+            /* Sửa nút volume trên mobile */
             #mute-btn { font-size: 24px; padding: 10px; }
             input[type=range] { height: 10px; }
         }
@@ -396,8 +393,9 @@
                         <i class="fa-brands fa-youtube"></i> Nhập link YouTube/SoundCloud
                     </div>
                     <div class="spotify-input-group" id="spotify-input-group">
-                        <input type="text" id="spotify-url" class="spotify-input" placeholder="Dán link...">
+                        <input type="text" id="spotify-url" class="spotify-input" placeholder="Dán link YouTube hoặc SoundCloud...">
                         <button class="btn-spotify-load" onclick="loadCustomEmbed(); playSFX('click')">Phát</button>
+                        
                         <button class="btn-spotify-stop" id="btn-ext-stop" onclick="stopExternalMusic(); playSFX('click')" title="Dừng nhạc & Về Âm thanh nền"><i class="fa-solid fa-stop"></i></button>
                     </div>
                     
@@ -552,6 +550,8 @@
         
         let youtubeAudioPlayer = null;
         let isYouTubeAudioPlaying = false;
+        let currentExternalType = null; 
+        
         let isExclusiveMode = false;
 
         function toggleAudioMode() {
@@ -559,6 +559,10 @@
             if (isExclusiveMode && !ambientPlayer.paused && isYouTubeAudioPlaying) {
                 ambientPlayer.pause();
                 document.getElementById('local-player-controls').style.opacity = '0.3';
+            } else if (!isExclusiveMode && ambientPlayer.paused) {
+                // Tự động bật lại khi chuyển sang Mix
+                ambientPlayer.play().catch(e => {});
+                document.getElementById('local-player-controls').style.opacity = '1';
             }
         }
 
@@ -607,7 +611,7 @@
             return match ? match[1] : null;
         }
 
-        // --- DỪNG NHẠC NGOÀI & VỀ AMBIENT ---
+        // --- DỪNG NHẠC NGOÀI & VỀ AMBIENT (ĐÃ FIX) ---
         function stopExternalMusic() {
             const btn = document.getElementById('btn-ext-stop');
             
@@ -615,6 +619,7 @@
             document.getElementById('embed-container').innerHTML = '';
             document.getElementById('embed-container').style.display = 'none';
             btn.style.display = 'none';
+            currentExternalType = null;
             
             // Dừng YouTube nếu có
             if (youtubeAudioPlayer && isYouTubeAudioPlaying) {
@@ -622,8 +627,10 @@
                 isYouTubeAudioPlaying = false;
             }
             
-            // Mở lại nhạc nền
-            ambientPlayer.play().catch(e => console.log(e));
+            // QUAN TRỌNG: Mở lại nhạc nền
+            if (ambientPlayer.paused) {
+                ambientPlayer.play().catch(e => console.log(e));
+            }
             document.getElementById('local-player-controls').style.opacity = '1';
         }
 
@@ -639,11 +646,9 @@
                 return;
             }
 
-            // Stop previous external music
             if(isYouTubeAudioPlaying && youtubeAudioPlayer) { youtubeAudioPlayer.stopVideo(); isYouTubeAudioPlaying = false; }
             container.innerHTML = '';
             
-            // Logic Exclusive Mode
             if (isExclusiveMode) {
                 ambientPlayer.pause();
                 document.getElementById('local-player-controls').style.opacity = '0.3';
@@ -651,12 +656,12 @@
 
             const youtubeId = getYouTubeId(url);
             
-            // YOUTUBE
             if (youtubeId) {
                 if(youtubeAudioPlayer) {
                     youtubeAudioPlayer.loadVideoById(youtubeId);
                     youtubeAudioPlayer.setVolume(lastVolume * 100);
                     isYouTubeAudioPlaying = true;
+                    currentExternalType = 'youtube';
                     
                     container.innerHTML = `<div style="padding:15px; font-size:13px; font-weight:bold; color:var(--accent-color); background:rgba(255,255,255,0.8); border-radius:12px; text-align:center;"><i class="fa-brands fa-youtube" style="color:red;"></i> Đang phát từ YouTube...</div>`;
                     container.style.display = 'block';
@@ -668,11 +673,11 @@
                 }
             }
             
-            // SOUNDCLOUD
             let embedSrc = "";
             if (url.includes('soundcloud.com')) {
                 const encodedUrl = encodeURIComponent(url);
                 embedSrc = `https://w.soundcloud.com/player/?url=${encodedUrl}&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true`;
+                currentExternalType = 'soundcloud';
             } 
             
             if(embedSrc) {
