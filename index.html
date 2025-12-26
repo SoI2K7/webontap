@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Không Gian Chill - Update Log & UI Fix</title>
+    <title>Không Gian Chill - UI Tweaks</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
@@ -63,7 +63,10 @@
             -webkit-backdrop-filter: blur(20px) saturate(150%);
             border: var(--glass-border); box-shadow: var(--glass-shadow);
             top: 25px; left: 50%; transform: translateX(-50%); 
-            display: flex; gap: 12px; padding: 8px; border-radius: 50px; z-index: 999;
+            display: flex; gap: 12px; 
+            /* EDITED: Tăng padding-top để hạ chữ xuống */
+            padding: 12px 8px 8px 8px; 
+            border-radius: 50px; z-index: 999;
             transition: all 0.5s ease; opacity: 0; pointer-events: none;
         }
         .top-nav-container.visible { opacity: 1; pointer-events: auto; }
@@ -210,7 +213,10 @@
         .btn-close-zen { padding: 12px 30px; border: 2px solid rgba(255,255,255,0.3); border-radius: 30px; background: transparent; color: white; cursor: pointer; font-size: 14px; transition: all 0.3s; }
         .btn-close-zen:hover { background: white; color: #333; }
 
-        .nav-pill { padding: 8px 20px; border-radius: 20px; font-weight: 700; font-size: 14px; cursor: pointer; color: #333; transition: all 0.3s; }
+        .nav-pill { padding: 8px 20px; border-radius: 20px; font-weight: 700; font-size: 14px; cursor: pointer; color: #333; transition: all 0.3s; 
+            /* EDITED: Thêm line-height để icon không bị cắt */
+            line-height: 1.5;
+        }
         .nav-pill.active { background: var(--accent-color); color: white; }
         .nav-pill.sos-btn { background: #ff7675; color: white; box-shadow: 0 4px 15px rgba(255, 118, 117, 0.4); animation: pulse-red 2s infinite; }
         .nav-pill.sos-btn:hover { background: #d63031; }
@@ -341,26 +347,25 @@
             <h2 style="margin-bottom: 20px; text-align: center;">Nhật ký cập nhật 📜</h2>
             
             <div class="log-item">
-                <div class="log-date"><span class="log-version">v13.5</span> Hôm nay</div>
+                <div class="log-date"><span class="log-version">v13.6</span> Hôm nay</div>
                 <div class="log-desc">
-                    - Sửa triệt để lỗi không phát được nhạc YouTube khi tải lại trang.<br>
+                    - Căn chỉnh lại nút SOS Stress không bị đè chữ.<br>
+                    - Cập nhật nội dung nhật ký.
+                </div>
+            </div>
+            <div class="log-item">
+                <div class="log-date"><span class="log-version">v13.5</span> Hôm qua</div>
+                <div class="log-desc">
                     - Làm mới ô nhập liệu khi tải lại (Clean Slate).<br>
                     - Tăng kích thước chữ & thêm gợi ý SoundCloud.<br>
                     - Thêm Nhật ký cập nhật.
                 </div>
             </div>
             <div class="log-item">
-                <div class="log-date"><span class="log-version">v12.5</span> Hôm qua</div>
+                <div class="log-date"><span class="log-version">v12.5</span> Trước đó</div>
                 <div class="log-desc">
                     - Thêm tính năng "Khóa Âm thanh môi trường" khi ở chế độ "Chỉ một".<br>
                     - Tối ưu giao diện Mobile (Nav bar, nền video full).
-                </div>
-            </div>
-             <div class="log-item">
-                <div class="log-date"><span class="log-version">v11.0</span> Trước đó</div>
-                <div class="log-desc">
-                    - Thêm hiệu ứng "Lửa" và Hover Glow.<br>
-                    - Tách biệt điều khiển âm lượng YouTube và Môi trường.
                 </div>
             </div>
         </div>
@@ -649,7 +654,6 @@
         function onPlayerReady(event) {
             isYouTubeReady = true; 
             if (pendingYouTubeId) {
-                // TỰ ĐỘNG PHÁT NẾU CÓ LỆNH CHỜ
                 loadCustomEmbed();
             }
         }
@@ -706,7 +710,6 @@
             
             // YOUTUBE LOGIC
             if (youtubeId) {
-                // NẾU API CHƯA SẴN SÀNG -> CHỜ (KHÔNG ALERT)
                 if(!isYouTubeReady || !youtubeAudioPlayer || !youtubeAudioPlayer.loadVideoById) {
                     pendingYouTubeId = youtubeId;
                     container.innerHTML = `<div style="padding:10px; font-size:12px; color:var(--accent-color); background:rgba(255,255,255,0.8); border-radius:8px; text-align:center;">⏳ Đang kết nối YouTube...</div>`;
@@ -714,7 +717,6 @@
                     return; 
                 }
 
-                // API SẴN SÀNG -> PHÁT
                 youtubeAudioPlayer.loadVideoById(youtubeId);
                 youtubeAudioPlayer.setVolume(lastExternalVolume);
                 isYouTubeAudioPlaying = true;
@@ -747,7 +749,6 @@
             }
         }
 
-        // CLEAN SLATE ON RELOAD
         window.addEventListener('load', () => {
              document.getElementById('spotify-url').value = "";
              pendingYouTubeId = null;
