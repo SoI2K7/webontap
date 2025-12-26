@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Không Gian Chill - UI Tweaks</title>
+    <title>Không Gian Chill - Fire Effect & UI Fix</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
@@ -64,10 +64,10 @@
             border: var(--glass-border); box-shadow: var(--glass-shadow);
             top: 25px; left: 50%; transform: translateX(-50%); 
             display: flex; gap: 12px; 
-            /* EDITED: Tăng padding-top để hạ chữ xuống */
-            padding: 12px 8px 8px 8px; 
+            padding: 8px; /* Reset padding to normal */
             border-radius: 50px; z-index: 999;
             transition: all 0.5s ease; opacity: 0; pointer-events: none;
+            align-items: center; /* Ensure items are centered vertically */
         }
         .top-nav-container.visible { opacity: 1; pointer-events: auto; }
 
@@ -81,6 +81,21 @@
         @keyframes firePulse {
             0% { box-shadow: 0 0 10px rgba(255, 77, 77, 0.5); transform: scale(1); }
             100% { box-shadow: 0 0 25px rgba(255, 159, 67, 0.8); transform: scale(1.05); }
+        }
+
+        /* --- FIRE SPARK EFFECT --- */
+        .spark-particle {
+            position: fixed;
+            width: 6px; height: 6px;
+            background: radial-gradient(circle, #ffeb3b, #ff5722);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            animation: spark-burst 0.8s ease-out forwards;
+        }
+        @keyframes spark-burst {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
         }
 
         /* --- UPDATE LOG STYLES --- */
@@ -108,9 +123,9 @@
             box-shadow: 0 10px 40px rgba(0,0,0,0.5);
         }
         .log-item { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .log-date { font-size: 12px; color: var(--accent-color); font-weight: bold; margin-bottom: 5px; }
+        .log-date { font-size: 12px; color: #aaa; font-weight: bold; margin-bottom: 5px; }
         .log-desc { font-size: 14px; line-height: 1.5; color: #ddd; }
-        .log-version { display: inline-block; background: var(--accent-color); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-right: 5px; }
+        .log-version { display: inline-block; background: var(--accent-color); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-right: 8px; }
         .btn-close-log {
             position: absolute; top: 15px; right: 15px; background: transparent; border: none; color: #aaa; font-size: 20px; cursor: pointer;
         }
@@ -213,9 +228,11 @@
         .btn-close-zen { padding: 12px 30px; border: 2px solid rgba(255,255,255,0.3); border-radius: 30px; background: transparent; color: white; cursor: pointer; font-size: 14px; transition: all 0.3s; }
         .btn-close-zen:hover { background: white; color: #333; }
 
-        .nav-pill { padding: 8px 20px; border-radius: 20px; font-weight: 700; font-size: 14px; cursor: pointer; color: #333; transition: all 0.3s; 
-            /* EDITED: Thêm line-height để icon không bị cắt */
-            line-height: 1.5;
+        .nav-pill { 
+            /* EDITED: Tăng padding dọc để nút cao hơn, tránh đè chữ */
+            padding: 10px 20px; 
+            border-radius: 20px; font-weight: 700; font-size: 14px; cursor: pointer; color: #333; transition: all 0.3s; 
+            display: flex; align-items: center; gap: 8px; /* Ensure flex centering */
         }
         .nav-pill.active { background: var(--accent-color); color: white; }
         .nav-pill.sos-btn { background: #ff7675; color: white; box-shadow: 0 4px 15px rgba(255, 118, 117, 0.4); animation: pulse-red 2s infinite; }
@@ -347,25 +364,26 @@
             <h2 style="margin-bottom: 20px; text-align: center;">Nhật ký cập nhật 📜</h2>
             
             <div class="log-item">
-                <div class="log-date"><span class="log-version">v13.6</span> Hôm nay</div>
+                <div class="log-date"><span class="log-version">v13.7</span> 27/05/2024</div>
                 <div class="log-desc">
-                    - Căn chỉnh lại nút SOS Stress không bị đè chữ.<br>
+                    - Fix lỗi chữ nút SOS bị đè.<br>
+                    - Thêm ngày tháng cụ thể vào nhật ký.<br>
+                    - Thêm hiệu ứng tia lửa khi bấm nút "Lửa".
+                </div>
+            </div>
+            <div class="log-item">
+                <div class="log-date"><span class="log-version">v13.6</span> 26/05/2024</div>
+                <div class="log-desc">
+                    - Căn chỉnh lại giao diện Nav bar.<br>
                     - Cập nhật nội dung nhật ký.
                 </div>
             </div>
             <div class="log-item">
-                <div class="log-date"><span class="log-version">v13.5</span> Hôm qua</div>
+                <div class="log-date"><span class="log-version">v13.5</span> 25/05/2024</div>
                 <div class="log-desc">
                     - Làm mới ô nhập liệu khi tải lại (Clean Slate).<br>
                     - Tăng kích thước chữ & thêm gợi ý SoundCloud.<br>
                     - Thêm Nhật ký cập nhật.
-                </div>
-            </div>
-            <div class="log-item">
-                <div class="log-date"><span class="log-version">v12.5</span> Trước đó</div>
-                <div class="log-desc">
-                    - Thêm tính năng "Khóa Âm thanh môi trường" khi ở chế độ "Chỉ một".<br>
-                    - Tối ưu giao diện Mobile (Nav bar, nền video full).
                 </div>
             </div>
         </div>
@@ -374,7 +392,7 @@
     <button class="btn-update-log" onclick="toggleUpdateLog()" title="Xem nhật ký cập nhật">📜</button>
 
     <div class="top-nav-container" id="main-nav">
-        <div class="nav-pill fire-effect" onclick="playSFX('click')"><i class="fa-solid fa-fire"></i> Lửa</div>
+        <div class="nav-pill fire-effect" onclick="triggerFireEffect(event); playSFX('click')"><i class="fa-solid fa-fire"></i> Lửa</div>
         <div class="nav-pill active" id="btn-myspace" onclick="switchView('myspace'); playSFX('click')">Không gian</div>
         <div class="nav-pill" id="btn-focus" onclick="switchView('focus'); playSFX('click')">Tập trung</div>
         <div class="nav-pill sos-btn" onclick="openZenMode(); playSFX('click')">SOS Stress 🆘</div>
@@ -607,6 +625,29 @@
         function toggleUpdateLog() {
             const modal = document.getElementById('update-log-modal');
             modal.classList.toggle('active');
+        }
+
+        // --- FIRE EFFECT FUNCTION ---
+        function triggerFireEffect(e) {
+            const numSparks = 12; // Số lượng tia lửa
+            const container = document.body;
+            for (let i = 0; i < numSparks; i++) {
+                const spark = document.createElement('div');
+                spark.classList.add('spark-particle');
+                // Đặt vị trí bắt đầu tại nơi click chuột
+                spark.style.left = e.clientX + 'px';
+                spark.style.top = e.clientY + 'px';
+                // Tạo hướng bay ngẫu nhiên
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 60 + Math.random() * 60; // Khoảng cách bay
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+                spark.style.setProperty('--tx', `${tx}px`);
+                spark.style.setProperty('--ty', `${ty}px`);
+                container.appendChild(spark);
+                // Xóa hạt sau khi animation kết thúc
+                setTimeout(() => spark.remove(), 800);
+            }
         }
 
         function toggleAudioMode() {
