@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Không Gian Chill - Audio Mixer Pro</title>
+    <title>Không Gian Chill - Auto Resume</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
@@ -598,7 +598,17 @@
                 events: { 'onReady': onPlayerReady }
             });
         }
-        function onPlayerReady(event) { }
+        function onPlayerReady(event) {
+            // Check if there is a saved YouTube URL to reload
+            const savedUrl = localStorage.getItem('saved_music_url');
+            if (savedUrl) {
+                const youtubeId = getYouTubeId(savedUrl);
+                if (youtubeId) {
+                    document.getElementById('spotify-url').value = savedUrl;
+                    loadCustomEmbed(); // Reload the video
+                }
+            }
+        }
 
         function playSFX(type) {
             const sound = document.getElementById(`sfx-${type}`);
@@ -640,7 +650,7 @@
             
             // FIX: Luôn bật lại Ambient khi dừng nhạc ngoài
             if (ambientPlayer.paused) {
-                ambientPlayer.play().catch(e => {});
+                ambientPlayer.play().catch(e => console.log(e));
             }
             document.getElementById('local-player-controls').style.opacity = '1';
         }
@@ -658,9 +668,11 @@
                 return;
             }
 
+            // Stop previous external music
             if(isYouTubeAudioPlaying && youtubeAudioPlayer) { youtubeAudioPlayer.stopVideo(); isYouTubeAudioPlaying = false; }
             container.innerHTML = '';
             
+            // Logic Exclusive Mode
             if (isExclusiveMode) {
                 ambientPlayer.pause();
                 document.getElementById('local-player-controls').style.opacity = '0.3';
