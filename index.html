@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Không Gian Chill - YouTube & SoundCloud</title>
+    <title>Không Gian Chill - Fix UI</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
@@ -19,6 +19,8 @@
             --accent-color: #a29bfe;
             --radius: 24px;
             --font-main: 'Quicksand', sans-serif;
+            /* ĐÃ THÊM: Biến màu chữ cho nút Đặt để thay đổi theo theme */
+            --btn-text-color: #fff; 
         }
 
         select, input { color: #333 !important; }
@@ -43,7 +45,9 @@
         
         #bg-video-player {
             position: absolute; top: 50%; left: 50%; min-width: 100%; min-height: 100%;
-            width: auto; height: auto; transform: translate(-50%, -50%) scale(1.1);
+            width: auto; height: auto; 
+            /* ĐÃ SỬA: Đưa scale về 1 để full màn hình chuẩn, không phóng to */
+            transform: translate(-50%, -50%) scale(1); 
             object-fit: cover;
         }
 
@@ -209,7 +213,8 @@
         .btn-adjust { width: 32px; height: 32px; border-radius: 50%; border: none; background: rgba(255,255,255,0.3); color: white; cursor: pointer; font-weight: bold; font-size: 12px; transition: all 0.2s; display: flex; align-items: center; justify-content: center;}
         .btn-adjust:hover { background: var(--accent-color); color: white; transform: scale(1.1); }
         .custom-input { width: 45px; padding: 5px; border: none; background: transparent; text-align: center; font-weight: 700; font-size: 16px; outline: none; color: white; border-bottom: 2px solid rgba(255,255,255,0.5); }
-        .btn-set-confirm { padding: 6px 12px; background: var(--text-main); color: white; border: none; border-radius: 12px; font-size: 12px; font-weight: bold; cursor: pointer; }
+        /* ĐÃ SỬA: Dùng biến màu chữ thay vì hardcode white */
+        .btn-set-confirm { padding: 6px 12px; background: var(--text-main); color: var(--btn-text-color); border: none; border-radius: 12px; font-size: 12px; font-weight: bold; cursor: pointer; transition: color 0.3s ease; }
         
         #task-list { list-style: none; max-height: 250px; overflow-y: auto; padding-right: 5px; margin-top: 5px;}
         .task-item { display: flex; align-items: center; gap: 10px; padding: 10px; background: rgba(255,255,255,0.3); border: 1px solid rgba(255,255,255,0.2); margin-bottom: 8px; border-radius: 12px; transition: all 0.2s; color: white;}
@@ -944,8 +949,10 @@
                 
                 if (key === 'morning' || key === 'forest' || key === 'rain' || key === 'cafe' || key === 'sunset') {
                     document.documentElement.style.setProperty('--text-main', '#333');
+                    document.documentElement.style.setProperty('--btn-text-color', '#fff');
                 } else {
                     document.documentElement.style.setProperty('--text-main', '#fff');
+                    document.documentElement.style.setProperty('--btn-text-color', '#333');
                 }
                 
                 document.body.style.backgroundColor = '#111'; 
