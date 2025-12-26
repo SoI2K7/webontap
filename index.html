@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Không Gian Chill - v14.0</title>
+    <title>Không Gian Chill - UI Perfect</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
@@ -63,7 +63,8 @@
             -webkit-backdrop-filter: blur(20px) saturate(150%);
             border: var(--glass-border); box-shadow: var(--glass-shadow);
             top: 25px; left: 50%; transform: translateX(-50%); 
-            display: flex; gap: 12px; padding: 12px; 
+            display: flex; gap: 12px; 
+            padding: 10px; 
             border-radius: 50px; z-index: 999;
             transition: all 0.5s ease; opacity: 0; pointer-events: none;
             align-items: center; 
@@ -73,18 +74,29 @@
         .nav-pill {
             padding: 10px 24px;
             border-radius: 30px; 
-            font-weight: 700; font-size: 14px; cursor: pointer; color: #333; transition: all 0.3s;
+            font-weight: 700; font-size: 14px; cursor: pointer; color: #333; 
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             display: flex; align-items: center; justify-content: center; gap: 8px;
             line-height: 1.2; 
         }
         
-        /* Đồng hồ thời gian thực */
+        /* --- ACTIVE STATE FIX (Luôn nổi lên) --- */
+        .nav-pill.active { 
+            background: var(--accent-color); 
+            color: white; 
+            transform: translateY(-4px); /* Nổi lên */
+            box-shadow: 0 8px 20px rgba(162, 155, 254, 0.6); /* Đổ bóng */
+        }
+
+        /* Đồng hồ */
         .nav-clock {
             background: rgba(0,0,0,0.5); 
             color: #fff; 
             cursor: default;
             font-variant-numeric: tabular-nums;
             border: 1px solid rgba(255,255,255,0.2);
+            transform: none !important; /* Đồng hồ không cần nổi */
+            box-shadow: none !important;
         }
 
         .nav-pill.fire-effect {
@@ -111,7 +123,7 @@
             100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
         }
 
-        /* --- UPDATE LOG --- */
+        /* --- UPDATE LOG STYLES --- */
         .btn-update-log {
             position: fixed; bottom: 20px; right: 20px; z-index: 998;
             width: 40px; height: 40px; border-radius: 50%;
@@ -145,11 +157,27 @@
 
         /* --- HOVER GLOW --- */
         @media (hover: hover) {
-            .nav-pill:not(.active):not(.fire-effect):not(.nav-clock):hover, .btn-tool:hover, .mood-btn:hover, .btn-fc:hover, .btn-timer:hover, .spotify-toggle:hover, .explore-item:hover, .buddy-item:hover, .btn-spotify-load:hover, .btn-spotify-stop:hover, .btn-save-card:hover, .btn-add-confirm:hover, .btn-close-zen:hover, .btn-adjust:hover, .btn-set-confirm:hover, .btn-update-log:hover {
-                transform: translateY(-3px);
-                box-shadow: 0 0 15px rgba(162, 155, 254, 0.6);
-                transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            .nav-pill:not(.active):not(.fire-effect):not(.nav-clock):hover, 
+            .btn-tool:hover, .mood-btn:hover, .btn-fc:hover, 
+            .btn-timer:hover, .spotify-toggle:hover, 
+            .explore-item:hover, 
+            .btn-spotify-load:hover, .btn-spotify-stop:hover,
+            .btn-save-card:hover, .btn-add-confirm:hover,
+            .btn-close-zen:hover, .btn-adjust:hover, .btn-set-confirm:hover, 
+            .btn-update-log:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 8px 20px rgba(162, 155, 254, 0.5);
                 z-index: 2;
+                background: rgba(255,255,255,0.9);
+                color: var(--accent-color);
+            }
+
+            /* FIX RIÊNG CHO BUDDY ITEM ĐỂ KHÔNG BỊ GIẬT */
+            .buddy-item:hover {
+                transform: translateY(-4px) scale(1.02) !important; /* Gộp 2 hiệu ứng làm 1 */
+                box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+                z-index: 2;
+                border-color: var(--accent-color);
             }
         }
 
@@ -238,15 +266,13 @@
             background: linear-gradient(135deg, #a8e6cf 0%, #dcedc1 100%); 
             border-radius: 50%; 
             box-shadow: 0 0 50px rgba(168, 230, 207, 0.4); 
-            /* EDITED: Tăng khoảng cách dưới để không đè chữ */
-            margin-bottom: 60px; 
+            margin-bottom: 80px; 
             transform: scale(1); 
         }
         .breathing-anim { animation: breathe 8s infinite ease-in-out; }
         @keyframes breathe { 
             0%, 100% { transform: scale(1); opacity: 0.8; } 
-            /* EDITED: Giảm độ phóng đại tối đa để không che chữ */
-            50% { transform: scale(1.35); opacity: 1; } 
+            50% { transform: scale(1.3); opacity: 1; } 
         }
         .zen-instruction { font-size: 24px; font-weight: 300; margin-bottom: 20px; letter-spacing: 2px; }
         .zen-quote { font-size: 18px; font-style: italic; max-width: 600px; text-align: center; line-height: 1.6; opacity: 0.9; margin-bottom: 40px; }
@@ -258,7 +284,8 @@
         .explore-item.active { background: var(--accent-color); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
         .buddy-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 10px; }
         .buddy-item { position: relative; height: 70px; border-radius: 12px; cursor: pointer; overflow: hidden; border: 2px solid transparent; background-size: cover; background-position: center; transition: all 0.3s; }
-        .buddy-item:hover { transform: scale(1.02); }
+        /* EDITED: Đảm bảo ảnh bạn bè không bị đè CSS */
+        .buddy-item:hover { transform: translateY(-4px) scale(1.02) !important; }
         .buddy-item.active { border-color: var(--accent-color); transform: scale(1.02); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
         .buddy-name { position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.6); color: white; font-size: 11px; padding: 4px; text-align: center; font-weight: bold;}
 
@@ -285,7 +312,6 @@
 
         /* MUSIC STYLES - UPDATED */
         .spotify-container { margin-top: 15px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); }
-        /* EDITED: Thêm text-shadow cho chữ dễ nhìn */
         .spotify-toggle { font-size: 13px; font-weight: bold; color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.8); cursor: pointer; display: flex; align-items: center; gap: 5px; margin-bottom: 8px; opacity: 0.9; transition: 0.3s; }
         .spotify-toggle:hover { opacity: 1; color: var(--accent-color); }
         .spotify-input-group { display: none; gap: 5px; margin-bottom: 10px; flex-wrap: wrap; }
@@ -322,15 +348,23 @@
         /* --- MOBILE OPTIMIZATION --- */
         @media (max-width: 768px) {
             body { flex-direction: column; overflow-y: auto; height: auto; min-height: 100vh; padding: 15px; gap: 20px; justify-content: flex-start; padding-top: 70px; }
-            .top-nav-container { position: fixed; top: 15px; left: 50%; transform: translateX(-50%) translateY(-150%); margin-bottom: 0; flex-wrap: nowrap; justify-content: center; width: 90%; max-width: 400px; transition: transform 0.5s ease, opacity 0.5s ease; opacity: 0; pointer-events: none; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
-            .top-nav-container.visible { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
-            .nav-pill { 
-                /* EDITED: Giảm font và padding cho mobile */
-                font-size: 11px; 
-                padding: 10px 14px; 
-                min-height: auto; 
-                white-space: nowrap; 
+            .top-nav-container { 
+                position: fixed; top: 15px; left: 50%; transform: translateX(-50%) translateY(-150%); margin-bottom: 0; 
+                flex-wrap: nowrap; justify-content: flex-start; /* EDITED: Align left to avoid squishing */
+                width: 95%; max-width: 500px; 
+                transition: transform 0.5s ease, opacity 0.5s ease; opacity: 0; pointer-events: none; 
+                box-shadow: 0 8px 32px rgba(0,0,0,0.3); 
+                overflow-x: auto; /* Allow scroll */
+                padding: 10px; /* Comfortable padding */
             }
+            .top-nav-container::-webkit-scrollbar { display: none; } /* Hide scrollbar */
+            
+            .top-nav-container.visible { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+            
+            .nav-pill { 
+                font-size: 12px; padding: 8px 16px; min-height: auto; white-space: nowrap; flex-shrink: 0; /* Prevent shrinking */
+            }
+            
             .left-sidebar, .right-area { width: 100%; max-height: none; padding: 0; overflow: visible; }
             .cozy-panel { margin-bottom: 15px; width: 100%; }
             #video-bg-container { position: fixed; }
@@ -385,26 +419,41 @@
             <h2 style="margin-bottom: 20px; text-align: center;">Nhật ký cập nhật 📜</h2>
             
             <div class="log-item">
-                <div class="log-date"><span class="log-version">v14.0</span> 26/12/2025</div>
+                <div class="log-date"><span class="log-version">v14.2</span> 26/12/2025</div>
                 <div class="log-desc">
-                    - Sửa lỗi hiển thị nút SOS bị đè chữ.<br>
-                    - Thêm đồng hồ thời gian thực vào menu.<br>
-                    - Cải thiện hiển thị chữ trong phần nhạc.<br>
-                    - Tinh chỉnh hiệu ứng hít thở không che chữ.
+                    - Sửa lỗi hình ảnh bạn bè bị giật khi di chuột.<br>
+                    - Cải thiện giao diện Menu trên điện thoại (Scroll ngang).<br>
+                    - Nút đang chọn sẽ luôn nổi lên để dễ nhận biết.
                 </div>
             </div>
             <div class="log-item">
-                <div class="log-date"><span class="log-version">v13.7</span> 26/12/2025</div>
+                <div class="log-date"><span class="log-version">v14.1</span> 26/12/2025</div>
                 <div class="log-desc">
-                    - Thêm hiệu ứng tia lửa khi bấm nút "Lửa".<br>
-                    - Cải thiện giao diện Mobile.
+                    - Sửa lỗi SOS bị đè chữ khi hít thở.<br>
+                    - Cập nhật nhật ký đầy đủ từ đầu.<br>
+                    - Tối ưu hiệu ứng hover nổi 3D.
                 </div>
             </div>
              <div class="log-item">
-                <div class="log-date"><span class="log-version">v13.5</span> 25/12/2025</div>
+                <div class="log-date"><span class="log-version">v13.x</span> 26/12/2025</div>
                 <div class="log-desc">
-                    - Làm mới ô nhập liệu khi tải lại (Clean Slate).<br>
-                    - Tăng kích thước chữ & thêm gợi ý SoundCloud.<br>
+                    - Thêm đồng hồ thời gian thực.<br>
+                    - Thêm hiệu ứng tia lửa (Fire Effect).<br>
+                    - Clean Slate: Xóa link cũ khi reload để tránh lỗi.
+                </div>
+            </div>
+             <div class="log-item">
+                <div class="log-date"><span class="log-version">v12.x</span> 25/12/2025</div>
+                <div class="log-desc">
+                    - Thêm tính năng "Khóa Âm thanh môi trường" (Exclusive Mode).<br>
+                    - Tách biệt điều khiển âm lượng YouTube và Môi trường.
+                </div>
+            </div>
+             <div class="log-item">
+                <div class="log-date"><span class="log-version">v10.x</span> 24/12/2025</div>
+                <div class="log-desc">
+                    - Phiên bản đầu tiên với âm thanh Local.<br>
+                    - Tích hợp YouTube/SoundCloud cơ bản.
                 </div>
             </div>
         </div>
