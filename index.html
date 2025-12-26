@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Không Gian Chill - Nhóm Lửa</title>
+    <title>Không Gian Chill - Mobile & Smooth Fix</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
@@ -30,22 +30,37 @@
             background-size: cover; background-position: center; background-repeat: no-repeat;
             display: flex; justify-content: space-between; padding: 25px;
             color: var(--text-main); 
-            transition: background-image 1s ease-in-out, background-color 1s ease;
+            /* Smooth transition for background color change */
+            transition: background-color 0.8s ease;
             position: relative;
         }
 
-        /* --- VIDEO BACKGROUND --- */
+        /* --- VIDEO BACKGROUND FIX (MOBILE) --- */
         #video-bg-container {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100dvh;
-            z-index: 0; overflow: hidden; background-color: #000; pointer-events: none;
-            opacity: 0; transition: opacity 1s ease-in-out, filter 0.5s ease;
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100vw; 
+            height: 100dvh; /* Dynamic viewport height for mobile */
+            z-index: 0; 
+            overflow: hidden; 
+            background-color: #000; 
+            pointer-events: none;
+            opacity: 0; 
+            transition: opacity 1s ease-in-out, filter 0.5s ease;
         }
         #video-bg-container.active { opacity: 1; }
         
         #bg-video-player {
-            position: absolute; top: 50%; left: 50%; min-width: 100%; min-height: 100%;
-            width: auto; height: auto; transform: translate(-50%, -50%);
+            position: absolute; 
+            top: 50%; left: 50%; 
+            transform: translate(-50%, -50%);
+            min-width: 100%; min-height: 100%; 
+            width: auto; height: auto;
+            /* Ensure aspect ratio covers screen */
             object-fit: cover; 
+            
+            /* Fallback for some mobile browsers to ensure full coverage */
+            width: 100vw; height: 100dvh; 
         }
 
         /* --- UI LAYERS --- */
@@ -63,8 +78,7 @@
             -webkit-backdrop-filter: blur(20px) saturate(150%);
             border: var(--glass-border); box-shadow: var(--glass-shadow);
             top: 25px; left: 50%; transform: translateX(-50%); 
-            display: flex; gap: 12px; 
-            padding: 10px; 
+            display: flex; gap: 12px; padding: 12px; 
             border-radius: 50px; z-index: 999;
             transition: all 0.5s ease; opacity: 0; pointer-events: none;
             align-items: center; 
@@ -80,22 +94,20 @@
             line-height: 1.2; 
         }
         
-        /* --- ACTIVE STATE FIX (Luôn nổi lên) --- */
         .nav-pill.active { 
             background: var(--accent-color); 
             color: white; 
-            transform: translateY(-4px); /* Nổi lên */
-            box-shadow: 0 8px 20px rgba(162, 155, 254, 0.6); /* Đổ bóng */
+            transform: translateY(-4px); 
+            box-shadow: 0 8px 20px rgba(162, 155, 254, 0.6); 
         }
 
-        /* Đồng hồ */
         .nav-clock {
             background: rgba(0,0,0,0.5); 
             color: #fff; 
             cursor: default;
             font-variant-numeric: tabular-nums;
             border: 1px solid rgba(255,255,255,0.2);
-            transform: none !important; /* Đồng hồ không cần nổi */
+            transform: none !important; 
             box-shadow: none !important;
         }
 
@@ -123,7 +135,7 @@
             100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
         }
 
-        /* --- UPDATE LOG STYLES --- */
+        /* --- UPDATE LOG --- */
         .btn-update-log {
             position: fixed; bottom: 20px; right: 20px; z-index: 998;
             width: 40px; height: 40px; border-radius: 50%;
@@ -171,10 +183,12 @@
                 background: rgba(255,255,255,0.9);
                 color: var(--accent-color);
             }
-
-            /* FIX RIÊNG CHO BUDDY ITEM ĐỂ KHÔNG BỊ GIẬT */
+            .nav-pill:not(.active):not(.fire-effect):not(.nav-clock):hover {
+                 background: white;
+                 color: var(--accent-color);
+            }
             .buddy-item:hover {
-                transform: translateY(-4px) scale(1.02) !important; /* Gộp 2 hiệu ứng làm 1 */
+                transform: translateY(-4px) scale(1.02) !important; 
                 box-shadow: 0 8px 20px rgba(0,0,0,0.3);
                 z-index: 2;
                 border-color: var(--accent-color);
@@ -279,16 +293,6 @@
         .btn-close-zen { padding: 12px 30px; border: 2px solid rgba(255,255,255,0.3); border-radius: 30px; background: transparent; color: white; cursor: pointer; font-size: 14px; transition: all 0.3s; }
         .btn-close-zen:hover { background: white; color: #333; }
 
-        .explore-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px; padding-bottom: 5px;}
-        .explore-item { font-size: 26px; cursor: pointer; text-align: center; padding: 8px; border-radius: 16px; background: rgba(255,255,255,0.5); transition: all 0.3s; }
-        .explore-item.active { background: var(--accent-color); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
-        .buddy-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 10px; }
-        .buddy-item { position: relative; height: 70px; border-radius: 12px; cursor: pointer; overflow: hidden; border: 2px solid transparent; background-size: cover; background-position: center; transition: all 0.3s; }
-        /* EDITED: Đảm bảo ảnh bạn bè không bị đè CSS */
-        .buddy-item:hover { transform: translateY(-4px) scale(1.02) !important; }
-        .buddy-item.active { border-color: var(--accent-color); transform: scale(1.02); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-        .buddy-name { position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.6); color: white; font-size: 11px; padding: 4px; text-align: center; font-weight: bold;}
-
         .timer-display { font-size: 56px; font-weight: 500; text-align: center; margin: 5px 0; color: white; text-shadow: 0 4px 10px rgba(0,0,0,0.2); font-variant-numeric: tabular-nums; }
         .timer-controls { display: flex; justify-content: center; gap: 8px; margin-bottom: 10px; background: rgba(255,255,255,0.3); padding: 4px; border-radius: 12px; width: fit-content; margin: 0 auto 10px; }
         .timer-controls span { padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; color: white; cursor: pointer; }
@@ -350,19 +354,19 @@
             body { flex-direction: column; overflow-y: auto; height: auto; min-height: 100vh; padding: 15px; gap: 20px; justify-content: flex-start; padding-top: 70px; }
             .top-nav-container { 
                 position: fixed; top: 15px; left: 50%; transform: translateX(-50%) translateY(-150%); margin-bottom: 0; 
-                flex-wrap: nowrap; justify-content: flex-start; /* EDITED: Align left to avoid squishing */
+                flex-wrap: nowrap; justify-content: flex-start; 
                 width: 95%; max-width: 500px; 
                 transition: transform 0.5s ease, opacity 0.5s ease; opacity: 0; pointer-events: none; 
                 box-shadow: 0 8px 32px rgba(0,0,0,0.3); 
-                overflow-x: auto; /* Allow scroll */
-                padding: 10px; /* Comfortable padding */
+                overflow-x: auto; 
+                padding: 10px; 
             }
-            .top-nav-container::-webkit-scrollbar { display: none; } /* Hide scrollbar */
+            .top-nav-container::-webkit-scrollbar { display: none; } 
             
             .top-nav-container.visible { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
             
             .nav-pill { 
-                font-size: 12px; padding: 8px 16px; min-height: auto; white-space: nowrap; flex-shrink: 0; /* Prevent shrinking */
+                font-size: 12px; padding: 8px 16px; min-height: auto; white-space: nowrap; flex-shrink: 0; 
             }
             
             .left-sidebar, .right-area { width: 100%; max-height: none; padding: 0; overflow: visible; }
@@ -419,6 +423,14 @@
             <h2 style="margin-bottom: 20px; text-align: center;">Nhật ký cập nhật 📜</h2>
             
             <div class="log-item">
+                <div class="log-date"><span class="log-version">v14.3</span> 27/12/2025</div>
+                <div class="log-desc">
+                    - Sửa lỗi tỷ lệ nền trên Mobile (Full screen).<br>
+                    - Làm mượt hiệu ứng chuyển cảnh (Smooth fade).<br>
+                    - Cập nhật nhật ký đầy đủ từ đầu.
+                </div>
+            </div>
+            <div class="log-item">
                 <div class="log-date"><span class="log-version">v14.2</span> 26/12/2025</div>
                 <div class="log-desc">
                     - Sửa lỗi hình ảnh bạn bè bị giật khi di chuột.<br>
@@ -439,6 +451,7 @@
                 <div class="log-desc">
                     - Thêm đồng hồ thời gian thực.<br>
                     - Thêm hiệu ứng tia lửa (Fire Effect).<br>
+                    - Cải thiện giao diện Mobile & Nav Bar.<br>
                     - Clean Slate: Xóa link cũ khi reload để tránh lỗi.
                 </div>
             </div>
@@ -984,6 +997,75 @@
             subjectSelect.dispatchEvent(new Event('change'));
         }
 
+        let transitionTimeout;
+
+        function setTheme(key) {
+            const data = THEMES[key]; 
+            const vidContainer = document.getElementById('video-bg-container');
+            
+            // Set body background color to match the new theme immediately
+            document.body.style.backgroundColor = data.color;
+
+            // Fade out current video
+            vidContainer.classList.remove('active');
+
+            if (transitionTimeout) clearTimeout(transitionTimeout);
+
+            // Wait for fade out to complete before swapping source
+            transitionTimeout = setTimeout(() => {
+                if(data.type === "local") {
+                    vidContainer.innerHTML = `<video id="bg-video-player" autoplay muted loop playsinline><source src="${data.bg}" type="video/mp4"></video>`;
+                    // Fade in new video
+                    vidContainer.classList.add('active');
+                }
+                
+                if (key === 'morning' || key === 'forest' || key === 'rain' || key === 'cafe' || key === 'sunset') {
+                    document.documentElement.style.setProperty('--text-main', '#333');
+                    document.documentElement.style.setProperty('--btn-text-color', '#fff');
+                } else {
+                    document.documentElement.style.setProperty('--text-main', '#fff');
+                    document.documentElement.style.setProperty('--btn-text-color', '#333');
+                }
+                
+                root.style.setProperty('--accent-color', data.color);
+                if(document.getElementById('track-name')) document.getElementById('track-name').innerText = data.track;
+                
+                const art = document.getElementById('album-art');
+                art.style.backgroundImage = 'none';
+                art.innerHTML = data.emoji;
+
+                if(!isYouTubeAudioPlaying) {
+                    ambientPlayer.src = data.audio;
+                    if (!ambientPlayer.muted && ambientPlayer.volume > 0) { 
+                        ambientPlayer.play().catch(e => {}); 
+                    }
+                }
+
+                resetStates(); document.getElementById(`theme-${key}`).classList.add('active'); 
+                document.getElementById(`theme-${key}`).style.backgroundColor = data.color;
+            }, 800); // Wait time matches the CSS transition time
+        }
+
+        function setBodyDoubling(key) {
+            const data = BUDDIES[key]; 
+            const vidContainer = document.getElementById('video-bg-container');
+            
+            // Fade out
+            vidContainer.classList.remove('active');
+
+            if (transitionTimeout) clearTimeout(transitionTimeout);
+            transitionTimeout = setTimeout(() => {
+                if(data.type === "local") {
+                    vidContainer.innerHTML = `<video id="bg-video-player" autoplay muted loop playsinline><source src="${data.url}" type="video/mp4"></video>`;
+                    // Fade in
+                    vidContainer.classList.add('active');
+                    document.body.style.backgroundImage = 'none';
+                }
+                resetStates(); document.getElementById(`buddy-${key}`).classList.add('active');
+                if(document.getElementById('track-name')) document.getElementById('track-name').innerText = `Học cùng ${data.name}`;
+            }, 800);
+        }
+
         function changeTopic() {
             currentSubject = document.getElementById('subject-select').value;
             currentLevel = document.getElementById('level-select').value;
@@ -1138,96 +1220,6 @@
         
         function resetLearning() { changeTopic(); }
 
-        function initExplore() {
-            exploreGrid.innerHTML = '';
-            for (const key in THEMES) {
-                const item = document.createElement('div');
-                item.className = 'explore-item'; 
-                item.innerText = THEMES[key].emoji;
-                item.onclick = (e) => { e.stopPropagation(); setTheme(key); playSFX('click'); }; item.id = `theme-${key}`;
-                exploreGrid.appendChild(item);
-            }
-            buddyGrid.innerHTML = '';
-            for (const key in BUDDIES) {
-                const item = document.createElement('div');
-                item.className = 'buddy-item'; item.style.backgroundImage = `url('${BUDDIES[key].thumb}')`;
-                item.innerHTML = `<div class="buddy-name">${BUDDIES[key].name}</div>`;
-                item.onclick = (e) => { e.stopPropagation(); setBodyDoubling(key); playSFX('click'); }; item.id = `buddy-${key}`;
-                buddyGrid.appendChild(item);
-            }
-        }
-
-        let transitionTimeout;
-
-        function setTheme(key) {
-            const data = THEMES[key]; 
-            const vidContainer = document.getElementById('video-bg-container');
-            vidContainer.classList.remove('active');
-
-            if (transitionTimeout) clearTimeout(transitionTimeout);
-
-            transitionTimeout = setTimeout(() => {
-                if(data.type === "local") {
-                    vidContainer.innerHTML = `<video id="bg-video-player" autoplay muted loop playsinline><source src="${data.bg}" type="video/mp4"></video>`;
-                    vidContainer.classList.add('active');
-                    document.body.style.backgroundImage = 'none';
-                }
-                
-                if (key === 'morning' || key === 'forest' || key === 'rain' || key === 'cafe' || key === 'sunset') {
-                    document.documentElement.style.setProperty('--text-main', '#333');
-                    document.documentElement.style.setProperty('--btn-text-color', '#fff');
-                } else {
-                    document.documentElement.style.setProperty('--text-main', '#fff');
-                    document.documentElement.style.setProperty('--btn-text-color', '#333');
-                }
-                
-                document.body.style.backgroundColor = '#111'; 
-                root.style.setProperty('--accent-color', data.color);
-                if(document.getElementById('track-name')) document.getElementById('track-name').innerText = data.track;
-                
-                const art = document.getElementById('album-art');
-                art.style.backgroundImage = 'none';
-                art.innerHTML = data.emoji;
-
-                if(!isYouTubeAudioPlaying) {
-                    ambientPlayer.src = data.audio;
-                    if (!ambientPlayer.muted && ambientPlayer.volume > 0) { 
-                        ambientPlayer.play().catch(e => {}); 
-                    }
-                }
-
-                resetStates(); document.getElementById(`theme-${key}`).classList.add('active'); 
-                document.getElementById(`theme-${key}`).style.backgroundColor = data.color;
-            }, 800);
-        }
-
-        function setBodyDoubling(key) {
-            const data = BUDDIES[key]; 
-            const vidContainer = document.getElementById('video-bg-container');
-            vidContainer.classList.remove('active');
-
-            if (transitionTimeout) clearTimeout(transitionTimeout);
-            transitionTimeout = setTimeout(() => {
-                if(data.type === "local") {
-                    vidContainer.innerHTML = `<video id="bg-video-player" autoplay muted loop playsinline><source src="${data.url}" type="video/mp4"></video>`;
-                    vidContainer.classList.add('active');
-                    document.body.style.backgroundImage = 'none';
-                }
-                resetStates(); document.getElementById(`buddy-${key}`).classList.add('active');
-                if(document.getElementById('track-name')) document.getElementById('track-name').innerText = `Học cùng ${data.name}`;
-            }, 800);
-        }
-
-        function resetStates() {
-            document.querySelectorAll('.explore-item').forEach(el => { el.classList.remove('active'); el.style.backgroundColor = ''; el.style.boxShadow = ''; });
-            document.querySelectorAll('.buddy-item').forEach(el => el.classList.remove('active'));
-        }
-
-        function selectMood(m) { 
-            setTheme(m); 
-            document.getElementById('intro-overlay').classList.add('hidden-intro');
-            document.getElementById('main-nav').classList.add('visible');
-        }
         function togglePanel(id) { document.getElementById(id).classList.toggle('collapsed'); }
         
         let zenInt, totalMin = 0;
