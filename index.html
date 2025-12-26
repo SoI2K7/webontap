@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Không Gian Chill - Auto Resume</title>
+    <title>Không Gian Chill - Audio Fixed</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
@@ -224,7 +224,7 @@
         .btn-spotify-stop { background: #e74c3c; display: none; }
         #embed-container iframe { width: 100%; border-radius: 12px; border: none; margin-top: 5px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         
-        /* SEPARATE EXTERNAL AUDIO CONTROL */
+        /* SEPARATE EXTERNAL AUDIO CONTROL (NEW) */
         #external-audio-controls { display: none; margin-top: 10px; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 12px; }
         .ext-controls-row { display: flex; align-items: center; gap: 10px; font-size: 12px; color: #eee; }
         
@@ -562,6 +562,7 @@
 
         // MODE
         let isExclusiveMode = false;
+        let pendingYouTubeId = null; // Store pending ID for reload
 
         function toggleAudioMode() {
             isExclusiveMode = document.getElementById('audio-exclusive-mode').checked;
@@ -598,14 +599,18 @@
                 events: { 'onReady': onPlayerReady }
             });
         }
+        
+        // FIX RELOAD: Tự động chạy lại nhạc nếu có link cũ
         function onPlayerReady(event) {
-            // Check if there is a saved YouTube URL to reload
             const savedUrl = localStorage.getItem('saved_music_url');
             if (savedUrl) {
                 const youtubeId = getYouTubeId(savedUrl);
                 if (youtubeId) {
                     document.getElementById('spotify-url').value = savedUrl;
-                    loadCustomEmbed(); // Reload the video
+                    pendingYouTubeId = youtubeId;
+                    // Tự động load nhưng chưa play để tránh lỗi autoplay policy
+                    // Nhưng nếu reload, ta có thể thử play
+                    loadCustomEmbed(true); 
                 }
             }
         }
@@ -655,22 +660,28 @@
             document.getElementById('local-player-controls').style.opacity = '1';
         }
 
-        function loadCustomEmbed() {
+        function loadCustomEmbed(isAutoLoad = false) {
             let url = document.getElementById('spotify-url').value.trim();
             const container = document.getElementById('embed-container');
             const stopBtn = document.getElementById('btn-ext-stop');
             const extControls = document.getElementById('external-audio-controls');
             
-            if(!url) return alert("Vui lòng nhập Link!");
+            if(!url) {
+                if(!isAutoLoad) alert("Vui lòng nhập Link!");
+                return;
+            }
             
             if (url.includes('spotify.com')) {
                 alert("Spotify đã bị loại bỏ. Vui lòng dùng YouTube hoặc SoundCloud.");
                 return;
             }
 
-            // Stop previous external music
-            if(isYouTubeAudioPlaying && youtubeAudioPlayer) { youtubeAudioPlayer.stopVideo(); isYouTubeAudioPlaying = false; }
-            container.innerHTML = '';
+            // Stop previous
+            if(isYouTubeAudioPlaying && youtubeAudioPlayer) { 
+                // Don't stop if it's the same video just reloading volume
+            } else {
+                 container.innerHTML = '';
+            }
             
             // Logic Exclusive Mode
             if (isExclusiveMode) {
@@ -691,10 +702,13 @@
                     container.innerHTML = `<div style="padding:15px; font-size:13px; font-weight:bold; color:var(--accent-color); background:rgba(255,255,255,0.8); border-radius:12px; text-align:center;"><i class="fa-brands fa-youtube" style="color:red;"></i> Đang phát từ YouTube...</div>`;
                     container.style.display = 'block';
                     stopBtn.style.display = 'inline-block';
-                    extControls.style.display = 'block'; // Show external controls
+                    extControls.style.display = 'block'; 
                     
                     localStorage.setItem('saved_music_url', url);
                     return;
+                } else {
+                    // API chưa sẵn sàng, lưu vào pending
+                    pendingYouTubeId = youtubeId;
                 }
             }
             
