@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Không Gian Chill - Ôn Thi Cơ Sở Tạo Hình</title>
+    <title>Không Gian Chill - UI Restored v14.2</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        /* --- CORE CSS (CHUẨN v14.2) --- */
         :root {
             --card-bg: rgba(255, 255, 255, 0.25);
             --glass-border: 1px solid rgba(255, 255, 255, 0.3);
@@ -17,6 +18,8 @@
             --text-main: #fff; 
             --text-sub: #eee;
             --accent-color: #a29bfe;
+            --correct-color: #00b894;
+            --wrong-color: #ff7675;
             --radius: 24px;
             --font-main: 'Quicksand', sans-serif;
             --btn-text-color: #fff;
@@ -34,7 +37,7 @@
             position: relative;
         }
 
-        /* --- VIDEO BACKGROUND --- */
+        /* Video Background */
         #video-bg-container {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh;
             z-index: 0; overflow: hidden; background-color: #000; pointer-events: none;
@@ -45,18 +48,16 @@
         #bg-video-player {
             position: absolute; top: 50%; left: 50%; min-width: 100%; min-height: 100%;
             width: auto; height: auto; transform: translate(-50%, -50%);
-            object-fit: cover; 
-            width: 100vw; height: 100dvh; 
+            object-fit: cover; width: 100vw; height: 100dvh; 
         }
 
         /* --- UI LAYERS --- */
-        .left-sidebar, .right-area, .top-nav-container, #intro-overlay, #zen-overlay, #update-log-modal {
-            position: relative; z-index: 10; 
+        /* QUAN TRỌNG: Đảm bảo các panel nằm trên video nền */
+        .left-sidebar, .right-area, .top-nav-container {
+            position: relative; z-index: 20; pointer-events: auto;
         }
-        .left-sidebar *, .right-area *, .top-nav-container * { pointer-events: auto; }
-        #intro-overlay, #zen-overlay, #update-log-modal { pointer-events: auto !important; }
-        
-        /* --- NAV BAR (Giữ nguyên v14.2) --- */
+
+        /* --- NAV BAR (STYLE v14.2) --- */
         .top-nav-container {
             position: absolute;
             background: var(--card-bg);
@@ -80,7 +81,6 @@
             line-height: 1.2; 
         }
         
-        /* Trạng thái Active luôn nổi lên */
         .nav-pill.active { 
             background: var(--accent-color); 
             color: white; 
@@ -106,70 +106,29 @@
             100% { box-shadow: 0 0 25px rgba(255, 159, 67, 0.8); transform: scale(1.05); }
         }
 
-        .spark-particle {
-            position: fixed; width: 6px; height: 6px;
-            background: radial-gradient(circle, #ffeb3b, #ff5722);
-            border-radius: 50%; pointer-events: none; z-index: 10000;
-            animation: spark-burst 0.8s ease-out forwards;
+        /* --- INTRO OVERLAY (FIXED) --- */
+        #intro-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(30px); 
+            z-index: 99999; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            transition: opacity 0.5s ease; 
         }
-        @keyframes spark-burst {
-            0% { transform: translate(0, 0) scale(1); opacity: 1; }
-            100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+        #intro-overlay.hidden-intro { 
+            opacity: 0; pointer-events: none; display: none !important; 
         }
 
-        /* --- UPDATE LOG --- */
-        .btn-update-log {
-            position: fixed; bottom: 20px; right: 20px; z-index: 998;
-            width: 40px; height: 40px; border-radius: 50%;
-            background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
-            color: white; font-size: 18px; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            backdrop-filter: blur(10px); transition: 0.3s;
+        /* --- ZEN OVERLAY (SOS) --- */
+        #zen-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(20, 40, 50, 0.95); z-index: 10000; 
+            display: none; flex-direction: column; align-items: center; justify-content: center; 
+            color: white; 
         }
-        .btn-update-log:hover { background: var(--accent-color); transform: scale(1.1); }
-
-        #update-log-modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7); backdrop-filter: blur(10px);
-            z-index: 10001; display: none; align-items: center; justify-content: center;
-            opacity: 0; transition: opacity 0.3s ease;
-        }
-        #update-log-modal.active { display: flex; opacity: 1; }
-        .log-content {
-            background: rgba(30, 30, 30, 0.9); border: 1px solid rgba(255,255,255,0.2);
-            width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto;
-            border-radius: 20px; padding: 25px; color: white; position: relative;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-        }
-        .log-item { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .log-date { font-size: 12px; color: #aaa; font-weight: bold; margin-bottom: 5px; }
-        .log-desc { font-size: 14px; line-height: 1.5; color: #ddd; }
-        .log-version { display: inline-block; background: var(--accent-color); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-right: 8px; }
-        .btn-close-log { position: absolute; top: 15px; right: 15px; background: transparent; border: none; color: #aaa; font-size: 20px; cursor: pointer; }
-
-        /* --- HOVER GLOW (Restored v14.2 behavior) --- */
-        @media (hover: hover) {
-            .nav-pill:not(.active):not(.fire-effect):not(.nav-clock):hover, 
-            .btn-tool:hover, .mood-btn:hover, .btn-fc:hover, 
-            .btn-timer:hover, .spotify-toggle:hover, 
-            .explore-item:hover, 
-            .btn-spotify-load:hover, .btn-spotify-stop:hover,
-            .btn-save-card:hover, .btn-add-confirm:hover,
-            .btn-close-zen:hover, .btn-adjust:hover, .btn-set-confirm:hover, 
-            .btn-update-log:hover {
-                transform: translateY(-4px);
-                box-shadow: 0 8px 20px rgba(162, 155, 254, 0.5);
-                z-index: 2;
-                background: rgba(255,255,255,0.9);
-                color: var(--accent-color);
-            }
-            .buddy-item:hover {
-                transform: translateY(-4px) scale(1.02) !important; 
-                box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-                z-index: 2;
-                border-color: var(--accent-color);
-            }
-        }
+        #zen-overlay.active { display: flex; pointer-events: auto; }
+        .breathing-circle { width: 200px; height: 200px; background: linear-gradient(135deg, #a8e6cf 0%, #dcedc1 100%); border-radius: 50%; box-shadow: 0 0 50px rgba(168, 230, 207, 0.4); margin-bottom: 80px; transform: scale(1); }
+        .breathing-anim { animation: breathe 8s infinite ease-in-out; }
+        @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.35); opacity: 1; } }
 
         /* --- PANEL STYLES --- */
         .cozy-panel { background: var(--card-bg); backdrop-filter: blur(20px) saturate(150%); -webkit-backdrop-filter: blur(20px) saturate(150%); border: var(--glass-border); box-shadow: var(--glass-shadow); border-radius: var(--radius); transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); display: flex; flex-direction: column; position: relative; overflow: hidden; height: auto; min-height: fit-content; flex-shrink: 0; pointer-events: auto; color: white; }
@@ -182,7 +141,6 @@
         .cozy-panel.collapsed { flex-grow: 0 !important; height: auto !important; padding-bottom: 0 !important; }
         .mini-display { font-size: 14px; margin-left: auto; margin-right: 15px; font-weight: bold; color: var(--accent-color); opacity: 0; transition: opacity 0.3s ease; pointer-events: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px; display: flex; align-items: center; gap: 6px; }
         .cozy-panel.collapsed .mini-display { opacity: 1; }
-        p { color: rgba(255,255,255,0.95) !important; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
 
         .left-sidebar, .right-area { width: 360px; display: flex; flex-direction: column; gap: 15px; max-height: 100%; overflow-y: auto; padding-right: 5px; padding-bottom: 20px; }
         ::-webkit-scrollbar { width: 4px; }
@@ -190,41 +148,30 @@
         ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.5); border-radius: 10px; }
         :hover::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.8); }
 
-        /* Controls */
-        .learning-filter { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
-        .filter-row { display: flex; gap: 5px; align-items: center; width: 100%; }
-        .fc-select { flex-grow: 1; padding: 8px 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.5); background: rgba(255,255,255,0.8); color: #333; font-family: var(--font-main); font-size: 12px; font-weight: 600; outline: none; cursor: pointer; width: 0; }
-        .btn-tool { width: 28px; height: 28px; border-radius: 8px; border: none; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; font-size: 11px; flex-shrink: 0; }
-        .btn-add-sub { background: #74b9ff; } .btn-del-sub { background: #ff7675; }
-        .btn-add-lvl { background: #55efc4; } .btn-del-lvl { background: #fab1a0; }
-        .btn-add-card { background: var(--accent-color); width: 100%; margin-top: 5px; border-radius: 10px;}
-        .fc-delete-btn { position: absolute; top: 10px; right: 10px; color: #ff7675; cursor: pointer; font-size: 14px; padding: 5px; opacity: 0.5; transition: 0.2s; z-index: 5; }
-        .fc-delete-btn:hover { opacity: 1; transform: scale(1.1); }
-        .custom-form { background: rgba(255,255,255,0.8); padding: 15px; border-radius: 16px; margin-bottom: 15px; display: none; flex-direction: column; gap: 10px; animation: slideDown 0.3s ease; border: 1px solid rgba(255,255,255,0.5); }
-        @keyframes slideDown { from {opacity: 0; transform: translateY(-10px);} to {opacity: 1; transform: translateY(0);} }
-        .fc-input { padding: 10px; border: 1px solid rgba(255,255,255,0.5); background: white; border-radius: 8px; outline: none; font-size: 13px; font-family: var(--font-main); color: #333;}
-        .btn-save-card { padding: 8px; background: #333; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
-        .form-title { font-size: 12px; font-weight: bold; color: #555; text-transform: uppercase; }
+        /* --- QUIZ STYLES (Được làm to ra) --- */
+        .quiz-option-btn { width: 100%; padding: 15px 20px; margin-bottom: 12px; background: rgba(255, 255, 255, 0.8); border: 1px solid rgba(255, 255, 255, 0.5); border-radius: 16px; color: #333; font-weight: 600; font-size: 15px; cursor: pointer; text-align: left; transition: all 0.2s ease; position: relative; overflow: hidden; display: flex; align-items: center; }
+        .quiz-option-btn:hover { background: white; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .quiz-option-btn.correct { background: var(--correct-color) !important; color: white !important; border-color: var(--correct-color) !important; }
+        .quiz-option-btn.wrong { background: var(--wrong-color) !important; color: white !important; border-color: var(--wrong-color) !important; }
+        .quiz-score-badge { background: var(--accent-color); color: white; padding: 5px 10px; border-radius: 12px; font-size: 14px; font-weight: bold; display: inline-block; margin-bottom: 10px; }
+        .quiz-question-text { font-size: 20px; font-weight: bold; margin-bottom: 25px; line-height: 1.5; min-height: 60px; }
 
-        .flashcard-container { perspective: 1000px; width: 100%; height: 180px; margin-bottom: 15px; cursor: pointer; }
-        .flashcard-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; border-radius: 16px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .flashcard-container.flipped .flashcard-inner { transform: rotateY(180deg); }
-        .flashcard-front, .flashcard-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 20px; border-radius: 16px; background: rgba(255,255,255,0.9); border: 1px solid rgba(255,255,255,0.5); }
-        .flashcard-front { color: #333; }
-        .flashcard-back { background: var(--accent-color); color: white; transform: rotateY(180deg); }
-        .fc-category { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 10px; }
-        .fc-content { font-size: 18px; font-weight: 700; line-height: 1.4; }
-        .flashcard-back .fc-category { color: rgba(255,255,255,0.7); }
-        .fc-controls { display: flex; gap: 10px; justify-content: center; }
-        .btn-fc { flex: 1; padding: 10px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; font-size: 13px; transition: 0.2s; }
-        .btn-fc-review { background: rgba(255,255,255,0.8); color: #333; }
-        .btn-fc-master { background: var(--accent-color); color: white; }
-        .btn-fc-restart { background: #333; color: white; width: 100%; } 
-        .fc-progress { height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; margin-bottom: 15px; overflow: hidden; }
-        .fc-bar { height: 100%; background: var(--accent-color); width: 0%; transition: width 0.3s ease; }
+        /* --- MODE STYLES (Logic ẩn hiện UI) --- */
+        /* Chế độ Focus: Ẩn sidebar trái, phóng to timer */
+        body.focus-active .left-sidebar { display: none !important; }
+        body.focus-active #panel-flashcards { display: none !important; }
+        body.focus-active #panel-quiz { display: none !important; }
+        body.focus-active .right-area { width: 100%; justify-content: center; align-items: center; height: 100%; }
+        body.focus-active #panel-timer { transform: scale(1.4); transition: transform 0.5s ease; z-index: 50; }
 
-        /* Intro & Zen */
-        #intro-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(30px); z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.8s ease, visibility 0.8s ease; pointer-events: auto !important; }
+        /* Chế độ Quiz: Ẩn sidebar trái, Ẩn timer, Hiện Quiz */
+        body.quiz-active .left-sidebar { display: none !important; }
+        body.quiz-active #panel-timer { display: none !important; }
+        body.quiz-active #panel-flashcards { display: none !important; }
+        body.quiz-active .right-area { width: 100%; align-items: center; justify-content: center; height: 100%; }
+        body.quiz-active #panel-quiz { display: flex !important; width: 80%; max-width: 800px; transform: scale(1.05); }
+
+        /* Intro & Elements */
         .intro-content { text-align: center; background: rgba(255, 255, 255, 0.9); padding: 40px 60px; border-radius: 40px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); max-width: 800px; width: 90%; animation: float 3s ease-in-out infinite; color: #333;}
         .intro-title { font-size: 36px; font-weight: 700; color: #333; margin-bottom: 10px; }
         .intro-sub { font-size: 16px; color: #666; margin-bottom: 30px; }
@@ -234,23 +181,7 @@
         .mood-text { font-weight: 700; color: #333; font-size: 14px;}
         .mood-btn:hover { transform: translateY(-5px); background: var(--accent-color); border-color: var(--accent-color); box-shadow: 0 10px 20px rgba(143, 170, 194, 0.3); }
         .mood-btn:hover .mood-text { color: white; }
-        .hidden-intro { opacity: 0; visibility: hidden; pointer-events: none !important; }
-        
-        #zen-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(20, 40, 50, 0.95); z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.8s ease, visibility 0.8s ease; color: white; pointer-events: auto !important;}
-        #zen-overlay.active { opacity: 1; visibility: visible; }
-        .breathing-circle { 
-            width: 200px; height: 200px; 
-            background: linear-gradient(135deg, #a8e6cf 0%, #dcedc1 100%); 
-            border-radius: 50%; 
-            box-shadow: 0 0 50px rgba(168, 230, 207, 0.4); 
-            margin-bottom: 80px; 
-            transform: scale(1); 
-        }
-        .breathing-anim { animation: breathe 8s infinite ease-in-out; }
-        @keyframes breathe { 
-            0%, 100% { transform: scale(1); opacity: 0.8; } 
-            50% { transform: scale(1.3); opacity: 1; } 
-        }
+
         .zen-instruction { font-size: 24px; font-weight: 300; margin-bottom: 20px; letter-spacing: 2px; }
         .zen-quote { font-size: 18px; font-style: italic; max-width: 600px; text-align: center; line-height: 1.6; opacity: 0.9; margin-bottom: 40px; }
         .btn-close-zen { padding: 12px 30px; border: 2px solid rgba(255,255,255,0.3); border-radius: 30px; background: transparent; color: white; cursor: pointer; font-size: 14px; transition: all 0.3s; }
@@ -261,7 +192,6 @@
         .explore-item.active { background: var(--accent-color); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
         .buddy-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 10px; }
         .buddy-item { position: relative; height: 70px; border-radius: 12px; cursor: pointer; overflow: hidden; border: 2px solid transparent; background-size: cover; background-position: center; transition: all 0.3s; }
-        /* Fix buddy item hover */
         .buddy-item:hover { transform: translateY(-4px) scale(1.02) !important; }
         .buddy-item.active { border-color: var(--accent-color); transform: scale(1.02); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
         .buddy-name { position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.6); color: white; font-size: 11px; padding: 4px; text-align: center; font-weight: bold;}
@@ -316,11 +246,8 @@
 
         .disabled-controls { opacity: 0.3; pointer-events: none; filter: grayscale(100%); transition: all 0.3s ease; }
 
-        /* FOCUS MODE - DESKTOP */
-        body.focus-active .left-sidebar { display: none !important; }
-        body.focus-active #panel-flashcards { display: none !important; }
-        body.focus-active .right-area { width: 100%; justify-content: center; align-items: center; height: 100%; overflow: hidden; }
-        body.focus-active #panel-timer { transform: scale(1.4); transition: transform 0.5s ease; z-index: 50; }
+        .spark-particle { position: fixed; width: 6px; height: 6px; background: radial-gradient(circle, #ffeb3b, #ff5722); border-radius: 50%; pointer-events: none; z-index: 10000; animation: spark-burst 0.8s ease-out forwards; }
+        @keyframes spark-burst { 0% { transform: translate(0, 0) scale(1); opacity: 1; } 100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; } }
 
         /* --- MOBILE OPTIMIZATION --- */
         @media (max-width: 768px) {
@@ -346,12 +273,10 @@
             .btn-tool, .btn-adjust, .btn-fc, .mood-btn { min-height: 44px; }
             .btn-adjust { width: 40px; height: 40px; }
             #intro-overlay .mood-grid { grid-template-columns: repeat(2, 1fr); }
-            body.focus-active { padding-top: 90px; align-items: center; justify-content: flex-start; }
-            body.focus-active .right-area { height: auto; overflow: visible; display: flex; flex-direction: column; align-items: center; width: 100%; }
-            body.focus-active #panel-timer { transform: none !important; width: 100% !important; margin-top: 10px; max-width: 400px; }
-            #mute-btn { font-size: 24px; padding: 10px; }
-            input[type=range] { height: 10px; }
-            .btn-update-log { bottom: 15px; right: 15px; }
+            
+            /* Mobile Quiz Mode */
+            body.quiz-active .right-area { height: auto; display: flex; flex-direction: column; }
+            body.quiz-active #panel-quiz { width: 100%; transform: none; }
         }
     </style>
 </head>
@@ -388,46 +313,31 @@
         <button class="btn-close-zen" onclick="closeZenMode(); playSFX('click')">Mình ổn rồi, quay lại thôi</button>
     </div>
 
-    <div id="update-log-modal">
+    <div id="update-log-modal" style="display: none;">
         <div class="log-content">
             <button class="btn-close-log" onclick="toggleUpdateLog()"><i class="fa-solid fa-xmark"></i></button>
             <h2 style="margin-bottom: 20px; text-align: center;">Nhật ký cập nhật 📜</h2>
             
             <div class="log-item">
+                <div class="log-date"><span class="log-version">v16.6</span> 28/12/2025</div>
+                <div class="log-desc">
+                    - <strong>UI Restored:</strong> Khôi phục hoàn toàn giao diện v14.2.<br>
+                    - <strong>Logic Fix:</strong> Tách biệt chế độ Tập trung và Ôn tập.<br>
+                    - <strong>Bug Fix:</strong> Sửa lỗi đồng hồ và các nút chức năng bị đè.
+                </div>
+            </div>
+            <div class="log-item">
+                <div class="log-date"><span class="log-version">v16.1</span> 28/12/2025</div>
+                <div class="log-desc">
+                    - Thêm tính năng <strong>Ôn tập (Auto-Quiz AI)</strong>.<br>
+                    - Tự động tạo câu hỏi trắc nghiệm từ dữ liệu học tập.<br>
+                </div>
+            </div>
+             <div class="log-item">
                 <div class="log-date"><span class="log-version">v15.0</span> 28/12/2025</div>
                 <div class="log-desc">
-                    - Thêm dữ liệu ôn thi "Cơ sở tạo hình" (Hơn 100 câu hỏi).<br>
+                    - Thêm dữ liệu ôn thi "Cơ sở tạo hình".<br>
                     - Cập nhật nhật ký từ v10.0 đến hiện tại.<br>
-                    - Giữ nguyên trải nghiệm người dùng v14.2.
-                </div>
-            </div>
-            <div class="log-item">
-                <div class="log-date"><span class="log-version">v14.3</span> 27/12/2025</div>
-                <div class="log-desc">
-                    - Sửa lỗi tỷ lệ nền trên Mobile (Full screen).<br>
-                    - Làm mượt hiệu ứng chuyển cảnh.
-                </div>
-            </div>
-            <div class="log-item">
-                <div class="log-date"><span class="log-version">v14.2</span> 26/12/2025</div>
-                <div class="log-desc">
-                    - Sửa lỗi hình ảnh bạn bè bị giật khi di chuột.<br>
-                    - Cải thiện giao diện Menu trên điện thoại (Scroll ngang).<br>
-                    - Nút đang chọn sẽ luôn nổi lên.
-                </div>
-            </div>
-             <div class="log-item">
-                <div class="log-date"><span class="log-version">v12.x</span> 25/12/2025</div>
-                <div class="log-desc">
-                    - Thêm tính năng "Khóa Âm thanh môi trường".<br>
-                    - Tách biệt điều khiển âm lượng YouTube.
-                </div>
-            </div>
-             <div class="log-item">
-                <div class="log-date"><span class="log-version">v10.x</span> 24/12/2025</div>
-                <div class="log-desc">
-                    - Phiên bản đầu tiên với âm thanh Local.<br>
-                    - Tích hợp YouTube/SoundCloud.
                 </div>
             </div>
         </div>
@@ -441,6 +351,7 @@
         <div class="nav-pill fire-effect" onclick="triggerFireEffect(event); playSFX('click')"><i class="fa-solid fa-fire"></i> Lửa</div>
         <div class="nav-pill active" id="btn-myspace" onclick="switchView('myspace'); playSFX('click')">Không gian</div>
         <div class="nav-pill" id="btn-focus" onclick="switchView('focus'); playSFX('click')">Tập trung</div>
+        <div class="nav-pill" id="btn-quiz" onclick="switchView('quiz'); playSFX('click')"><i class="fa-solid fa-brain"></i> Ôn tập</div>
         <div class="nav-pill sos-btn" onclick="openZenMode(); playSFX('click')">SOS Stress 🆘</div>
     </div>
 
@@ -628,6 +539,21 @@
                 </div>
             </div>
         </div>
+
+        <div class="cozy-panel" id="panel-quiz" style="display:none;">
+            <div class="panel-header" style="cursor: default;">
+                <h3><i class="fa-solid fa-robot"></i> Auto-Quiz AI</h3>
+                <div class="mini-display" id="quiz-streak">Streak: 0 🔥</div>
+            </div>
+            <div class="panel-content" id="quiz-content-area">
+                <div class="quiz-score-badge" id="quiz-category-badge">Đang tải dữ liệu...</div>
+                <div class="quiz-question-text" id="quiz-question">Vui lòng chọn môn học bên tab "Học Nhanh" để bắt đầu!</div>
+                <div id="quiz-options-container">
+                    </div>
+                <button class="btn-fc btn-fc-restart" onclick="generateQuiz()" style="margin-top:15px; width: 100%;">Câu hỏi tiếp theo ➝</button>
+            </div>
+        </div>
+
     </div>
 
     <script>
@@ -645,7 +571,7 @@
             lofi: { type: "local", url: "media/lofigirl-loop-audio.mp4", name: "Lofi Girl (Bản Local)", thumb: "https://img.youtube.com/vi/jfKfPfyJRdk/0.jpg" }
         };
 
-        // --- NEW DATA ADDED ---
+        // --- DATA LOADED ---
         const LEARNING_DATABASE = {
             "Cơ sở tạo hình": {
                 "Ôn tập": [
@@ -654,7 +580,7 @@
                     { q: "Thị giác là gì?", a: "Khả năng tiếp nhận và diễn giải thông tin từ ánh sáng truyền vào mắt." },
                     { q: "Nhận thức thị giác là gì?", a: "Khả năng hiểu nội dung thông tin từ ánh sáng truyền vào mắt." },
                     { q: "Điều kiện đầy đủ cảm nhận thị giác là gì?", a: "Mắt, Ánh sáng nhìn được, Tín hiệu hình ảnh." },
-                    { q: "Hệ thống xử lý thông tin của con người có bao nhiêu cấu trúc chính?", a: "3 cấu trúc chính (Bộ nhớ giác quan, Bộ nhớ làm việc, Bộ nhớ dài hạn)." },
+                    { q: "Hệ thống xử lý thông tin của con người có bao nhiêu cấu trúc chính?", a: "3 cấu trúc chính: Bộ nhớ giác quan, Bộ nhớ làm việc, Bộ nhớ dài hạn." },
                     { q: "Nhiệm vụ bộ nhớ giác quan là gì?", a: "Lọc thông tin." },
                     { q: "Nhiệm vụ bộ nhớ làm việc là gì?", a: "Hiểu thông tin." },
                     { q: "Nhiệm vụ bộ nhớ dài hạn là gì?", a: "Lưu trữ thông tin." },
@@ -754,10 +680,14 @@
 
         let isExclusiveMode = false;
         let pendingYouTubeId = null; 
+        
+        // Quiz vars
+        let quizScore = 0;
+        let currentQuizData = null;
 
         function toggleUpdateLog() {
             const modal = document.getElementById('update-log-modal');
-            modal.classList.toggle('active');
+            modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
         }
 
         function updateRealTime() {
@@ -996,12 +926,92 @@
 
         function switchView(view) {
             document.querySelectorAll('.nav-pill').forEach(el => el.classList.remove('active'));
+            document.body.classList.remove('focus-active', 'quiz-active');
+            
+            // Reset layout
+            document.getElementById('panel-left').style.display = 'flex';
+            document.getElementById('panel-timer').style.display = 'flex';
+            document.getElementById('panel-flashcards').style.display = 'flex'; 
+            document.getElementById('panel-quiz').style.display = 'none';
+
             if(view === 'myspace') {
                 document.getElementById('btn-myspace').classList.add('active');
-                document.body.classList.remove('focus-active');
             } else if (view === 'focus') {
                 document.getElementById('btn-focus').classList.add('active');
                 document.body.classList.add('focus-active');
+            } else if (view === 'quiz') {
+                document.getElementById('btn-quiz').classList.add('active');
+                document.body.classList.add('quiz-active');
+                generateQuiz(); 
+            }
+        }
+
+        function generateQuiz() {
+            const container = document.getElementById('quiz-options-container');
+            const questionEl = document.getElementById('quiz-question');
+            const badgeEl = document.getElementById('quiz-category-badge');
+            const streakEl = document.getElementById('quiz-streak');
+            
+            container.innerHTML = '';
+            streakEl.innerText = `Streak: ${quizScore} 🔥`;
+
+            if(!currentSubject || !currentLevel || !LEARNING_DATABASE[currentSubject] || !LEARNING_DATABASE[currentSubject][currentLevel]) {
+                questionEl.innerText = "Vui lòng chọn Môn học và Cấp độ ở tab 'Học Nhanh' trước!";
+                badgeEl.innerText = "Chưa chọn môn";
+                return;
+            }
+
+            badgeEl.innerText = `${currentSubject} - ${currentLevel}`;
+            
+            const list = LEARNING_DATABASE[currentSubject][currentLevel];
+            if(list.length < 4) {
+                 questionEl.innerText = "Cần ít nhất 4 thẻ để tạo trắc nghiệm!";
+                 return;
+            }
+
+            const correctItem = list[Math.floor(Math.random() * list.length)];
+            currentQuizData = correctItem;
+            questionEl.innerText = correctItem.q;
+
+            let answers = [correctItem.a];
+            while(answers.length < 4) {
+                const randomItem = list[Math.floor(Math.random() * list.length)];
+                if(!answers.includes(randomItem.a)) {
+                    answers.push(randomItem.a);
+                }
+            }
+
+            answers.sort(() => Math.random() - 0.5);
+
+            answers.forEach(ans => {
+                const btn = document.createElement('button');
+                btn.className = 'quiz-option-btn';
+                btn.innerText = ans;
+                btn.onclick = () => checkQuizAnswer(btn, ans, correctItem.a);
+                container.appendChild(btn);
+            });
+        }
+
+        function checkQuizAnswer(btn, selected, correct) {
+            const allBtns = document.querySelectorAll('.quiz-option-btn');
+            
+            allBtns.forEach(b => b.disabled = true);
+
+            if(selected === correct) {
+                btn.classList.add('correct');
+                playSFX('success');
+                quizScore++;
+                document.getElementById('quiz-streak').innerText = `Streak: ${quizScore} 🔥`;
+                setTimeout(generateQuiz, 1500); 
+            } else {
+                btn.classList.add('wrong');
+                playSFX('click'); 
+                quizScore = 0;
+                document.getElementById('quiz-streak').innerText = `Streak: ${quizScore} 🔥`;
+                
+                allBtns.forEach(b => {
+                    if(b.innerText === correct) b.classList.add('correct');
+                });
             }
         }
 
