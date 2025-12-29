@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ôn Tập CSTH - Final Fixed</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Ôn Tập CSTH - Ultra Glass</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --glass-bg: rgba(15, 15, 25, 0.85); /* Tăng độ tối nền để chữ nổi hơn */
+            --primary-glow: #7289da;
             --text-main: #ffffff;
-            --text-sub: #b9bbbe;
+            --text-sub: #rgba(255, 255, 255, 0.7);
             
-            /* Màu Gradient mặc định (Sẽ đổi theo JS) */
+            /* Màu Gradient mặc định */
             --grad-1: #7289da;
             --grad-2: #00d2ff;
         }
@@ -37,154 +37,218 @@
             top: 0; left: 0; width: 100%; height: 100%;
             object-fit: cover;
             z-index: -1;
-            filter: brightness(0.5); /* Tối video xuống để không lóa mắt */
+            /* Giữ độ sáng tốt để hiệu ứng kính đẹp hơn */
+            filter: brightness(0.8); 
             transition: opacity 0.5s ease;
         }
 
-        /* --- KHUNG QUIZ --- */
+        /* --- KHUNG QUIZ (ULTRA GLASS STYLE) --- */
         .quiz-container {
             width: 90%;
-            max-width: 750px;
-            /* Gradient Border chuẩn */
-            background: linear-gradient(var(--glass-bg), var(--glass-bg)) padding-box,
-                        linear-gradient(135deg, var(--grad-1), var(--grad-2)) border-box;
-            border: 3px solid transparent; /* Độ dày viền */
+            max-width: 480px; /* Thu hẹp lại chút giống giao diện mobile trong ảnh */
             
-            border-radius: 24px;
-            padding: 40px 30px;
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8);
+            /* Nền kính siêu trong với gradient nhẹ từ trên xuống */
+            background: linear-gradient(
+                180deg, 
+                rgba(255, 255, 255, 0.08) 0%, 
+                rgba(255, 255, 255, 0.02) 100%
+            );
+            
+            /* Blur cực mạnh để làm mờ nền phía sau */
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            
+            /* Viền kính mỏng */
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-top: 1px solid rgba(255, 255, 255, 0.3); /* Viền trên sáng hơn tạo khối */
+            
+            border-radius: 35px; /* Bo góc tròn trịa */
+            padding: 30px 25px;
+            
+            /* Bóng đổ mềm */
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+
             position: relative;
             max-height: 90vh;
             overflow-y: auto;
-            animation: slideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: floatUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+        @keyframes floatUp {
+            from { opacity: 0; transform: translateY(50px) scale(0.95); }
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
+
+        /* Scrollbar ẩn cho đẹp */
+        .quiz-container::-webkit-scrollbar { width: 0; }
 
         /* Header */
         .header {
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
+            text-align: center;
             margin-bottom: 30px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 20px;
-        }
-
-        .user-info { display: flex; align-items: center; gap: 15px; }
-        
-        .avatar-container {
             position: relative;
-            padding: 3px;
-            background: linear-gradient(135deg, var(--grad-1), var(--grad-2));
-            border-radius: 50%;
-            box-shadow: 0 0 20px var(--grad-1);
-            transition: all 0.5s ease;
-        }
-        
-        .avatar {
-            width: 60px; height: 60px; border-radius: 50%;
-            display: block; background: #222; object-fit: cover;
         }
 
-        .controls { display: flex; gap: 10px; align-items: center; }
+        /* Avatar Glow Effect */
+        .avatar-wrapper {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .avatar-glow-ring {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px; height: 100px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--grad-1) 0%, transparent 70%);
+            opacity: 0.6;
+            filter: blur(15px);
+            z-index: 0;
+            transition: background 0.5s ease;
+        }
+
+        .avatar {
+            width: 90px; height: 90px; 
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.8);
+            position: relative;
+            z-index: 1;
+            object-fit: cover;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .status-badge {
+            font-size: 12px;
+            background: rgba(0,0,0,0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-top: 5px;
+            color: rgba(255,255,255,0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Controls Area (Nằm gọn gàng) */
+        .controls-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+
+        .glass-btn-icon {
+            width: 40px; height: 40px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex; justify-content: center; align-items: center;
+            color: white; cursor: pointer;
+            transition: 0.3s;
+        }
+        .glass-btn-icon:hover { background: rgba(255,255,255,0.15); transform: translateY(-2px); }
 
         #theme-select {
-            background: rgba(0,0,0,0.6);
-            border: 1px solid rgba(255,255,255,0.3);
-            color: white; padding: 8px 12px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white; padding: 0 15px;
             border-radius: 12px; outline: none; cursor: pointer;
-            font-size: 13px; font-weight: 500;
+            font-size: 13px; height: 40px;
         }
-        #theme-select option { background: #222; color: #fff; }
-
-        .streak-badge {
-            background: linear-gradient(135deg, var(--grad-1), var(--grad-2));
-            padding: 6px 18px; border-radius: 20px;
-            font-weight: bold; font-size: 15px; color: white;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            display: flex; align-items: center; gap: 8px;
-            transition: all 0.5s ease;
-        }
+        #theme-select option { background: #222; }
 
         /* Question Area */
-        .question-text {
-            font-size: 20px; font-weight: 700; line-height: 1.4;
-            margin-bottom: 30px; min-height: 70px;
-            text-shadow: 0 4px 10px rgba(0,0,0,0.8);
+        .question-box {
+            background: rgba(0, 0, 0, 0.2); /* Nền tối nhẹ cho vùng câu hỏi */
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
-        .options-grid { display: flex; flex-direction: column; gap: 15px; }
+        .question-text {
+            font-size: 18px; font-weight: 600; line-height: 1.5;
+            text-align: left; margin-bottom: 5px;
+        }
+        
+        .question-meta {
+            font-size: 12px; color: rgba(255,255,255,0.5);
+            margin-bottom: 15px; display: block;
+        }
+
+        /* Option Buttons (Glass Blocks) */
+        .options-grid { display: flex; flex-direction: column; gap: 12px; }
 
         .option-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            padding: 18px 20px; border-radius: 16px;
-            color: var(--text-sub); text-align: left;
-            cursor: pointer; transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
-            font-size: 16px; display: flex; align-items: center;
-            position: relative;
-            overflow: hidden;
+            background: rgba(255, 255, 255, 0.03); /* Siêu trong */
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 16px 20px; 
+            border-radius: 16px;
+            color: rgba(255,255,255,0.9); 
+            text-align: left;
+            cursor: pointer; 
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            font-size: 15px; display: flex; align-items: center;
+            position: relative; overflow: hidden;
         }
 
         .option-btn:hover:not(:disabled) {
-            background: linear-gradient(90deg, rgba(255,255,255,0.1), rgba(255,255,255,0.15));
-            color: white; transform: translateX(8px);
-            border-color: var(--grad-1);
-            box-shadow: -5px 0 15px rgba(0,0,0,0.2);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
         .option-tag {
+            width: 28px; height: 28px;
             background: rgba(255,255,255,0.1);
-            min-width: 30px; height: 30px;
+            border-radius: 8px;
             display: flex; justify-content: center; align-items: center;
-            border-radius: 50%; margin-right: 15px;
-            font-size: 14px; font-weight: bold;
+            margin-right: 15px;
+            font-size: 12px; font-weight: 700;
             color: var(--grad-2);
         }
 
         /* States */
         .option-btn.correct { 
             background: rgba(67, 181, 129, 0.2) !important; 
-            border-color: #43b581 !important; 
+            border: 1px solid #43b581 !important; 
             color: white !important; 
-            box-shadow: 0 0 15px rgba(67, 181, 129, 0.3);
+            box-shadow: 0 0 20px rgba(67, 181, 129, 0.2);
         }
         .option-btn.wrong { 
             background: rgba(240, 71, 71, 0.2) !important; 
-            border-color: #f04747 !important; 
+            border: 1px solid #f04747 !important; 
             color: white !important; 
         }
 
-        /* Footer */
-        .quiz-footer { margin-top: 40px; display: flex; justify-content: space-between; align-items: center; }
-        .audio-control { cursor: pointer; color: var(--text-sub); font-size: 22px; transition: 0.3s; }
-        .audio-control:hover { color: white; transform: scale(1.1); }
-
+        /* Footer Button */
         .next-btn {
-            background: linear-gradient(135deg, var(--grad-1), var(--grad-2));
-            color: white; border: none; padding: 14px 40px;
-            border-radius: 14px; font-weight: 700; cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            background: linear-gradient(90deg, var(--grad-1), var(--grad-2));
+            color: white; border: none; padding: 15px;
+            border-radius: 16px; font-weight: 600; cursor: pointer;
             transition: 0.3s; display: none;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
-            font-size: 16px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            font-size: 16px; text-transform: uppercase; letter-spacing: 1px;
         }
-        .next-btn:hover { filter: brightness(1.2); transform: translateY(-3px); }
+        .next-btn:hover { filter: brightness(1.1); transform: translateY(-2px); }
 
-        /* --- PARTICLE EFFECT (Quan trọng) --- */
+        /* --- FIREFLY PARTICLES --- */
         .particle {
-            position: absolute;
-            pointer-events: none;
-            border-radius: 50%;
-            z-index: 9999; /* Đảm bảo hạt nổi lên trên cùng */
-            animation: pop 0.8s cubic-bezier(0, .9, .57, 1) forwards;
+            position: absolute; pointer-events: none; border-radius: 50%; z-index: 9999;
+            /* Blur nhẹ để giống đốm sáng */
+            filter: blur(2px);
+            animation: firefly 1s ease-out forwards;
         }
-        @keyframes pop {
-            0% { transform: translate(0, 0) scale(1); opacity: 1; box-shadow: 0 0 10px currentColor; }
-            100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+        @keyframes firefly {
+            0% { transform: translate(0, 0) scale(0.5); opacity: 0; }
+            20% { opacity: 1; transform: translate(var(--tx), var(--ty)) scale(1.2); }
+            100% { transform: translate(var(--tx-end), var(--ty-end)) scale(0); opacity: 0; }
         }
 
     </style>
@@ -201,138 +265,69 @@
 
     <div class="quiz-container">
         <div class="header">
-            <div class="user-info">
-                <div class="avatar-container">
-                    <img src="https://ui-avatars.com/api/?name=User&background=random&size=128" alt="User" class="avatar">
-                </div>
-                <div>
-                    <h2 style="font-size: 18px; font-weight: 700;">Ôn tập CSTH</h2>
-                    <span style="font-size: 13px; color: var(--text-sub);">
-                        <i class="fas fa-check-circle"></i> Chế độ Chuẩn (Fixed Logic)
-                    </span>
-                </div>
+            <div class="avatar-wrapper">
+                <div class="avatar-glow-ring"></div>
+                <img src="https://ui-avatars.com/api/?name=User&background=random&size=128" alt="User" class="avatar">
+            </div>
+            <h2 style="font-size: 20px; font-weight: 600; margin-bottom: 2px;">Ôn tập CSTH</h2>
+            <div class="status-badge" id="streak-badge">
+                🔥 Streak: <span id="streak-count">0</span>
             </div>
 
-            <div class="controls">
-                <i class="fas fa-volume-mute audio-control" id="music-toggle" onclick="toggleMusic()" title="Bật/Tắt nhạc nền"></i>
-                <select id="theme-select" onchange="changeTheme(this.value)"></select>
-                <div class="streak-badge">
-                    <i class="fas fa-fire"></i> <span id="streak-count">0</span>
+            <div class="controls-row">
+                <div class="glass-btn-icon" onclick="toggleMusic()">
+                    <i class="fas fa-volume-mute" id="music-icon"></i>
                 </div>
+                <select id="theme-select" onchange="changeTheme(this.value)"></select>
             </div>
         </div>
 
         <div id="quiz-screen">
             <div class="question-box">
+                <span class="question-meta">CÂU HỎI TRẮC NGHIỆM</span>
                 <div class="question-text" id="question-text">Loading...</div>
-                <div class="options-grid" id="options-container"></div>
             </div>
-            <div class="quiz-footer">
-                <div style="font-size:12px; color: rgba(255,255,255,0.3)">WEB3 Project</div>
-                <button class="next-btn" id="next-btn" onclick="nextQuestion()">Câu tiếp theo <i class="fas fa-arrow-right"></i></button>
-            </div>
+            
+            <div class="options-grid" id="options-container"></div>
+            
+            <button class="next-btn" id="next-btn" onclick="nextQuestion()">Tiếp theo</button>
         </div>
     </div>
 
     <script>
-        // --- 1. CẤU HÌNH THEMES (Đã chỉnh lại màu Urban/Cosmic cho đỡ lạc quẻ) ---
+        // --- 1. CẤU HÌNH THEMES (Màu mới cho Urban & Cyber) ---
         const themes = [
-            { name: "Fantasy", video: "media/1,1.mp4", audio: "audio/a5.mp3", c1: "#7289da", c2: "#00d2ff" }, // Tím Xanh
-            { name: "Cosmic",  video: "media/1,22.mp4", audio: "audio/a1.m4a", c1: "#ff00cc", c2: "#333399" }, // Hồng Neon - Xanh đậm
-            { name: "Rain",    video: "media/2.mp4",    audio: "audio/a2.m4a", c1: "#00c6ff", c2: "#0072ff" }, // Xanh dương
-            { name: "City",    video: "media/3.mp4",    audio: "audio/a3.m4a", c1: "#f12711", c2: "#f5af19" }, // Đỏ Cam
-            { name: "Cyber",   video: "media/7.mp4",    audio: "audio/a4.m4a", c1: "#ff0099", c2: "#493240" }, // Hồng Đậm
-            { name: "Urban",   video: "media/8.mp4",    audio: "audio/a6.m4a", c1: "#00f260", c2: "#0575e6" }, // Xanh lá - Xanh dương (Style đường phố)
-            { name: "Lofi",    video: "media/lofigirl-loop-audio.mp4", audio: "audio/a7.m4a", c1: "#e67e22", c2: "#d35400" } // Cam
+            { name: "Fantasy", video: "media/1,1.mp4", audio: "audio/a5.mp3", c1: "#7289da", c2: "#00d2ff" }, 
+            { name: "Cosmic",  video: "media/1,22.mp4", audio: "audio/a1.m4a", c1: "#ff00cc", c2: "#333399" }, 
+            { name: "Rain",    video: "media/2.mp4",    audio: "audio/a2.m4a", c1: "#00c6ff", c2: "#0072ff" }, 
+            { name: "City",    video: "media/3.mp4",    audio: "audio/a3.m4a", c1: "#f12711", c2: "#f5af19" }, 
+            
+            // Cyber: Cyan -> Magenta (Neon)
+            { name: "Cyber",   video: "media/7.mp4",    audio: "audio/a4.m4a", c1: "#00DBDE", c2: "#FC00FF" }, 
+            
+            // Urban: Modern Blue -> Purple
+            { name: "Urban",   video: "media/8.mp4",    audio: "audio/a6.m4a", c1: "#4568DC", c2: "#B06AB3" }, 
+            
+            { name: "Lofi",    video: "media/lofigirl-loop-audio.mp4", audio: "audio/a7.m4a", c1: "#e67e22", c2: "#d35400" } 
         ];
 
-        // --- 2. DỮ LIỆU CÂU HỎI "HARDCODED" (Logic chuẩn 100%) ---
-        // 'wrong': Chứa các đáp án sai được chọn lọc kỹ để cùng loại với câu hỏi
+        // --- 2. DỮ LIỆU CÂU HỎI (Logic chuẩn) ---
         const questionsDB = [
-            // MÀU SẮC (CẢM GIÁC)
-            {
-                q: "Màu xanh da trời tạo cảm giác gì?",
-                a: "An toàn, tin cậy, hòa bình",
-                wrong: ["Nhiệt huyết, ham muốn, nguy hiểm", "Tinh tế, huyền bí, chung thủy", "Sự tích cực, lạc quan, ấm áp"]
-            },
-            {
-                q: "Màu đỏ tạo cảm giác gì?",
-                a: "Nhiệt huyết, ham muốn, nguy hiểm",
-                wrong: ["An toàn, tin cậy, hòa bình", "Tinh tế, huyền bí, chung thủy", "Sự đơn giản, tinh khiết"]
-            },
-            {
-                q: "Màu tím tạo cảm giác gì?",
-                a: "Tinh tế, huyền bí, chung thủy",
-                wrong: ["Sự hài hước, cởi mở", "Sức khỏe, đổi mới", "Nhiệt huyết, chiến tranh"]
-            },
-            
-            // MÀU SẮC (LÝ THUYẾT)
-            {
-                q: "Màu gốc cơ bản của màu cộng (RGB)?",
-                a: "Đỏ, Xanh lá, Xanh lam",
-                wrong: ["Đỏ, Vàng, Xanh lam", "Xanh lơ, Hồng cánh sen, Vàng", "Đen, Trắng, Xám"]
-            },
-            {
-                q: "Trộn tất cả màu cộng (Ánh sáng) ra màu gì?",
-                a: "Màu trắng",
-                wrong: ["Màu đen", "Màu xám", "Màu nâu"]
-            },
-             {
-                q: "Gam màu nóng bao gồm những màu nào?",
-                a: "Đỏ, Cam, Vàng (bước sóng dài)",
-                wrong: ["Xanh lục, Xanh lam, Tím (bước sóng ngắn)", "Đen, Trắng, Xám", "Tím, Hồng, Xanh lơ"]
-            },
-
-            // HÌNH KHỐI
-            {
-                q: "Hình tròn là hình có hướng như thế nào?",
-                a: "Vô hướng",
-                wrong: ["Hướng đối lập", "Đa hướng", "Hình định hướng"]
-            },
-            {
-                q: "Hình vuông và hình chữ nhật là hình có hướng như thế nào?",
-                a: "Hướng đối lập",
-                wrong: ["Vô hướng", "Đa hướng", "Chuyển động xoay"]
-            },
-            {
-                q: "Điểm có đặc tính gì?",
-                a: "Vô hướng, có tính tập trung, không có chiều",
-                wrong: ["Có chiều dài, không có chiều rộng", "Có chiều dài, rộng, sâu", "Có hướng chuyển động rõ ràng"]
-            },
-
-            // BỐ CỤC & THỊ GIÁC
-            {
-                q: "Tỷ lệ vàng (Golden Ratio) xấp xỉ bao nhiêu?",
-                a: "1.618",
-                wrong: ["3.141", "1.414", "0.618"]
-            },
-            {
-                q: "Trong cân bằng thị giác, hình hướng lên cho cảm giác gì?",
-                a: "Cảm giác nhẹ",
-                wrong: ["Cảm giác nặng", "Cảm giác ổn định", "Cảm giác đè nén"]
-            },
-            {
-                q: "Tổng giới hạn trái – phải của trường thị giác con người là bao nhiêu?",
-                a: "130 độ",
-                wrong: ["75 độ", "180 độ", "90 độ"]
-            },
-            {
-                q: "Bố cục đường diềm là gì?",
-                a: "Họa tiết lặp lại theo 1 chiều (dọc/ngang)",
-                wrong: ["Họa tiết lặp lại theo 2 chiều vô tận", "Họa tiết đối xứng qua tâm", "Họa tiết tự do không quy luật"]
-            },
-
-            // ÁNH SÁNG
-            {
-                q: "Ánh sáng nhân tạo thường dùng trong nhà hàng (màu vàng) để làm gì?",
-                a: "Tạo cảm giác ấm cúng",
-                wrong: ["Tạo cảm giác sạch sẽ, vô trùng", "Tạo sự tập trung cao độ", "Mô phỏng ánh sáng mặt trời tự nhiên"]
-            },
-            {
-                q: "Nguồn sáng chính là gì?",
-                a: "Nguồn sáng mạnh nhất chiếu vào vật thể",
-                wrong: ["Nguồn sáng bổ trợ làm mềm bóng", "Nguồn sáng phản xạ từ môi trường", "Nguồn sáng ven tạo đường viền"]
-            }
+            { q: "Màu xanh da trời tạo cảm giác gì?", a: "An toàn, tin cậy, hòa bình", wrong: ["Nhiệt huyết, ham muốn, nguy hiểm", "Tinh tế, huyền bí, chung thủy", "Sự tích cực, lạc quan, ấm áp"] },
+            { q: "Màu đỏ tạo cảm giác gì?", a: "Nhiệt huyết, ham muốn, nguy hiểm", wrong: ["An toàn, tin cậy, hòa bình", "Tinh tế, huyền bí, chung thủy", "Sự đơn giản, tinh khiết"] },
+            { q: "Màu tím tạo cảm giác gì?", a: "Tinh tế, huyền bí, chung thủy", wrong: ["Sự hài hước, cởi mở", "Sức khỏe, đổi mới", "Nhiệt huyết, chiến tranh"] },
+            { q: "Màu gốc cơ bản của màu cộng (RGB)?", a: "Đỏ, Xanh lá, Xanh lam", wrong: ["Đỏ, Vàng, Xanh lam", "Xanh lơ, Hồng cánh sen, Vàng", "Đen, Trắng, Xám"] },
+            { q: "Trộn tất cả màu cộng (Ánh sáng) ra màu gì?", a: "Màu trắng", wrong: ["Màu đen", "Màu xám", "Màu nâu"] },
+            { q: "Gam màu nóng bao gồm những màu nào?", a: "Đỏ, Cam, Vàng (bước sóng dài)", wrong: ["Xanh lục, Xanh lam, Tím (bước sóng ngắn)", "Đen, Trắng, Xám", "Tím, Hồng, Xanh lơ"] },
+            { q: "Hình tròn là hình có hướng như thế nào?", a: "Vô hướng", wrong: ["Hướng đối lập", "Đa hướng", "Hình định hướng"] },
+            { q: "Hình vuông và hình chữ nhật là hình có hướng như thế nào?", a: "Hướng đối lập", wrong: ["Vô hướng", "Đa hướng", "Chuyển động xoay"] },
+            { q: "Điểm có đặc tính gì?", a: "Vô hướng, có tính tập trung, không có chiều", wrong: ["Có chiều dài, không có chiều rộng", "Có chiều dài, rộng, sâu", "Có hướng chuyển động rõ ràng"] },
+            { q: "Tỷ lệ vàng (Golden Ratio) xấp xỉ bao nhiêu?", a: "1.618", wrong: ["3.141", "1.414", "0.618"] },
+            { q: "Trong cân bằng thị giác, hình hướng lên cho cảm giác gì?", a: "Cảm giác nhẹ", wrong: ["Cảm giác nặng", "Cảm giác ổn định", "Cảm giác đè nén"] },
+            { q: "Tổng giới hạn trái – phải của trường thị giác con người là bao nhiêu?", a: "130 độ", wrong: ["75 độ", "180 độ", "90 độ"] },
+            { q: "Bố cục đường diềm là gì?", a: "Họa tiết lặp lại theo 1 chiều (dọc/ngang)", wrong: ["Họa tiết lặp lại theo 2 chiều vô tận", "Họa tiết đối xứng qua tâm", "Họa tiết tự do không quy luật"] },
+            { q: "Ánh sáng nhân tạo thường dùng trong nhà hàng (màu vàng) để làm gì?", a: "Tạo cảm giác ấm cúng", wrong: ["Tạo cảm giác sạch sẽ, vô trùng", "Tạo sự tập trung cao độ", "Mô phỏng ánh sáng mặt trời tự nhiên"] },
+            { q: "Nguồn sáng chính là gì?", a: "Nguồn sáng mạnh nhất chiếu vào vật thể", wrong: ["Nguồn sáng bổ trợ làm mềm bóng", "Nguồn sáng phản xạ từ môi trường", "Nguồn sáng ven tạo đường viền"] }
         ];
 
         // --- 3. LOGIC APP ---
@@ -341,7 +336,7 @@
         let isMusicPlaying = false;
         let c1 = themes[0].c1; 
 
-        // Sound Engine (Volume thấp)
+        // Sound Engine
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playSoundEffect(type) {
             if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -351,18 +346,12 @@
             gainNode.connect(audioCtx.destination);
 
             if (type === 'correct') {
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(600, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(1000, audioCtx.currentTime + 0.1);
-                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime); // Volume rất nhỏ (0.1)
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                osc.type = 'sine'; osc.frequency.setValueAtTime(600, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(1000, audioCtx.currentTime + 0.1);
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
                 osc.start(); osc.stop(audioCtx.currentTime + 0.4);
             } else {
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-                osc.frequency.linearRampToValueAtTime(100, audioCtx.currentTime + 0.2);
-                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime); // Volume rất nhỏ (0.1)
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+                osc.type = 'triangle'; osc.frequency.setValueAtTime(150, audioCtx.currentTime); osc.frequency.linearRampToValueAtTime(100, audioCtx.currentTime + 0.2);
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
                 osc.start(); osc.stop(audioCtx.currentTime + 0.2);
             }
         }
@@ -374,18 +363,17 @@
             nextBtn: document.getElementById('next-btn'),
             bgVideo: document.getElementById('bg-video'),
             bgMusic: document.getElementById('bg-music'),
-            musicIcon: document.getElementById('music-toggle'),
-            themeSelect: document.getElementById('theme-select')
+            musicIcon: document.getElementById('music-icon'),
+            themeSelect: document.getElementById('theme-select'),
+            avatarGlow: document.querySelector('.avatar-glow-ring')
         };
 
-        // Init Theme Select
         themes.forEach((theme, index) => {
             const opt = document.createElement('option');
             opt.value = index; opt.innerText = theme.name;
             ui.themeSelect.appendChild(opt);
         });
 
-        // Theme Change
         function changeTheme(index) {
             const theme = themes[index];
             ui.bgVideo.src = theme.video;
@@ -394,40 +382,35 @@
             
             document.documentElement.style.setProperty('--grad-1', theme.c1);
             document.documentElement.style.setProperty('--grad-2', theme.c2);
+            ui.avatarGlow.style.background = `radial-gradient(circle, ${theme.c1} 0%, transparent 70%)`;
             c1 = theme.c1;
         }
 
-        // Toggle Music
         function toggleMusic() {
             if (isMusicPlaying) {
                 ui.bgMusic.pause();
-                ui.musicIcon.classList.remove('fa-volume-up');
-                ui.musicIcon.classList.add('fa-volume-mute');
+                ui.musicIcon.classList.replace('fa-volume-up', 'fa-volume-mute');
                 isMusicPlaying = false;
             } else {
                 ui.bgMusic.play().catch(e => console.log("User interaction required"));
-                ui.musicIcon.classList.remove('fa-volume-mute');
-                ui.musicIcon.classList.add('fa-volume-up');
+                ui.musicIcon.classList.replace('fa-volume-mute', 'fa-volume-up');
                 isMusicPlaying = true;
             }
         }
 
-        // --- HIỆU ỨNG HẠT (FIXED) ---
-        // Gắn sự kiện click vào body để bắt mọi cú click
         document.body.addEventListener('click', function(e) {
             createParticles(e.clientX, e.clientY);
         });
 
         function createParticles(x, y) {
-            const particleCount = 10;
+            const particleCount = 12; // Nhiều hạt hơn
             for (let i = 0; i < particleCount; i++) {
                 const particle = document.createElement('div');
                 particle.classList.add('particle');
                 
-                // Random màu giữa màu 1 và màu 2 của theme
-                const color = Math.random() > 0.5 ? c1 : '#ffffff';
+                const color = Math.random() > 0.3 ? c1 : '#ffffff';
                 particle.style.backgroundColor = color;
-                particle.style.boxShadow = `0 0 6px ${color}`;
+                particle.style.boxShadow = `0 0 10px ${color}, 0 0 20px ${color}`; // Glow mạnh hơn
                 
                 particle.style.left = x + 'px';
                 particle.style.top = y + 'px';
@@ -436,21 +419,23 @@
                 particle.style.width = size + 'px';
                 particle.style.height = size + 'px';
                 
-                // Tính toán hướng bay
-                const angle = Math.random() * Math.PI * 2;
-                const velocity = Math.random() * 100 + 50;
-                const tx = Math.cos(angle) * velocity;
-                const ty = Math.sin(angle) * velocity;
+                // Tính toán hướng bay tự nhiên hơn (đom đóm bay lên)
+                const angle = (Math.random() * Math.PI) + Math.PI; // Hướng lên trên (đảo ngược Y)
+                const velocity = Math.random() * 80 + 40;
+                
+                const tx = (Math.random() - 0.5) * 150; // Bay ngang rộng hơn
+                const ty = (Math.random() - 0.5) * 150 - 50; // Bay lên xu hướng chính
                 
                 particle.style.setProperty('--tx', `${tx}px`);
                 particle.style.setProperty('--ty', `${ty}px`);
+                particle.style.setProperty('--tx-end', `${tx * 1.5}px`);
+                particle.style.setProperty('--ty-end', `${ty * 1.5 - 50}px`);
                 
                 document.body.appendChild(particle);
-                setTimeout(() => particle.remove(), 800);
+                setTimeout(() => particle.remove(), 1000);
             }
         }
 
-        // --- QUIZ LOGIC ---
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -465,7 +450,6 @@
             const randomIndex = Math.floor(Math.random() * questionsDB.length);
             currentQuestionObj = questionsDB[randomIndex];
 
-            // Lấy 1 đúng + 3 sai từ mảng 'wrong' đã soạn sẵn
             let options = [
                 { text: currentQuestionObj.a, isCorrect: true },
                 { text: currentQuestionObj.wrong[0], isCorrect: false },
@@ -479,53 +463,48 @@
             
             const labels = ['A', 'B', 'C', 'D'];
             options.forEach((opt, index) => {
-                const btn = document.createElement('div'); // Dùng div thay button để dễ style
+                const btn = document.createElement('div');
                 btn.className = 'option-btn';
                 btn.innerHTML = `<span class="option-tag">${labels[index]}</span> ${opt.text}`;
                 
-                // Xử lý click riêng cho nút
                 btn.addEventListener('click', (e) => {
-                    e.stopPropagation(); // Ngăn sự kiện nổi bọt
-                    createParticles(e.clientX, e.clientY); // Bắn pháo hoa tại chỗ click
-                    checkAnswer(btn, opt.isCorrect, opt.text);
+                    e.stopPropagation(); 
+                    createParticles(e.clientX, e.clientY); 
+                    checkAnswer(btn, opt.isCorrect);
                 });
                 
                 ui.optionsContainer.appendChild(btn);
             });
         }
 
-        function checkAnswer(btn, isCorrect, text) {
+        function checkAnswer(btn, isCorrect) {
             const allBtns = document.querySelectorAll('.option-btn');
-            allBtns.forEach(b => b.style.pointerEvents = 'none'); // Khóa click
+            allBtns.forEach(b => b.style.pointerEvents = 'none'); 
 
             if (isCorrect) {
                 playSoundEffect('correct');
                 btn.classList.add('correct');
                 currentStreak++;
                 ui.streakCount.innerText = currentStreak;
-                if(currentStreak > 5) ui.streakCount.style.color = "#ffeb3b";
             } else {
                 playSoundEffect('wrong');
                 btn.classList.add('wrong');
                 currentStreak = 0;
                 ui.streakCount.innerText = "0";
-                ui.streakCount.style.color = "white";
                 
-                // Hiện đáp án đúng
                 allBtns.forEach(b => {
                     if (b.innerText.includes(currentQuestionObj.a)) {
                         b.classList.add('correct');
                     }
                 });
             }
-            ui.nextBtn.style.display = 'inline-block';
+            ui.nextBtn.style.display = 'block';
         }
 
         function nextQuestion() {
             loadNewQuestion();
         }
 
-        // Start
         loadNewQuestion();
 
     </script>
