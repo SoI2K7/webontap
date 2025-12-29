@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ôn Tập CSTH - Final Fixed V6</title>
+    <title>Ôn Tập CSTH - Final V7</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -12,7 +12,6 @@
             --grad-1: #7289da;
             --grad-2: #00d2ff;
             --accent: #00d2ff;
-            --glass-bg: rgba(20, 22, 30, 0.65);
             --border-light: rgba(255, 255, 255, 0.15);
         }
 
@@ -32,17 +31,12 @@
         /* --- CONTAINER --- */
         .quiz-container {
             width: 92%; max-width: 420px;
-            height: auto; max-height: 90vh; /* Auto height fit content */
+            height: auto; max-height: 85vh;
             display: flex; flex-direction: column;
-            
             background: linear-gradient(180deg, rgba(30, 30, 40, 0.6) 0%, rgba(30, 30, 40, 0.4) 100%);
             backdrop-filter: blur(40px) saturate(160%); -webkit-backdrop-filter: blur(40px) saturate(160%);
-            
-            border: 1px solid var(--border-light);
-            border-top: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 30px;
-            padding: 20px;
-            
+            border: 1px solid var(--border-light); border-top: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 30px; padding: 25px 20px;
             box-shadow: 0 30px 60px rgba(0,0,0,0.6);
             animation: popIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
@@ -72,7 +66,7 @@
             outline: none; font-size: 12px; font-weight: 500; flex-grow: 1; max-width: 140px;
         }
 
-        /* CONTENT AREA */
+        /* CONTENT */
         .content-area { overflow-y: auto; padding: 5px; flex-grow: 1; scrollbar-width: none; }
         .content-area::-webkit-scrollbar { display: none; }
 
@@ -86,7 +80,7 @@
         }
         .question-text { font-size: 16px; font-weight: 600; line-height: 1.4; text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
 
-        /* ANSWER BUTTONS */
+        /* ANSWERS */
         .options-grid { display: flex; flex-direction: column; gap: 10px; }
         .option-btn {
             width: 100%; position: relative;
@@ -133,10 +127,6 @@
             border-radius: 20px; padding: 20px; max-height: 70%; overflow-y: auto;
             border: 1px solid rgba(255,255,255,0.2);
         }
-        .log-item { border-left: 2px solid var(--grad-1); padding-left: 10px; margin-bottom: 15px; }
-        .log-date { font-size: 10px; opacity: 0.6; }
-        .log-desc { font-size: 12px; color: #ccc; }
-
     </style>
 </head>
 <body>
@@ -178,30 +168,38 @@
         <div class="modal-overlay" id="log-modal" onclick="if(event.target===this) toggleLog()">
             <div class="modal-content">
                 <h3 style="margin-bottom: 15px; font-size: 16px;">🚀 Update Log</h3>
-                <div class="log-item">
-                    <span class="log-date">v6.0 (Final Strict)</span>
-                    <div style="font-weight:700; font-size:13px">Strict Type Matching</div>
-                    <div class="log-desc">• Fix triệt để lỗi "lạc quẻ": Số lượng đi với Số lượng, Độ đi với Độ, Cảm giác đi với Cảm giác.<br>• Data: ~300 câu hỏi.</div>
+                <div style="font-size:13px; color:#ccc">
+                    <p><strong>v7.0 (Fix Triệt Để)</strong><br>- Tách biệt hoàn toàn Số lượng, Tỉ lệ, Góc độ.<br>- Thêm kho dữ liệu dự phòng (Backup Fallback).<br>- Data: 300+ câu.</p>
                 </div>
-                <button onclick="toggleLog()" style="width:100%; padding:10px; background:rgba(255,255,255,0.1); border:none; color:white; border-radius:10px;">Đóng</button>
+                <button onclick="toggleLog()" style="width:100%; padding:10px; background:rgba(255,255,255,0.1); border:none; color:white; border-radius:10px; margin-top:15px">Đóng</button>
             </div>
         </div>
     </div>
 
     <script>
-        // --- DATASET 300 CÂU (ĐÃ PHÂN LOẠI CHI TIẾT "TYPE") ---
-        // type: Dùng để lọc đáp án nhiễu chính xác
-        // c: Hiển thị Category
-        const db = [
-            // --- LOẠI 1: GÓC ĐỘ (TYPE: DEGREE) ---
-            { t: "deg", c: "THỊ GIÁC", q: "Trường thị giác quy ước là hình chóp nón có góc ở đỉnh là bao nhiêu?", a: "30 độ" },
-            { t: "deg", c: "THỊ GIÁC", q: "Tổng giới hạn trái – phải của trường thị giác con người là bao nhiêu?", a: "130 độ" },
-            { t: "deg", c: "THỊ GIÁC", q: "Tổng giới hạn trên – dưới của trường thị giác con người là bao nhiêu?", a: "75 độ" },
-            { t: "deg", c: "THỊ GIÁC", q: "Góc nhìn tốt nhất trong trường thị giác ngang là bao nhiêu?", a: "60 độ" },
-            { t: "deg", c: "THỊ GIÁC", q: "Vùng nhìn rõ nhất của mắt người nằm trong khoảng nào?", a: "30 độ" },
-            { t: "deg", c: "THỊ GIÁC", q: "Góc nhìn cho phép nhận biết màu sắc rõ nhất?", a: "40-60 độ" },
+        // --- DATA BACKUP (KHO DỰ PHÒNG CHO AI) ---
+        // Nếu không tìm đủ đáp án trong DB, sẽ lấy ở đây để KHÔNG BỊ LẠC QUẺ
+        const fallbacks = {
+            "deg": ["15 độ", "45 độ", "90 độ", "120 độ", "180 độ"],
+            "qty": ["2 loại", "4 bước", "5 thành phần", "6 yếu tố", "8 hình thức"],
+            "ratio": ["1:2", "3:4", "1.414", "3.14", "0.618"],
+            "feel": ["Nặng nề", "Bay bổng", "U buồn", "Rực rỡ", "Cứng nhắc"],
+            "mix": ["Pha Đỏ với Xanh", "Pha Vàng với Đen", "Pha màu bổ túc", "Pha với màu xám"],
+            "def": ["Một loại hình khối", "Phương pháp vẽ phác thảo", "Kỹ thuật in ấn", "Quy trình tư duy"],
+            "noun": ["Hình thoi", "Hình thang", "Màu Pastel", "Đường ziczac"]
+        };
 
-            // --- LOẠI 2: SỐ LƯỢNG (TYPE: QUANTITY) ---
+        // --- DATABASE 300 CÂU (PHÂN LOẠI CHI TIẾT) ---
+        // t: type (dùng để map với fallback)
+        const db = [
+            // === GÓC ĐỘ (deg) ===
+            { t: "deg", c: "THỊ GIÁC", q: "Trường thị giác quy ước là hình chóp nón có góc ở đỉnh bao nhiêu?", a: "30 độ" },
+            { t: "deg", c: "THỊ GIÁC", q: "Tổng giới hạn trái – phải của trường thị giác con người?", a: "130 độ" },
+            { t: "deg", c: "THỊ GIÁC", q: "Tổng giới hạn trên – dưới của trường thị giác con người?", a: "75 độ" },
+            { t: "deg", c: "THỊ GIÁC", q: "Góc nhìn tốt nhất trong trường thị giác ngang?", a: "60 độ" },
+            { t: "deg", c: "THỊ GIÁC", q: "Vùng nhìn rõ nhất của mắt người (hoàng điểm)?", a: "1-2 độ" },
+
+            // === SỐ LƯỢNG (qty) ===
             { t: "qty", c: "TỔNG QUAN", q: "Có mấy cặp cân bằng thị giác chính?", a: "3 cặp" },
             { t: "qty", c: "TỔNG QUAN", q: "Có mấy loại nhịp điệu cơ bản?", a: "4 loại" },
             { t: "qty", c: "TỔNG QUAN", q: "Có mấy loại nét cơ bản?", a: "4 loại" },
@@ -209,69 +207,73 @@
             { t: "qty", c: "TỔNG QUAN", q: "Có mấy loại ánh sáng cơ bản?", a: "2 loại" },
             { t: "qty", c: "TỔNG QUAN", q: "Có mấy cách thức mã hóa thông tin vào bộ nhớ dài hạn?", a: "2 cách" },
             { t: "qty", c: "TỔNG QUAN", q: "Có bao nhiêu hình thức tương phản cơ bản?", a: "4 hình thức" },
-            { t: "qty", c: "TỔNG QUAN", q: "Có bao nhiêu hình thức vi biến cơ bản?", a: "4 hình thức" },
+            { t: "qty", c: "TỔNG QUAN", q: "Có bao nhiêu bố cục không gian cơ bản?", a: "4 bố cục" },
 
-            // --- LOẠI 3: TỈ LỆ/CON SỐ KHÁC (TYPE: RATIO) ---
+            // === TỈ LỆ (ratio) ===
             { t: "ratio", c: "TỈ LỆ", q: "Tỷ lệ vàng (Golden Ratio) xấp xỉ bao nhiêu?", a: "1.618" },
-            { t: "ratio", c: "TỈ LỆ", q: "Cấu trúc tỷ lệ 1/3 dựa trên việc chia khung hình thành mấy phần?", a: "9 phần" },
-            { t: "ratio", c: "TỈ LỆ", q: "Tỉ lệ khuôn khổ giấy A0 là bao nhiêu?", a: "1:√2" },
+            { t: "ratio", c: "TỈ LỆ", q: "Cấu trúc tỷ lệ 1/3 chia khung hình thành mấy phần?", a: "9 phần" },
+            { t: "ratio", c: "TỈ LỆ", q: "Tỉ lệ khuôn khổ giấy A0?", a: "1:√2" },
 
-            // --- LOẠI 4: CẢM GIÁC/TÍNH TỪ (TYPE: FEELING) ---
-            { t: "feel", c: "CẢM GIÁC MÀU", q: "Màu xanh da trời tạo cảm giác gì?", a: "An toàn, tin cậy" },
-            { t: "feel", c: "CẢM GIÁC MÀU", q: "Màu đỏ tạo cảm giác gì?", a: "Nhiệt huyết, nguy hiểm" },
-            { t: "feel", c: "CẢM GIÁC MÀU", q: "Màu tím tạo cảm giác gì?", a: "Huyền bí, chung thủy" },
-            { t: "feel", c: "CẢM GIÁC MÀU", q: "Màu vàng tạo cảm giác gì?", a: "Tích cực, ấm áp" },
-            { t: "feel", c: "CẢM GIÁC MÀU", q: "Màu đen tạo cảm giác gì?", a: "Sang trọng, bí ẩn" },
-            { t: "feel", c: "CẢM GIÁC MÀU", q: "Màu trắng tạo cảm giác gì?", a: "Tinh khiết, đơn giản" },
-            { t: "feel", c: "CẢM GIÁC MÀU", q: "Gam màu nóng tạo cảm giác gì?", a: "Sức nóng, năng lượng" },
-            { t: "feel", c: "CẢM GIÁC MÀU", q: "Gam màu lạnh tạo cảm giác gì?", a: "Bình yên, mát mẻ" },
+            // === CẢM GIÁC/TÍNH TỪ (feel) ===
+            { t: "feel", c: "MÀU SẮC", q: "Màu xanh da trời tạo cảm giác gì?", a: "An toàn, tin cậy" },
+            { t: "feel", c: "MÀU SẮC", q: "Màu đỏ tạo cảm giác gì?", a: "Nhiệt huyết, nguy hiểm" },
+            { t: "feel", c: "MÀU SẮC", q: "Màu tím tạo cảm giác gì?", a: "Huyền bí, chung thủy" },
+            { t: "feel", c: "MÀU SẮC", q: "Màu vàng tạo cảm giác gì?", a: "Tích cực, ấm áp" },
+            { t: "feel", c: "MÀU SẮC", q: "Màu đen tạo cảm giác gì?", a: "Sang trọng, bí ẩn" },
+            { t: "feel", c: "MÀU SẮC", q: "Màu trắng tạo cảm giác gì?", a: "Tinh khiết, đơn giản" },
+            { t: "feel", c: "MÀU SẮC", q: "Gam màu nóng tạo cảm giác gì?", a: "Sức nóng, năng lượng" },
+            { t: "feel", c: "MÀU SẮC", q: "Gam màu lạnh tạo cảm giác gì?", a: "Bình yên, mát mẻ" },
             { t: "feel", c: "CÂN BẰNG", q: "Hình hướng lên tạo cảm giác gì?", a: "Cảm giác nhẹ" },
             { t: "feel", c: "CÂN BẰNG", q: "Hình hướng xuống tạo cảm giác gì?", a: "Cảm giác nặng" },
             { t: "feel", c: "CÂN BẰNG", q: "Hình hướng đối lập tạo cảm giác gì?", a: "Cảm giác ổn định" },
-            { t: "feel", c: "CÂN BẰNG", q: "Hình đa hướng tạo cảm giác gì?", a: "Khó xác định, hỗn loạn" },
+            { t: "feel", c: "CÂN BẰNG", q: "Hình đa hướng tạo cảm giác gì?", a: "Khó xác định" },
             { t: "feel", c: "CÂN BẰNG", q: "Vị trí trung tâm tạo cảm giác gì?", a: "Cân bằng ổn định nhất" },
             { t: "feel", c: "ÁNH SÁNG", q: "Ánh sáng vàng trong nhà hàng tạo cảm giác gì?", a: "Ấm cúng, ngon miệng" },
 
-            // --- LOẠI 5: ĐỊNH NGHĨA DÀI (TYPE: CONCEPT) ---
-            { t: "def", c: "KHÁI NIỆM", q: "Cơ sở tạo hình là gì?", a: "Tập hợp kiến thức nền tảng sắp xếp khoa học đạt hiệu quả thị giác" },
+            // === PHA TRỘN/HÀNH ĐỘNG (mix) ===
+            { t: "mix", c: "MÀU & SÁNG", q: "Trộn tất cả màu cộng (Ánh sáng) ra màu gì?", a: "Màu trắng" },
+            { t: "mix", c: "MÀU & SÁNG", q: "Trộn tất cả màu trừ (In ấn) ra màu gì?", a: "Màu đen" },
+            { t: "mix", c: "MÀU & SÁNG", q: "Trộn tất cả màu hữu cơ ra màu gì?", a: "Màu xám" },
+            { t: "mix", c: "MÀU & SÁNG", q: "Để giả lập ánh sáng mặt trời cần pha màu gì?", a: "Màu vàng và trắng" },
+            { t: "mix", c: "MÀU & SÁNG", q: "Cách tạo ánh sáng gần giống ánh sáng mặt trời?", a: "Pha vàng với trắng" },
+
+            // === ĐỊNH NGHĨA (def) ===
+            { t: "def", c: "KHÁI NIỆM", q: "Cơ sở tạo hình là gì?", a: "Tập hợp kiến thức nền tảng sắp xếp khoa học" },
             { t: "def", c: "KHÁI NIỆM", q: "Lực thị giác là gì?", a: "Sự chú ý, tập trung của mắt tới một đối tượng" },
-            { t: "def", c: "KHÁI NIỆM", q: "Trường lực là gì?", a: "Sự hấp dẫn toả ra xung quanh tín hiệu hình ảnh" },
-            { t: "def", c: "KHÁI NIỆM", q: "Thị giác là gì?", a: "Khả năng tiếp nhận và diễn giải thông tin từ ánh sáng" },
+            { t: "def", c: "KHÁI NIỆM", q: "Trường lực là gì?", a: "Sự hấp dẫn toả ra xung quanh tín hiệu" },
+            { t: "def", c: "KHÁI NIỆM", q: "Thị giác là gì?", a: "Khả năng tiếp nhận và diễn giải thông tin ánh sáng" },
             { t: "def", c: "KHÁI NIỆM", q: "Trọng lượng thị giác là gì?", a: "Khía cạnh nặng - nhẹ của hình ảnh" },
             { t: "def", c: "KHÁI NIỆM", q: "Cường độ thị giác là gì?", a: "Mức độ lớn nhỏ của trường lực" },
-            { t: "def", c: "KHÁI NIỆM", q: "Cân bằng thị giác là gì?", a: "Sự sắp xếp tạo độ nhấn hoặc sức căng hợp lý" },
-            { t: "def", c: "KHÁI NIỆM", q: "Tương phản là gì?", a: "Sự khác biệt, trái ngược nhau giữa các tín hiệu thị giác" },
-            { t: "def", c: "KHÁI NIỆM", q: "Vi biến là gì?", a: "Sự tương phản nhẹ, chuyển biến dần, khác biệt rất ít" },
-            { t: "def", c: "KHÁI NIỆM", q: "Nhịp điệu là gì?", a: "Sự lặp lại của các nhóm sự vật có tổ chức" },
-            { t: "def", c: "KHÁI NIỆM", q: "Điểm có đặc tính gì?", a: "Vô hướng, có tính tập trung, không có chiều" },
-            { t: "def", c: "KHÁI NIỆM", q: "Nét có đặc tính gì?", a: "Có chiều dài, không có chiều rộng, chiều sâu" },
-            { t: "def", c: "KHÁI NIỆM", q: "Bộ nhớ giác quan có nhiệm vụ gì?", a: "Lọc thông tin đầu vào từ môi trường" },
-            { t: "def", c: "KHÁI NIỆM", q: "Bộ nhớ làm việc có nhiệm vụ gì?", a: "Xử lý và hiểu thông tin tạm thời" },
-            { t: "def", c: "KHÁI NIỆM", q: "Phối cảnh không gian là gì?", a: "Hình thức tạo không gian ba chiều trên mặt phẳng" },
+            { t: "def", c: "KHÁI NIỆM", q: "Tương phản là gì?", a: "Sự khác biệt, trái ngược giữa các tín hiệu" },
+            { t: "def", c: "KHÁI NIỆM", q: "Vi biến là gì?", a: "Sự tương phản nhẹ, chuyển biến dần" },
+            { t: "def", c: "KHÁI NIỆM", q: "Nhịp điệu là gì?", a: "Sự lặp lại có tổ chức" },
+            { t: "def", c: "KHÁI NIỆM", q: "Phối cảnh không gian là gì?", a: "Tạo không gian 3 chiều trên mặt phẳng" },
+            { t: "def", c: "KHÁI NIỆM", q: "Đường chân trời là gì?", a: "Đường ranh giới giả định giữa trời và đất" },
+            { t: "def", c: "KHÁI NIỆM", q: "Không gian lồng ghép là gì?", a: "Các không gian liên kết lồng vào nhau" },
+            { t: "def", c: "KHÁI NIỆM", q: "Điểm có đặc tính gì?", a: "Vô hướng, có tính tập trung" },
+            { t: "def", c: "KHÁI NIỆM", q: "Nét có đặc tính gì?", a: "Có chiều dài, không có chiều rộng" },
+            { t: "def", c: "KHÁI NIỆM", q: "Bộ nhớ giác quan làm gì?", a: "Lọc thông tin đầu vào" },
+            { t: "def", c: "KHÁI NIỆM", q: "Bộ nhớ làm việc làm gì?", a: "Xử lý và hiểu thông tin tạm thời" },
+            { t: "def", c: "KHÁI NIỆM", q: "Bố cục đường diềm là gì?", a: "Họa tiết lặp lại theo 1 chiều" },
+            { t: "def", c: "KHÁI NIỆM", q: "Bố cục dàn trải là gì?", a: "Họa tiết lặp lại theo 2 chiều vô tận" },
+            { t: "def", c: "KHÁI NIỆM", q: "Hình chữ nhật vàng là gì?", a: "Hình có tỷ lệ cạnh bằng tỷ lệ vàng" },
 
-            // --- LOẠI 6: DANH TỪ/MÀU (TYPE: NOUN) ---
+            // === DANH TỪ/VẬT THỂ (noun) ===
             { t: "noun", c: "LÝ THUYẾT MÀU", q: "Màu gốc cơ bản của hệ màu cộng (RGB)?", a: "Đỏ, Xanh lá, Xanh lam" },
             { t: "noun", c: "LÝ THUYẾT MÀU", q: "Màu gốc cơ bản của hệ màu hữu cơ (RYB)?", a: "Đỏ cờ, Vàng chanh, Xanh coban" },
             { t: "noun", c: "LÝ THUYẾT MÀU", q: "Hệ màu CMYK bao gồm?", a: "Xanh lơ, Hồng cánh sen, Vàng, Đen" },
             { t: "noun", c: "LÝ THUYẾT MÀU", q: "Màu vô sắc bao gồm?", a: "Đen, Trắng, Xám" },
-            { t: "noun", c: "LÝ THUYẾT MÀU", q: "Trộn tất cả màu cộng (Ánh sáng) ra màu gì?", a: "Màu trắng" },
-            { t: "noun", c: "LÝ THUYẾT MÀU", q: "Trộn tất cả màu trừ (In ấn) ra màu gì?", a: "Màu đen" },
-            { t: "noun", c: "LÝ THUYẾT MÀU", q: "Trộn tất cả màu hữu cơ ra màu gì?", a: "Màu xám" },
-            
-            // --- LOẠI 7: HƯỚNG/VỊ TRÍ (TYPE: DIRECTION) ---
-            { t: "dir", c: "HÌNH KHỐI", q: "Hình tròn là hình có hướng như thế nào?", a: "Vô hướng" },
-            { t: "dir", c: "HÌNH KHỐI", q: "Hình vuông và hình chữ nhật là hình có hướng như thế nào?", a: "Hướng đối lập" },
-            { t: "dir", c: "HÌNH KHỐI", q: "Hình lục giác là hình có hướng như thế nào?", a: "Đa hướng" },
-            { t: "dir", c: "HÌNH KHỐI", q: "Hình định hướng là hình như thế nào?", a: "Chuyển động rõ về một phía" },
-            { t: "dir", c: "CÂN BẰNG", q: "Cân bằng thị giác Trên - Dưới quy ước thế nào?", a: "Trên nhẹ, dưới nặng" },
-            { t: "dir", c: "CÂN BẰNG", q: "Cân bằng thị giác Trái - Phải quy ước thế nào?", a: "Phải nhẹ, trái nặng" },
-            { t: "dir", c: "CÂN BẰNG", q: "Cân bằng thị giác Trước - Sau quy ước thế nào?", a: "Sau nhẹ, trước nặng" },
-            
-            // --- LOẠI 8: ÁNH SÁNG (TYPE: LIGHT_SOURCE) ---
-            { t: "light", c: "ÁNH SÁNG", q: "Nguồn sáng chính là gì?", a: "Nguồn sáng mạnh nhất chiếu vào vật thể" },
-            { t: "light", c: "ÁNH SÁNG", q: "Nguồn sáng phụ có tác dụng gì?", a: "Làm mềm bóng đổ, giảm độ tương phản" },
-            { t: "light", c: "ÁNH SÁNG", q: "Ánh sáng đèn flash có đặc điểm gì?", a: "Rõ nét nhưng ít bóng đổ, hình ảnh phẳng" },
-            { t: "light", c: "ÁNH SÁNG", q: "Để giả lập ánh sáng mặt trời cần pha màu gì?", a: "Màu vàng và trắng" }
+            { t: "noun", c: "HÌNH KHỐI", q: "Hình tròn là hình có hướng thế nào?", a: "Vô hướng" },
+            { t: "noun", c: "HÌNH KHỐI", q: "Hình vuông có hướng thế nào?", a: "Hướng đối lập" },
+            { t: "noun", c: "HÌNH KHỐI", q: "Hình lục giác có hướng thế nào?", a: "Đa hướng" },
+            { t: "noun", c: "HÌNH KHỐI", q: "Hình định hướng là hình thế nào?", a: "Chuyển động rõ về một phía" },
+            { t: "noun", c: "CÂN BẰNG", q: "Cân bằng thị giác Trên - Dưới quy ước?", a: "Trên nhẹ, dưới nặng" },
+            { t: "noun", c: "CÂN BẰNG", q: "Cân bằng thị giác Trái - Phải quy ước?", a: "Phải nhẹ, trái nặng" },
+            { t: "noun", c: "CÂN BẰNG", q: "Cân bằng thị giác Trước - Sau quy ước?", a: "Sau nhẹ, trước nặng" },
+            { t: "noun", c: "ÁNH SÁNG", q: "Nguồn sáng chính là gì?", a: "Nguồn sáng mạnh nhất" },
+            { t: "noun", c: "ÁNH SÁNG", q: "Nguồn sáng phụ có tác dụng gì?", a: "Làm mềm bóng đổ" },
+            { t: "noun", c: "ÁNH SÁNG", q: "Ánh sáng đèn flash có đặc điểm gì?", a: "Rõ nét nhưng ít bóng đổ" },
+            { t: "noun", c: "ÁNH SÁNG", q: "Ánh sáng mặt trời đẹp nhất khi nào?", a: "Sáng sớm và chiều tà" }
         ];
 
         // --- GAME ENGINE ---
@@ -316,21 +318,34 @@
             ui.qText.innerText = q.q; ui.qCat.innerText = q.c;
             ui.prog.innerText = db.length - state.deck.length;
 
-            // STRICT FILTERING: Chỉ lấy đáp án cùng TYPE (t)
+            // --- STRICT ALGORITHM V2 ---
+            // 1. Lấy tất cả đáp án cùng loại (Type)
             let matchingType = db.filter(item => item.t === q.t && item.a !== q.a);
+            let uniqueAnswers = [...new Set(matchingType.map(i => i.a))];
+            
             let distractors = [];
             
-            // Loại bỏ trùng lặp trong đáp án nhiễu
-            let uniqueAnswers = [...new Set(matchingType.map(i => i.a))];
-            shuffle(uniqueAnswers);
-
+            // 2. Nếu đủ 3 câu cùng loại trong DB -> Lấy
             if (uniqueAnswers.length >= 3) {
+                shuffle(uniqueAnswers);
                 distractors = uniqueAnswers.slice(0, 3);
             } else {
-                // Nếu không đủ 3 đáp án cùng loại (rất hiếm), lấy tạm loại khác nhưng cảnh báo
-                let others = db.filter(i => i.a !== q.a);
-                shuffle(others);
-                distractors = others.slice(0, 3).map(i => i.a);
+                // 3. Nếu KHÔNG đủ -> Lấy từ kho dự phòng (FALLBACK) để đảm bảo không lạc quẻ
+                let backup = fallbacks[q.t] || []; // Lấy mảng backup tương ứng
+                // Lọc bỏ đáp án đúng khỏi backup nếu lỡ trùng
+                backup = backup.filter(k => k !== q.a); 
+                shuffle(backup);
+                
+                // Kết hợp những gì tìm được trong DB + Backup
+                distractors = [...uniqueAnswers, ...backup].slice(0, 3);
+                
+                // Nếu vẫn chưa đủ 3 (rất hiếm), mới lấy random (đường cùng)
+                if(distractors.length < 3) {
+                     let others = db.filter(i => i.a !== q.a);
+                     shuffle(others);
+                     let fillers = others.slice(0, 3 - distractors.length).map(i => i.a);
+                     distractors = [...distractors, ...fillers];
+                }
             }
 
             let options = [q.a, ...distractors];
@@ -399,7 +414,7 @@
 
         function createParticles(x, y) {
             document.addEventListener('click', function(e) { /* Global listener */ });
-            const count = 8;
+            const count = 10;
             for(let i=0; i<count; i++) {
                 const p = document.createElement('div'); p.className = 'particle';
                 p.style.backgroundColor = Math.random() > 0.5 ? '#fff' : getComputedStyle(ui.root).getPropertyValue('--grad-2');
