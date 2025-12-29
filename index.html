@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ôn Tập CSTH - Final Pro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Ôn Tập CSTH - Ultra Glass</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
             --grad-1: #7289da;
             --grad-2: #00d2ff;
+            --accent: #00d2ff;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -23,107 +24,152 @@
 
         #bg-video {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            object-fit: cover; z-index: -1; filter: brightness(0.6);
+            object-fit: cover; z-index: -1; 
+            /* Giữ độ sáng tốt để nhìn xuyên thấu video */
+            filter: brightness(0.65);
         }
 
-        /* --- CONTAINER KÍNH LỎNG (LIQUID GLASS) --- */
+        /* --- CONTAINER KÍNH SIÊU TRONG (ULTRA GLASS) --- */
         .quiz-container {
             width: 90%; max-width: 460px;
-            /* Hiệu ứng kính iOS */
-            background: rgba(30, 30, 40, 0.4);
-            backdrop-filter: blur(40px) saturate(150%);
-            -webkit-backdrop-filter: blur(40px) saturate(150%);
             
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-top: 1px solid rgba(255, 255, 255, 0.25);
-            border-radius: 32px;
+            /* Background: Gradient trắng mờ cực nhẹ như yêu cầu */
+            background: linear-gradient(
+                180deg, 
+                rgba(255, 255, 255, 0.05) 0%, 
+                rgba(255, 255, 255, 0.01) 100%
+            );
+            
+            /* Blur cực mạnh 50px */
+            backdrop-filter: blur(50px) saturate(140%);
+            -webkit-backdrop-filter: blur(50px) saturate(140%);
+            
+            /* Viền phát sáng: Mỏng 1px và bán trong suốt */
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-top: 1px solid rgba(255, 255, 255, 0.3); /* Điểm nhấn ánh sáng ở cạnh trên */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            
+            border-radius: 35px; /* Bo góc mềm mại */
             padding: 30px 25px;
             
-            box-shadow: 0 30px 50px -10px rgba(0, 0, 0, 0.6);
+            /* Bóng đổ sâu tạo chiều sâu */
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5), 
+                        inset 0 0 0 1px rgba(255, 255, 255, 0.05); /* Inner border nhẹ */
+            
             position: relative; 
             max-height: 90vh; 
             display: flex; flex-direction: column;
-            animation: popIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: floatUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
-        @keyframes popIn { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        @keyframes floatUp { from { opacity: 0; transform: translateY(40px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
         /* Header */
-        .header { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; flex-shrink: 0; }
+        .header { display: flex; flex-direction: column; align-items: center; margin-bottom: 25px; flex-shrink: 0; }
         
+        /* Avatar Glow */
+        .avatar-container { position: relative; margin-bottom: 12px; }
+        .avatar-glow {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 90px; height: 90px; background: radial-gradient(circle, var(--grad-1), transparent 70%);
+            opacity: 0.6; filter: blur(15px); border-radius: 50%;
+        }
         .avatar {
             width: 80px; height: 80px; border-radius: 50%;
-            border: 3px solid rgba(255,255,255,0.2); 
-            object-fit: cover; margin-bottom: 10px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            border: 2px solid rgba(255,255,255,0.8); 
+            object-fit: cover; position: relative; z-index: 2;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
+        /* Stats Capsule */
         .stats-bar {
-            display: flex; gap: 10px; font-size: 13px; font-weight: 600;
-            background: rgba(0,0,0,0.3); padding: 6px 16px; border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.1); margin-bottom: 15px;
+            display: flex; gap: 12px; font-size: 13px; font-weight: 600;
+            background: rgba(255, 255, 255, 0.05); 
+            padding: 8px 20px; border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
+        /* Controls */
         .controls { display: flex; gap: 10px; }
         .icon-btn {
-            width: 36px; height: 36px; border-radius: 10px;
-            background: rgba(255,255,255,0.1); border: none;
+            width: 40px; height: 40px; border-radius: 14px;
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
             color: white; cursor: pointer; display: flex; align-items: center; justify-content: center;
-            transition: 0.2s;
+            transition: 0.3s;
         }
-        .icon-btn:active { transform: scale(0.9); background: rgba(255,255,255,0.2); }
+        .icon-btn:hover { background: rgba(255,255,255,0.15); transform: translateY(-2px); }
 
         select {
-            background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2);
-            color: white; padding: 0 10px; border-radius: 10px; height: 36px; outline: none; font-size: 12px;
+            background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white; padding: 0 15px; border-radius: 12px; height: 40px; outline: none; font-size: 13px; font-weight: 500;
         }
 
-        /* Question Scroll Area */
+        /* Content Scroll */
         .content-area {
-            overflow-y: auto; 
-            padding-right: 5px; /* Space for scrollbar */
-            flex-grow: 1;
-            /* Scrollbar styling */
-            scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.2) transparent;
+            overflow-y: auto; padding-right: 5px; flex-grow: 1;
+            scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) transparent;
         }
-        .content-area::-webkit-scrollbar { width: 4px; }
-        .content-area::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+        .content-area::-webkit-scrollbar { width: 3px; }
+        .content-area::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
 
+        /* Question Box - Trong suốt hoàn toàn để hòa vào nền */
+        .question-box {
+            margin-bottom: 25px;
+            padding: 10px 5px;
+        }
+        .q-category {
+            color: var(--accent); opacity: 0.9;
+            font-size: 11px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase;
+            margin-bottom: 10px; display: block;
+        }
         .question-text {
-            font-size: 18px; font-weight: 700; line-height: 1.5; margin-bottom: 25px;
+            font-size: 19px; font-weight: 700; line-height: 1.4;
             text-shadow: 0 2px 10px rgba(0,0,0,0.5);
         }
 
-        /* Option Buttons - Đã chuyển sang thẻ BUTTON để fix lỗi click */
+        /* NÚT BẤM DẠNG KHỐI KÍNH (GLASS BLOCKS) */
         .options-grid { display: flex; flex-direction: column; gap: 12px; }
         
         .option-btn {
             width: 100%;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            padding: 18px 20px; border-radius: 18px;
+            /* Hiệu ứng khối kính: Nền trong, viền sáng, bóng đổ nhẹ */
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 1px solid rgba(255, 255, 255, 0.2); /* Viền trái sáng hơn tạo khối */
+            
+            padding: 18px 20px; border-radius: 20px;
             color: rgba(255,255,255,0.9); text-align: left;
             font-size: 15px; font-weight: 500;
             cursor: pointer; position: relative;
             display: flex; align-items: flex-start;
-            transition: all 0.2s ease;
+            transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
             -webkit-user-select: none;
         }
 
-        .option-btn:active { transform: scale(0.98); background: rgba(255,255,255,0.1); }
+        .option-btn:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px); /* Nổi lên khi hover */
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15); /* Bóng đổ khi nổi */
+        }
         
         .tag {
-            min-width: 24px; height: 24px; background: rgba(255,255,255,0.1);
-            border-radius: 6px; display: flex; align-items: center; justify-content: center;
-            font-size: 12px; font-weight: 700; margin-right: 15px; margin-top: 1px;
-            color: var(--grad-2);
+            min-width: 28px; height: 28px; 
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            font-size: 13px; font-weight: 700; margin-right: 15px; margin-top: -2px;
+            color: var(--accent);
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1);
         }
 
-        /* States Correct/Wrong */
+        /* States */
         .option-btn.correct {
             background: rgba(46, 204, 113, 0.2) !important;
             border-color: #2ecc71 !important;
-            box-shadow: 0 0 20px rgba(46, 204, 113, 0.25);
+            box-shadow: 0 0 25px rgba(46, 204, 113, 0.3);
         }
         .option-btn.wrong {
             background: rgba(231, 76, 60, 0.2) !important;
@@ -133,23 +179,25 @@
 
         /* Next Button */
         .next-btn {
-            width: 100%; margin-top: 25px;
-            background: linear-gradient(90deg, var(--grad-1), var(--grad-2));
-            border: none; padding: 16px; border-radius: 16px;
+            width: 100%; margin-top: 30px;
+            background: linear-gradient(135deg, var(--grad-1), var(--grad-2));
+            border: none; padding: 18px; border-radius: 20px;
             color: white; font-weight: 700; font-size: 16px; letter-spacing: 1px;
             cursor: pointer; display: none;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-            animation: slideUp 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-transform: uppercase;
+            animation: bounceUp 0.4s ease;
         }
-        @keyframes slideUp { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .next-btn:hover { filter: brightness(1.1); transform: translateY(-3px); }
+        @keyframes bounceUp { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        /* Particles */
+        /* Particles (Đom đóm) */
         .particle {
             position: absolute; pointer-events: none; border-radius: 50%; z-index: 100;
-            box-shadow: 0 0 6px currentColor;
-            animation: pop 0.6s ease-out forwards;
+            filter: blur(1px);
+            animation: fly 0.8s ease-out forwards;
         }
-        @keyframes pop { to { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; } }
+        @keyframes fly { to { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; } }
 
     </style>
 </head>
@@ -160,12 +208,17 @@
 
     <div class="quiz-container">
         <div class="header">
-            <img src="https://ui-avatars.com/api/?name=CSTH&background=random&size=128" class="avatar" id="avatar-img">
-            <div class="stats-bar">
-                <span>🔥 Streak: <span id="streak">0</span></span>
-                <span style="opacity:0.5">|</span>
-                <span>Câu: <span id="progress">1</span>/150</span>
+            <div class="avatar-container">
+                <div class="avatar-glow"></div>
+                <img src="https://ui-avatars.com/api/?name=CSTH&background=random&size=128" class="avatar" id="avatar-img">
             </div>
+            
+            <div class="stats-bar">
+                <span>📚 <span id="progress">1</span>/150</span>
+                <span style="opacity:0.3">|</span>
+                <span>🔥 <span id="streak">0</span></span>
+            </div>
+            
             <div class="controls">
                 <button class="icon-btn" onclick="toggleMusic()"><i class="fas fa-volume-mute" id="music-icon"></i></button>
                 <select id="theme-select" onchange="changeTheme(this.value)">
@@ -180,89 +233,90 @@
         </div>
 
         <div class="content-area">
-            <div class="question-text" id="q-text">Đang tải dữ liệu...</div>
+            <div class="question-box">
+                <span class="q-category" id="q-cat">KIẾN THỨC CHUNG</span>
+                <div class="question-text" id="q-text">Đang tải dữ liệu...</div>
+            </div>
+            
             <div class="options-grid" id="opt-container">
                 </div>
-            <button class="next-btn" id="next-btn" onclick="nextQuestion()">TIẾP THEO <i class="fas fa-arrow-right"></i></button>
+            <button class="next-btn" id="next-btn" onclick="nextQuestion()">Tiếp theo <i class="fas fa-arrow-right"></i></button>
         </div>
     </div>
 
     <script>
-        // --- 1. DỮ LIỆU CÂU HỎI TỪ PDF (PHÂN NHÓM CHẶT CHẼ) ---
-        // G: Group (để AI lấy đáp án nhiễu cùng loại)
-        // Q: Câu hỏi
-        // A: Đáp án đúng
+        // --- 1. DỮ LIỆU CÂU HỎI (Đã phân nhóm Strict Grouping) ---
+        // g: Group (quan trọng để AI chọn đáp án nhiễu)
+        // c: Category (hiển thị UI)
         const db = [
             // --- G: ANGLE (Góc độ & Hình học) ---
-            { g: "angle", q: "Trường thị giác quy ước là hình chóp nón có góc ở đỉnh là bao nhiêu?", a: "30 độ" },
-            { g: "angle", q: "Tổng giới hạn trái – phải của trường thị giác con người là bao nhiêu?", a: "130 độ" },
-            { g: "angle", q: "Tổng giới hạn trên – dưới của trường thị giác con người là bao nhiêu?", a: "75 độ" },
-            { g: "angle", q: "Tỷ lệ vàng (Golden Ratio) xấp xỉ bao nhiêu?", a: "1.618" },
-            { g: "angle", q: "Góc nhìn tốt nhất trong trường thị giác ngang là bao nhiêu?", a: "60 độ" },
-
+            { g: "angle", c: "THỊ GIÁC & GÓC ĐỘ", q: "Trường thị giác quy ước là hình chóp nón có góc ở đỉnh là bao nhiêu?", a: "30 độ" },
+            { g: "angle", c: "THỊ GIÁC & GÓC ĐỘ", q: "Tổng giới hạn trái – phải của trường thị giác con người là bao nhiêu?", a: "130 độ" },
+            { g: "angle", c: "THỊ GIÁC & GÓC ĐỘ", q: "Tổng giới hạn trên – dưới của trường thị giác con người là bao nhiêu?", a: "75 độ" },
+            { g: "angle", c: "THỊ GIÁC & GÓC ĐỘ", q: "Góc nhìn tốt nhất trong trường thị giác ngang là bao nhiêu?", a: "60 độ" },
+            
             // --- G: DEF (Định nghĩa khái niệm) ---
-            { g: "def", q: "Cơ sở tạo hình là gì?", a: "Tập hợp kiến thức nền tảng được sắp xếp khoa học đạt hiệu quả thị giác cao." },
-            { g: "def", q: "Lực thị giác là gì?", a: "Sự chú ý, tập trung của mắt tới một đối tượng." },
-            { g: "def", q: "Trường lực là gì?", a: "Sự hấp dẫn toả ra xung quanh tín hiệu hình ảnh." },
-            { g: "def", q: "Thị giác là gì?", a: "Khả năng tiếp nhận và diễn giải thông tin từ ánh sáng." },
-            { g: "def", q: "Nhận thức thị giác là gì?", a: "Khả năng hiểu nội dung thông tin từ hình ảnh." },
-            { g: "def", q: "Trọng lượng thị giác là gì?", a: "Khía cạnh nặng - nhẹ của hình ảnh." },
-            { g: "def", q: "Cường độ thị giác là gì?", a: "Mức độ lớn nhỏ của trường lực." },
-            { g: "def", q: "Cân bằng thị giác là gì?", a: "Sự sắp xếp tạo độ nhấn hoặc sức căng hợp lý." },
-            { g: "def", q: "Tương phản là gì?", a: "Sự khác biệt, trái ngược nhau giữa các tín hiệu thị giác." },
-            { g: "def", q: "Vi biến là gì?", a: "Sự tương phản nhẹ, chuyển biến dần, khác biệt rất ít." },
-            { g: "def", q: "Nhịp điệu là gì?", a: "Sự lặp lại của các nhóm sự vật có tổ chức." },
+            { g: "def", c: "ĐỊNH NGHĨA", q: "Cơ sở tạo hình là gì?", a: "Tập hợp kiến thức nền tảng được sắp xếp khoa học đạt hiệu quả thị giác cao." },
+            { g: "def", c: "ĐỊNH NGHĨA", q: "Lực thị giác là gì?", a: "Sự chú ý, tập trung của mắt tới một đối tượng." },
+            { g: "def", c: "ĐỊNH NGHĨA", q: "Trường lực là gì?", a: "Sự hấp dẫn toả ra xung quanh tín hiệu hình ảnh." },
+            { g: "def", c: "ĐỊNH NGHĨA", q: "Thị giác là gì?", a: "Khả năng tiếp nhận và diễn giải thông tin từ ánh sáng." },
+            { g: "def", c: "ĐỊNH NGHĨA", q: "Trọng lượng thị giác là gì?", a: "Khía cạnh nặng - nhẹ của hình ảnh." },
+            { g: "def", c: "ĐỊNH NGHĨA", q: "Cường độ thị giác là gì?", a: "Mức độ lớn nhỏ của trường lực." },
+            { g: "def", c: "ĐỊNH NGHĨA", q: "Cân bằng thị giác là gì?", a: "Sự sắp xếp tạo độ nhấn hoặc sức căng hợp lý." },
+            { g: "def", c: "ĐỊNH NGHĨA", q: "Tương phản là gì?", a: "Sự khác biệt, trái ngược nhau giữa các tín hiệu thị giác." },
+            { g: "def", c: "ĐỊNH NGHĨA", q: "Vi biến là gì?", a: "Sự tương phản nhẹ, chuyển biến dần, khác biệt rất ít." },
+            { g: "def", c: "ĐỊNH NGHĨA", q: "Nhịp điệu là gì?", a: "Sự lặp lại của các nhóm sự vật có tổ chức." },
 
             // --- G: COLOR_FEEL (Cảm giác màu) ---
-            { g: "feel", q: "Màu xanh da trời tạo cảm giác gì?", a: "An toàn, tin cậy, hòa bình." },
-            { g: "feel", q: "Màu đỏ tạo cảm giác gì?", a: "Nhiệt huyết, ham muốn, nguy hiểm." },
-            { g: "feel", q: "Màu tím tạo cảm giác gì?", a: "Tinh tế, huyền bí, chung thủy." },
-            { g: "feel", q: "Màu vàng tạo cảm giác gì?", a: "Tích cực, lạc quan, ấm áp." },
-            { g: "feel", q: "Màu đen tạo cảm giác gì?", a: "Sang trọng, cổ điển, bí ẩn." },
-            { g: "feel", q: "Màu trắng tạo cảm giác gì?", a: "Trong sạch, thuần khiết, đơn giản." },
-            { g: "feel", q: "Màu cam tạo cảm giác gì?", a: "Hài hước, cởi mở, năng động." },
-            { g: "feel", q: "Màu nâu tạo cảm giác gì?", a: "Gần gũi, lâu dài, ổn định." },
-            { g: "feel", q: "Gam màu nóng tạo cảm giác gì?", a: "Tạo sức nóng, tỏa năng lượng, sinh lực." },
-            { g: "feel", q: "Gam màu lạnh tạo cảm giác gì?", a: "Bình yên, mát mẻ, dễ chịu." },
+            { g: "feel", c: "CẢM GIÁC MÀU SẮC", q: "Màu xanh da trời tạo cảm giác gì?", a: "An toàn, tin cậy, hòa bình." },
+            { g: "feel", c: "CẢM GIÁC MÀU SẮC", q: "Màu đỏ tạo cảm giác gì?", a: "Nhiệt huyết, ham muốn, nguy hiểm." },
+            { g: "feel", c: "CẢM GIÁC MÀU SẮC", q: "Màu tím tạo cảm giác gì?", a: "Tinh tế, huyền bí, chung thủy." },
+            { g: "feel", c: "CẢM GIÁC MÀU SẮC", q: "Màu vàng tạo cảm giác gì?", a: "Tích cực, lạc quan, ấm áp." },
+            { g: "feel", c: "CẢM GIÁC MÀU SẮC", q: "Màu đen tạo cảm giác gì?", a: "Sang trọng, cổ điển, bí ẩn." },
+            { g: "feel", c: "CẢM GIÁC MÀU SẮC", q: "Màu trắng tạo cảm giác gì?", a: "Trong sạch, thuần khiết, đơn giản." },
+            { g: "feel", c: "CẢM GIÁC MÀU SẮC", q: "Màu cam tạo cảm giác gì?", a: "Hài hước, cởi mở, năng động." },
+            { g: "feel", c: "CẢM GIÁC MÀU SẮC", q: "Màu nâu tạo cảm giác gì?", a: "Gần gũi, lâu dài, ổn định." },
+            { g: "feel", c: "CẢM GIÁC MÀU SẮC", q: "Gam màu nóng tạo cảm giác gì?", a: "Tạo sức nóng, tỏa năng lượng, sinh lực." },
+            { g: "feel", c: "CẢM GIÁC MÀU SẮC", q: "Gam màu lạnh tạo cảm giác gì?", a: "Bình yên, mát mẻ, dễ chịu." },
 
             // --- G: COLOR_TYPE (Phân loại màu) ---
-            { g: "color", q: "Màu gốc cơ bản của hệ màu cộng (RGB)?", a: "Đỏ, Xanh lá, Xanh lam." },
-            { g: "color", q: "Màu gốc cơ bản của hệ màu hữu cơ (RYB)?", a: "Đỏ cờ, Vàng chanh, Xanh coban." },
-            { g: "color", q: "Hệ màu CMYK bao gồm?", a: "Xanh lơ, Hồng cánh sen, Vàng, Đen." },
-            { g: "color", q: "Màu vô sắc bao gồm những màu nào?", a: "Đen, Trắng, Xám." },
-            { g: "color", q: "Màu hữu sắc là gì?", a: "Tất cả các màu trừ Đen, Trắng, Xám." },
-            { g: "color", q: "Trộn tất cả màu cộng (Ánh sáng) ra màu gì?", a: "Màu trắng." },
-            { g: "color", q: "Trộn tất cả màu trừ (In ấn) ra màu gì?", a: "Màu đen." },
-            { g: "color", q: "Trộn tất cả màu hữu cơ ra màu gì?", a: "Màu xám." },
+            { g: "color", c: "LÝ THUYẾT MÀU", q: "Màu gốc cơ bản của hệ màu cộng (RGB)?", a: "Đỏ, Xanh lá, Xanh lam." },
+            { g: "color", c: "LÝ THUYẾT MÀU", q: "Màu gốc cơ bản của hệ màu hữu cơ (RYB)?", a: "Đỏ cờ, Vàng chanh, Xanh coban." },
+            { g: "color", c: "LÝ THUYẾT MÀU", q: "Hệ màu CMYK bao gồm?", a: "Xanh lơ, Hồng cánh sen, Vàng, Đen." },
+            { g: "color", c: "LÝ THUYẾT MÀU", q: "Màu vô sắc bao gồm những màu nào?", a: "Đen, Trắng, Xám." },
+            { g: "color", c: "LÝ THUYẾT MÀU", q: "Trộn tất cả màu cộng (Ánh sáng) ra màu gì?", a: "Màu trắng." },
+            { g: "color", c: "LÝ THUYẾT MÀU", q: "Trộn tất cả màu trừ (In ấn) ra màu gì?", a: "Màu đen." },
+            { g: "color", c: "LÝ THUYẾT MÀU", q: "Trộn tất cả màu hữu cơ ra màu gì?", a: "Màu xám." },
 
             // --- G: SHAPE_DIR (Hướng hình khối) ---
-            { g: "dir", q: "Hình tròn là hình có hướng như thế nào?", a: "Vô hướng." },
-            { g: "dir", q: "Hình vuông và hình chữ nhật là hình có hướng như thế nào?", a: "Hướng đối lập." },
-            { g: "dir", q: "Hình lục giác là hình có hướng như thế nào?", a: "Đa hướng." },
-            { g: "dir", q: "Hình định hướng là hình như thế nào?", a: "Hình có chuyển động rõ về một phía." },
-            { g: "dir", q: "Điểm có đặc tính hướng như thế nào?", a: "Vô hướng, có tính tập trung." },
+            { g: "dir", c: "HÌNH KHỐI", q: "Hình tròn là hình có hướng như thế nào?", a: "Vô hướng." },
+            { g: "dir", c: "HÌNH KHỐI", q: "Hình vuông và hình chữ nhật là hình có hướng như thế nào?", a: "Hướng đối lập." },
+            { g: "dir", c: "HÌNH KHỐI", q: "Hình lục giác là hình có hướng như thế nào?", a: "Đa hướng." },
+            { g: "dir", c: "HÌNH KHỐI", q: "Hình định hướng là hình như thế nào?", a: "Hình có chuyển động rõ về một phía." },
+            { g: "dir", c: "HÌNH KHỐI", q: "Điểm có đặc tính hướng như thế nào?", a: "Vô hướng, có tính tập trung." },
 
             // --- G: BALANCE_RULE (Quy tắc cân bằng) ---
-            { g: "rule", q: "Trong cân bằng thị giác, hình hướng lên tạo cảm giác gì?", a: "Cảm giác nhẹ." },
-            { g: "rule", q: "Trong cân bằng thị giác, hình hướng xuống tạo cảm giác gì?", a: "Cảm giác nặng." },
-            { g: "rule", q: "Cân bằng thị giác Trên - Dưới quy ước thế nào?", a: "Trên nhẹ, dưới nặng." },
-            { g: "rule", q: "Cân bằng thị giác Trái - Phải quy ước thế nào?", a: "Phải nhẹ, trái nặng." },
-            { g: "rule", q: "Cân bằng thị giác Trước - Sau quy ước thế nào?", a: "Sau nhẹ, trước nặng." },
-            { g: "rule", q: "Vị trí trung tâm cho cảm giác gì?", a: "Cân bằng ổn định nhất." },
+            { g: "rule", c: "QUY TẮC CÂN BẰNG", q: "Trong cân bằng thị giác, hình hướng lên tạo cảm giác gì?", a: "Cảm giác nhẹ." },
+            { g: "rule", c: "QUY TẮC CÂN BẰNG", q: "Trong cân bằng thị giác, hình hướng xuống tạo cảm giác gì?", a: "Cảm giác nặng." },
+            { g: "rule", c: "QUY TẮC CÂN BẰNG", q: "Cân bằng thị giác Trên - Dưới quy ước thế nào?", a: "Trên nhẹ, dưới nặng." },
+            { g: "rule", c: "QUY TẮC CÂN BẰNG", q: "Cân bằng thị giác Trái - Phải quy ước thế nào?", a: "Phải nhẹ, trái nặng." },
+            { g: "rule", c: "QUY TẮC CÂN BẰNG", q: "Cân bằng thị giác Trước - Sau quy ước thế nào?", a: "Sau nhẹ, trước nặng." },
+            { g: "rule", c: "QUY TẮC CÂN BẰNG", q: "Vị trí trung tâm cho cảm giác gì?", a: "Cân bằng ổn định nhất." },
 
-            // --- G: LIST (Danh sách liệt kê) ---
-            { g: "list", q: "Có mấy cặp cân bằng thị giác chính?", a: "3 cặp: Trên-Dưới, Trái-Phải, Trước-Sau." },
-            { g: "list", q: "Có mấy loại nhịp điệu cơ bản?", a: "4 loại: Liên tục, Tiệm biến, Lồi lõm, Giao thoa." },
-            { g: "list", q: "Có mấy loại nét cơ bản?", a: "4 loại: Có nghĩa, Liên tưởng, Đa nghĩa, Cấu tạo." },
-            { g: "list", q: "Hệ thống xử lý thông tin con người có mấy cấu trúc?", a: "3 cấu trúc: Giác quan, Làm việc, Dài hạn." },
-            { g: "list", q: "Các hình thức tương phản cơ bản gồm?", a: "Đường nét, Hình khối, Màu sắc, Đậm nhạt, Chất liệu." },
-            
             // --- G: LIGHT (Ánh sáng) ---
-            { g: "light", q: "Nguồn sáng chính là gì?", a: "Nguồn sáng mạnh nhất chiếu vào vật thể." },
-            { g: "light", q: "Nguồn sáng phụ có tác dụng gì?", a: "Làm mềm bóng đổ, giảm độ tương phản." },
-            { g: "light", q: "Ánh sáng vàng trong nhà hàng có tác dụng gì?", a: "Tạo cảm giác ấm cúng, ngon miệng." },
-            { g: "light", q: "Ánh sáng đèn flash có đặc điểm gì?", a: "Rõ nét nhưng ít bóng đổ, hình ảnh phẳng." },
-            { g: "light", q: "Ánh sáng mặt trời đẹp nhất vào giờ nào?", a: "8h30-10h30 và 13h30-15h30." }
+            { g: "light", c: "ÁNH SÁNG", q: "Nguồn sáng chính là gì?", a: "Nguồn sáng mạnh nhất chiếu vào vật thể." },
+            { g: "light", c: "ÁNH SÁNG", q: "Nguồn sáng phụ có tác dụng gì?", a: "Làm mềm bóng đổ, giảm độ tương phản." },
+            { g: "light", c: "ÁNH SÁNG", q: "Ánh sáng vàng trong nhà hàng có tác dụng gì?", a: "Tạo cảm giác ấm cúng, ngon miệng." },
+            { g: "light", c: "ÁNH SÁNG", q: "Ánh sáng đèn flash có đặc điểm gì?", a: "Rõ nét nhưng ít bóng đổ, hình ảnh phẳng." },
+            { g: "light", c: "ÁNH SÁNG", q: "Ánh sáng mặt trời đẹp nhất vào giờ nào?", a: "8h30-10h30 và 13h30-15h30." },
+            
+             // --- G: NUMBER (Số lượng) ---
+            { g: "num", c: "SỐ LƯỢNG", q: "Có mấy cặp cân bằng thị giác chính?", a: "3 cặp" },
+            { g: "num", c: "SỐ LƯỢNG", q: "Có mấy loại nhịp điệu cơ bản?", a: "4 loại" },
+            { g: "num", c: "SỐ LƯỢNG", q: "Có mấy loại nét cơ bản?", a: "4 loại" },
+            { g: "num", c: "SỐ LƯỢNG", q: "Hệ thống xử lý thông tin con người có mấy cấu trúc?", a: "3 cấu trúc" },
+            { g: "num", c: "SỐ LƯỢNG", q: "Có mấy loại ánh sáng cơ bản?", a: "2 loại" },
+            { g: "num", c: "SỐ LƯỢNG", q: "Tỷ lệ vàng (Golden Ratio) xấp xỉ bao nhiêu?", a: "1.618" }
         ];
 
         // --- 2. LOGIC GAME ---
@@ -279,12 +333,12 @@
             deck: [],
             currentQ: null,
             streak: 0,
-            playing: false,
-            themeIdx: 0
+            playing: false
         };
 
         const ui = {
             qText: document.getElementById('q-text'),
+            qCat: document.getElementById('q-cat'),
             opts: document.getElementById('opt-container'),
             nextBtn: document.getElementById('next-btn'),
             streak: document.getElementById('streak'),
@@ -295,9 +349,7 @@
             root: document.documentElement
         };
 
-        // --- INIT & UTILS ---
         function init() {
-            // Tạo bộ bài (Index shuffle)
             state.deck = Array.from({length: db.length}, (_, i) => i);
             shuffle(state.deck);
             loadQuestion();
@@ -314,50 +366,43 @@
             ui.nextBtn.style.display = 'none';
             ui.opts.innerHTML = '';
             
-            // Hết câu hỏi thì reset
             if (state.deck.length === 0) {
-                alert("Bạn đã hoàn thành tất cả câu hỏi! Reset.");
+                alert("Hoàn thành! Bắt đầu lại.");
                 state.deck = Array.from({length: db.length}, (_, i) => i);
                 shuffle(state.deck);
             }
 
-            // Rút bài
             const idx = state.deck.pop();
             const q = db[idx];
             state.currentQ = q;
 
             ui.qText.innerText = q.q;
+            ui.qCat.innerText = q.c;
             ui.prog.innerText = db.length - state.deck.length;
 
-            // --- THUẬT TOÁN TẠO ĐÁP ÁN NHIỄU THÔNG MINH ---
-            // 1. Lấy tất cả câu có cùng Group (g)
+            // STRICT GROUPING: Lấy đáp án nhiễu cùng Group (g)
             let groupItems = db.filter(item => item.g === q.g && item.a !== q.a);
-            
             let distractors = [];
             
-            // 2. Nếu Group có đủ 3 đáp án khác, lấy random trong đó
             if (groupItems.length >= 3) {
                 shuffle(groupItems);
                 distractors = groupItems.slice(0, 3).map(i => i.a);
             } else {
-                // 3. Nếu không đủ (hiếm), lấy random trong toàn bộ DB nhưng tránh trùng
                 let others = db.filter(i => i.a !== q.a);
                 shuffle(others);
                 distractors = others.slice(0, 3).map(i => i.a);
             }
 
-            // 4. Trộn đáp án đúng vào
             let options = [q.a, ...distractors];
             shuffle(options);
 
-            // 5. Render Buttons (Sử dụng thẻ BUTTON chuẩn)
             const labels = ['A', 'B', 'C', 'D'];
             options.forEach((txt, i) => {
-                const btn = document.createElement('button'); // Dùng button để nhận click tốt nhất
+                const btn = document.createElement('button'); // Dùng BUTTON
                 btn.className = 'option-btn';
                 btn.innerHTML = `<div class="tag">${labels[i]}</div><span>${txt}</span>`;
                 
-                // Gán sự kiện click trực tiếp
+                // Sự kiện click (sử dụng onclick để đảm bảo tương thích)
                 btn.onclick = (e) => handleAnswer(e, btn, txt === q.a, q.a);
                 
                 ui.opts.appendChild(btn);
@@ -365,10 +410,7 @@
         }
 
         function handleAnswer(e, btn, isCorrect, correctTxt) {
-            // Hiệu ứng hạt
             createParticles(e.clientX, e.clientY);
-
-            // Disable tất cả nút
             const all = document.querySelectorAll('.option-btn');
             all.forEach(b => b.disabled = true);
 
@@ -382,7 +424,6 @@
                 btn.classList.add('wrong');
                 state.streak = 0;
                 ui.streak.innerText = 0;
-                // Hiện đáp án đúng
                 all.forEach(b => {
                     if (b.innerText.includes(correctTxt)) b.classList.add('correct');
                 });
@@ -394,7 +435,6 @@
             loadQuestion();
         }
 
-        // --- MEDIA & THEME ---
         function changeTheme(idx) {
             const t = themes[idx];
             ui.video.src = t.video;
@@ -403,9 +443,7 @@
             
             ui.root.style.setProperty('--grad-1', t.c1);
             ui.root.style.setProperty('--grad-2', t.c2);
-            
-            // Đổi màu viền avatar
-            document.getElementById('avatar-img').style.borderColor = t.c1;
+            ui.root.style.setProperty('--accent', t.c2);
         }
 
         function toggleMusic() {
@@ -420,59 +458,43 @@
             }
         }
 
-        // --- AUDIO ENGINE (Tạo âm thanh không cần file) ---
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playSound(type) {
             if (audioCtx.state === 'suspended') audioCtx.resume();
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             osc.connect(gain); gain.connect(audioCtx.destination);
-            
             const now = audioCtx.currentTime;
+            
             if (type === 'correct') {
-                osc.type = 'sine'; 
-                osc.frequency.setValueAtTime(600, now);
+                osc.type = 'sine'; osc.frequency.setValueAtTime(600, now);
                 osc.frequency.exponentialRampToValueAtTime(1000, now + 0.1);
-                gain.gain.setValueAtTime(0.1, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
                 osc.start(now); osc.stop(now + 0.3);
             } else {
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(150, now);
+                osc.type = 'triangle'; osc.frequency.setValueAtTime(150, now);
                 osc.frequency.linearRampToValueAtTime(100, now + 0.2);
-                gain.gain.setValueAtTime(0.1, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
                 osc.start(now); osc.stop(now + 0.2);
             }
         }
 
-        // --- PARTICLE EFFECT ---
         function createParticles(x, y) {
-            const count = 10;
-            for(let i=0; i<count; i++) {
+            for(let i=0; i<8; i++) {
                 const p = document.createElement('div');
                 p.className = 'particle';
-                // Màu ngẫu nhiên theo theme
                 p.style.color = Math.random() > 0.5 ? getComputedStyle(ui.root).getPropertyValue('--grad-2') : '#fff';
                 p.style.left = x + 'px'; p.style.top = y + 'px';
-                
-                // Random hướng bay
                 const angle = Math.random() * Math.PI * 2;
-                const dist = Math.random() * 60 + 20;
-                const dx = Math.cos(angle) * dist;
-                const dy = Math.sin(angle) * dist;
-                
-                p.style.setProperty('--dx', dx + 'px');
-                p.style.setProperty('--dy', dy + 'px');
-                
+                const dist = Math.random() * 50 + 20;
+                p.style.setProperty('--dx', (Math.cos(angle) * dist) + 'px');
+                p.style.setProperty('--dy', (Math.sin(angle) * dist) + 'px');
                 document.body.appendChild(p);
                 setTimeout(() => p.remove(), 600);
             }
         }
 
-        // Start App
         init();
-
     </script>
 </body>
 </html>
