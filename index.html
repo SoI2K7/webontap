@@ -2,510 +2,476 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ôn Tập CSTH - Ultra Glass</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ôn Tập CSTH - Final Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --primary-glow: #7289da;
-            --text-main: #ffffff;
-            --text-sub: #rgba(255, 255, 255, 0.7);
-            
-            /* Màu Gradient mặc định */
             --grad-1: #7289da;
             --grad-2: #00d2ff;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; user-select: none; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
 
         body {
-            height: 100vh;
-            width: 100vw;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            color: var(--text-main);
-            background: #000;
+            height: 100vh; width: 100vw;
+            display: flex; justify-content: center; align-items: center;
+            overflow: hidden; color: white; background: #000;
         }
 
-        /* --- VIDEO BACKGROUND --- */
         #bg-video {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            object-fit: cover;
-            z-index: -1;
-            /* Giữ độ sáng tốt để hiệu ứng kính đẹp hơn */
-            filter: brightness(0.8); 
-            transition: opacity 0.5s ease;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover; z-index: -1; filter: brightness(0.6);
         }
 
-        /* --- KHUNG QUIZ (ULTRA GLASS STYLE) --- */
+        /* --- CONTAINER KÍNH LỎNG (LIQUID GLASS) --- */
         .quiz-container {
-            width: 90%;
-            max-width: 480px; /* Thu hẹp lại chút giống giao diện mobile trong ảnh */
+            width: 90%; max-width: 460px;
+            /* Hiệu ứng kính iOS */
+            background: rgba(30, 30, 40, 0.4);
+            backdrop-filter: blur(40px) saturate(150%);
+            -webkit-backdrop-filter: blur(40px) saturate(150%);
             
-            /* Nền kính siêu trong với gradient nhẹ từ trên xuống */
-            background: linear-gradient(
-                180deg, 
-                rgba(255, 255, 255, 0.08) 0%, 
-                rgba(255, 255, 255, 0.02) 100%
-            );
-            
-            /* Blur cực mạnh để làm mờ nền phía sau */
-            backdrop-filter: blur(40px);
-            -webkit-backdrop-filter: blur(40px);
-            
-            /* Viền kính mỏng */
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-top: 1px solid rgba(255, 255, 255, 0.3); /* Viền trên sáng hơn tạo khối */
-            
-            border-radius: 35px; /* Bo góc tròn trịa */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 32px;
             padding: 30px 25px;
             
-            /* Bóng đổ mềm */
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
-
-            position: relative;
-            max-height: 90vh;
-            overflow-y: auto;
-            animation: floatUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+            box-shadow: 0 30px 50px -10px rgba(0, 0, 0, 0.6);
+            position: relative; 
+            max-height: 90vh; 
+            display: flex; flex-direction: column;
+            animation: popIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        @keyframes floatUp {
-            from { opacity: 0; transform: translateY(50px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        /* Scrollbar ẩn cho đẹp */
-        .quiz-container::-webkit-scrollbar { width: 0; }
+        @keyframes popIn { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
 
         /* Header */
-        .header {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            margin-bottom: 30px;
-            position: relative;
-        }
-
-        /* Avatar Glow Effect */
-        .avatar-wrapper {
-            position: relative;
-            margin-bottom: 15px;
-        }
-
-        .avatar-glow-ring {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100px; height: 100px;
-            border-radius: 50%;
-            background: radial-gradient(circle, var(--grad-1) 0%, transparent 70%);
-            opacity: 0.6;
-            filter: blur(15px);
-            z-index: 0;
-            transition: background 0.5s ease;
-        }
-
+        .header { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; flex-shrink: 0; }
+        
         .avatar {
-            width: 90px; height: 90px; 
-            border-radius: 50%;
-            border: 2px solid rgba(255,255,255,0.8);
-            position: relative;
-            z-index: 1;
-            object-fit: cover;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            width: 80px; height: 80px; border-radius: 50%;
+            border: 3px solid rgba(255,255,255,0.2); 
+            object-fit: cover; margin-bottom: 10px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
 
-        .status-badge {
-            font-size: 12px;
-            background: rgba(0,0,0,0.3);
-            padding: 4px 12px;
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.1);
-            margin-top: 5px;
-            color: rgba(255,255,255,0.8);
-            backdrop-filter: blur(10px);
+        .stats-bar {
+            display: flex; gap: 10px; font-size: 13px; font-weight: 600;
+            background: rgba(0,0,0,0.3); padding: 6px 16px; border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1); margin-bottom: 15px;
         }
 
-        /* Controls Area (Nằm gọn gàng) */
-        .controls-row {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-            justify-content: center;
+        .controls { display: flex; gap: 10px; }
+        .icon-btn {
+            width: 36px; height: 36px; border-radius: 10px;
+            background: rgba(255,255,255,0.1); border: none;
+            color: white; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: 0.2s;
+        }
+        .icon-btn:active { transform: scale(0.9); background: rgba(255,255,255,0.2); }
+
+        select {
+            background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2);
+            color: white; padding: 0 10px; border-radius: 10px; height: 36px; outline: none; font-size: 12px;
         }
 
-        .glass-btn-icon {
-            width: 40px; height: 40px;
-            border-radius: 12px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            display: flex; justify-content: center; align-items: center;
-            color: white; cursor: pointer;
-            transition: 0.3s;
+        /* Question Scroll Area */
+        .content-area {
+            overflow-y: auto; 
+            padding-right: 5px; /* Space for scrollbar */
+            flex-grow: 1;
+            /* Scrollbar styling */
+            scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.2) transparent;
         }
-        .glass-btn-icon:hover { background: rgba(255,255,255,0.15); transform: translateY(-2px); }
-
-        #theme-select {
-            background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: white; padding: 0 15px;
-            border-radius: 12px; outline: none; cursor: pointer;
-            font-size: 13px; height: 40px;
-        }
-        #theme-select option { background: #222; }
-
-        /* Question Area */
-        .question-box {
-            background: rgba(0, 0, 0, 0.2); /* Nền tối nhẹ cho vùng câu hỏi */
-            border-radius: 24px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
+        .content-area::-webkit-scrollbar { width: 4px; }
+        .content-area::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
 
         .question-text {
-            font-size: 18px; font-weight: 600; line-height: 1.5;
-            text-align: left; margin-bottom: 5px;
-        }
-        
-        .question-meta {
-            font-size: 12px; color: rgba(255,255,255,0.5);
-            margin-bottom: 15px; display: block;
+            font-size: 18px; font-weight: 700; line-height: 1.5; margin-bottom: 25px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
         }
 
-        /* Option Buttons (Glass Blocks) */
+        /* Option Buttons - Đã chuyển sang thẻ BUTTON để fix lỗi click */
         .options-grid { display: flex; flex-direction: column; gap: 12px; }
-
+        
         .option-btn {
-            background: rgba(255, 255, 255, 0.03); /* Siêu trong */
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 16px 20px; 
-            border-radius: 16px;
-            color: rgba(255,255,255,0.9); 
-            text-align: left;
-            cursor: pointer; 
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            font-size: 15px; display: flex; align-items: center;
-            position: relative; overflow: hidden;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 18px 20px; border-radius: 18px;
+            color: rgba(255,255,255,0.9); text-align: left;
+            font-size: 15px; font-weight: 500;
+            cursor: pointer; position: relative;
+            display: flex; align-items: flex-start;
+            transition: all 0.2s ease;
+            -webkit-user-select: none;
         }
 
-        .option-btn:hover:not(:disabled) {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-
-        .option-tag {
-            width: 28px; height: 28px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 8px;
-            display: flex; justify-content: center; align-items: center;
-            margin-right: 15px;
-            font-size: 12px; font-weight: 700;
+        .option-btn:active { transform: scale(0.98); background: rgba(255,255,255,0.1); }
+        
+        .tag {
+            min-width: 24px; height: 24px; background: rgba(255,255,255,0.1);
+            border-radius: 6px; display: flex; align-items: center; justify-content: center;
+            font-size: 12px; font-weight: 700; margin-right: 15px; margin-top: 1px;
             color: var(--grad-2);
         }
 
-        /* States */
-        .option-btn.correct { 
-            background: rgba(67, 181, 129, 0.2) !important; 
-            border: 1px solid #43b581 !important; 
-            color: white !important; 
-            box-shadow: 0 0 20px rgba(67, 181, 129, 0.2);
+        /* States Correct/Wrong */
+        .option-btn.correct {
+            background: rgba(46, 204, 113, 0.2) !important;
+            border-color: #2ecc71 !important;
+            box-shadow: 0 0 20px rgba(46, 204, 113, 0.25);
         }
-        .option-btn.wrong { 
-            background: rgba(240, 71, 71, 0.2) !important; 
-            border: 1px solid #f04747 !important; 
-            color: white !important; 
+        .option-btn.wrong {
+            background: rgba(231, 76, 60, 0.2) !important;
+            border-color: #e74c3c !important;
+            opacity: 0.7;
         }
 
-        /* Footer Button */
+        /* Next Button */
         .next-btn {
-            width: 100%;
-            margin-top: 20px;
+            width: 100%; margin-top: 25px;
             background: linear-gradient(90deg, var(--grad-1), var(--grad-2));
-            color: white; border: none; padding: 15px;
-            border-radius: 16px; font-weight: 600; cursor: pointer;
-            transition: 0.3s; display: none;
+            border: none; padding: 16px; border-radius: 16px;
+            color: white; font-weight: 700; font-size: 16px; letter-spacing: 1px;
+            cursor: pointer; display: none;
             box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-            font-size: 16px; text-transform: uppercase; letter-spacing: 1px;
+            animation: slideUp 0.3s ease;
         }
-        .next-btn:hover { filter: brightness(1.1); transform: translateY(-2px); }
+        @keyframes slideUp { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        /* --- FIREFLY PARTICLES --- */
+        /* Particles */
         .particle {
-            position: absolute; pointer-events: none; border-radius: 50%; z-index: 9999;
-            /* Blur nhẹ để giống đốm sáng */
-            filter: blur(2px);
-            animation: firefly 1s ease-out forwards;
+            position: absolute; pointer-events: none; border-radius: 50%; z-index: 100;
+            box-shadow: 0 0 6px currentColor;
+            animation: pop 0.6s ease-out forwards;
         }
-        @keyframes firefly {
-            0% { transform: translate(0, 0) scale(0.5); opacity: 0; }
-            20% { opacity: 1; transform: translate(var(--tx), var(--ty)) scale(1.2); }
-            100% { transform: translate(var(--tx-end), var(--ty-end)) scale(0); opacity: 0; }
-        }
+        @keyframes pop { to { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; } }
 
     </style>
 </head>
 <body>
 
-    <video autoplay muted loop id="bg-video">
-        <source src="media/1,1.mp4" type="video/mp4">
-    </video>
-
-    <audio id="bg-music" loop>
-        <source src="audio/a5.mp3" type="audio/mpeg">
-    </audio>
+    <video autoplay muted loop id="bg-video"><source src="media/1,1.mp4" type="video/mp4"></video>
+    <audio id="bg-music" loop><source src="audio/a5.mp3" type="audio/mpeg"></audio>
 
     <div class="quiz-container">
         <div class="header">
-            <div class="avatar-wrapper">
-                <div class="avatar-glow-ring"></div>
-                <img src="https://ui-avatars.com/api/?name=User&background=random&size=128" alt="User" class="avatar">
+            <img src="https://ui-avatars.com/api/?name=CSTH&background=random&size=128" class="avatar" id="avatar-img">
+            <div class="stats-bar">
+                <span>🔥 Streak: <span id="streak">0</span></span>
+                <span style="opacity:0.5">|</span>
+                <span>Câu: <span id="progress">1</span>/150</span>
             </div>
-            <h2 style="font-size: 20px; font-weight: 600; margin-bottom: 2px;">Ôn tập CSTH</h2>
-            <div class="status-badge" id="streak-badge">
-                🔥 Streak: <span id="streak-count">0</span>
-            </div>
-
-            <div class="controls-row">
-                <div class="glass-btn-icon" onclick="toggleMusic()">
-                    <i class="fas fa-volume-mute" id="music-icon"></i>
-                </div>
-                <select id="theme-select" onchange="changeTheme(this.value)"></select>
+            <div class="controls">
+                <button class="icon-btn" onclick="toggleMusic()"><i class="fas fa-volume-mute" id="music-icon"></i></button>
+                <select id="theme-select" onchange="changeTheme(this.value)">
+                    <option value="0">Fantasy</option>
+                    <option value="1">Cosmic</option>
+                    <option value="2">Rain</option>
+                    <option value="3">Cyber</option>
+                    <option value="4">Urban</option>
+                    <option value="5">Lofi</option>
+                </select>
             </div>
         </div>
 
-        <div id="quiz-screen">
-            <div class="question-box">
-                <span class="question-meta">CÂU HỎI TRẮC NGHIỆM</span>
-                <div class="question-text" id="question-text">Loading...</div>
-            </div>
-            
-            <div class="options-grid" id="options-container"></div>
-            
-            <button class="next-btn" id="next-btn" onclick="nextQuestion()">Tiếp theo</button>
+        <div class="content-area">
+            <div class="question-text" id="q-text">Đang tải dữ liệu...</div>
+            <div class="options-grid" id="opt-container">
+                </div>
+            <button class="next-btn" id="next-btn" onclick="nextQuestion()">TIẾP THEO <i class="fas fa-arrow-right"></i></button>
         </div>
     </div>
 
     <script>
-        // --- 1. CẤU HÌNH THEMES (Màu mới cho Urban & Cyber) ---
+        // --- 1. DỮ LIỆU CÂU HỎI TỪ PDF (PHÂN NHÓM CHẶT CHẼ) ---
+        // G: Group (để AI lấy đáp án nhiễu cùng loại)
+        // Q: Câu hỏi
+        // A: Đáp án đúng
+        const db = [
+            // --- G: ANGLE (Góc độ & Hình học) ---
+            { g: "angle", q: "Trường thị giác quy ước là hình chóp nón có góc ở đỉnh là bao nhiêu?", a: "30 độ" },
+            { g: "angle", q: "Tổng giới hạn trái – phải của trường thị giác con người là bao nhiêu?", a: "130 độ" },
+            { g: "angle", q: "Tổng giới hạn trên – dưới của trường thị giác con người là bao nhiêu?", a: "75 độ" },
+            { g: "angle", q: "Tỷ lệ vàng (Golden Ratio) xấp xỉ bao nhiêu?", a: "1.618" },
+            { g: "angle", q: "Góc nhìn tốt nhất trong trường thị giác ngang là bao nhiêu?", a: "60 độ" },
+
+            // --- G: DEF (Định nghĩa khái niệm) ---
+            { g: "def", q: "Cơ sở tạo hình là gì?", a: "Tập hợp kiến thức nền tảng được sắp xếp khoa học đạt hiệu quả thị giác cao." },
+            { g: "def", q: "Lực thị giác là gì?", a: "Sự chú ý, tập trung của mắt tới một đối tượng." },
+            { g: "def", q: "Trường lực là gì?", a: "Sự hấp dẫn toả ra xung quanh tín hiệu hình ảnh." },
+            { g: "def", q: "Thị giác là gì?", a: "Khả năng tiếp nhận và diễn giải thông tin từ ánh sáng." },
+            { g: "def", q: "Nhận thức thị giác là gì?", a: "Khả năng hiểu nội dung thông tin từ hình ảnh." },
+            { g: "def", q: "Trọng lượng thị giác là gì?", a: "Khía cạnh nặng - nhẹ của hình ảnh." },
+            { g: "def", q: "Cường độ thị giác là gì?", a: "Mức độ lớn nhỏ của trường lực." },
+            { g: "def", q: "Cân bằng thị giác là gì?", a: "Sự sắp xếp tạo độ nhấn hoặc sức căng hợp lý." },
+            { g: "def", q: "Tương phản là gì?", a: "Sự khác biệt, trái ngược nhau giữa các tín hiệu thị giác." },
+            { g: "def", q: "Vi biến là gì?", a: "Sự tương phản nhẹ, chuyển biến dần, khác biệt rất ít." },
+            { g: "def", q: "Nhịp điệu là gì?", a: "Sự lặp lại của các nhóm sự vật có tổ chức." },
+
+            // --- G: COLOR_FEEL (Cảm giác màu) ---
+            { g: "feel", q: "Màu xanh da trời tạo cảm giác gì?", a: "An toàn, tin cậy, hòa bình." },
+            { g: "feel", q: "Màu đỏ tạo cảm giác gì?", a: "Nhiệt huyết, ham muốn, nguy hiểm." },
+            { g: "feel", q: "Màu tím tạo cảm giác gì?", a: "Tinh tế, huyền bí, chung thủy." },
+            { g: "feel", q: "Màu vàng tạo cảm giác gì?", a: "Tích cực, lạc quan, ấm áp." },
+            { g: "feel", q: "Màu đen tạo cảm giác gì?", a: "Sang trọng, cổ điển, bí ẩn." },
+            { g: "feel", q: "Màu trắng tạo cảm giác gì?", a: "Trong sạch, thuần khiết, đơn giản." },
+            { g: "feel", q: "Màu cam tạo cảm giác gì?", a: "Hài hước, cởi mở, năng động." },
+            { g: "feel", q: "Màu nâu tạo cảm giác gì?", a: "Gần gũi, lâu dài, ổn định." },
+            { g: "feel", q: "Gam màu nóng tạo cảm giác gì?", a: "Tạo sức nóng, tỏa năng lượng, sinh lực." },
+            { g: "feel", q: "Gam màu lạnh tạo cảm giác gì?", a: "Bình yên, mát mẻ, dễ chịu." },
+
+            // --- G: COLOR_TYPE (Phân loại màu) ---
+            { g: "color", q: "Màu gốc cơ bản của hệ màu cộng (RGB)?", a: "Đỏ, Xanh lá, Xanh lam." },
+            { g: "color", q: "Màu gốc cơ bản của hệ màu hữu cơ (RYB)?", a: "Đỏ cờ, Vàng chanh, Xanh coban." },
+            { g: "color", q: "Hệ màu CMYK bao gồm?", a: "Xanh lơ, Hồng cánh sen, Vàng, Đen." },
+            { g: "color", q: "Màu vô sắc bao gồm những màu nào?", a: "Đen, Trắng, Xám." },
+            { g: "color", q: "Màu hữu sắc là gì?", a: "Tất cả các màu trừ Đen, Trắng, Xám." },
+            { g: "color", q: "Trộn tất cả màu cộng (Ánh sáng) ra màu gì?", a: "Màu trắng." },
+            { g: "color", q: "Trộn tất cả màu trừ (In ấn) ra màu gì?", a: "Màu đen." },
+            { g: "color", q: "Trộn tất cả màu hữu cơ ra màu gì?", a: "Màu xám." },
+
+            // --- G: SHAPE_DIR (Hướng hình khối) ---
+            { g: "dir", q: "Hình tròn là hình có hướng như thế nào?", a: "Vô hướng." },
+            { g: "dir", q: "Hình vuông và hình chữ nhật là hình có hướng như thế nào?", a: "Hướng đối lập." },
+            { g: "dir", q: "Hình lục giác là hình có hướng như thế nào?", a: "Đa hướng." },
+            { g: "dir", q: "Hình định hướng là hình như thế nào?", a: "Hình có chuyển động rõ về một phía." },
+            { g: "dir", q: "Điểm có đặc tính hướng như thế nào?", a: "Vô hướng, có tính tập trung." },
+
+            // --- G: BALANCE_RULE (Quy tắc cân bằng) ---
+            { g: "rule", q: "Trong cân bằng thị giác, hình hướng lên tạo cảm giác gì?", a: "Cảm giác nhẹ." },
+            { g: "rule", q: "Trong cân bằng thị giác, hình hướng xuống tạo cảm giác gì?", a: "Cảm giác nặng." },
+            { g: "rule", q: "Cân bằng thị giác Trên - Dưới quy ước thế nào?", a: "Trên nhẹ, dưới nặng." },
+            { g: "rule", q: "Cân bằng thị giác Trái - Phải quy ước thế nào?", a: "Phải nhẹ, trái nặng." },
+            { g: "rule", q: "Cân bằng thị giác Trước - Sau quy ước thế nào?", a: "Sau nhẹ, trước nặng." },
+            { g: "rule", q: "Vị trí trung tâm cho cảm giác gì?", a: "Cân bằng ổn định nhất." },
+
+            // --- G: LIST (Danh sách liệt kê) ---
+            { g: "list", q: "Có mấy cặp cân bằng thị giác chính?", a: "3 cặp: Trên-Dưới, Trái-Phải, Trước-Sau." },
+            { g: "list", q: "Có mấy loại nhịp điệu cơ bản?", a: "4 loại: Liên tục, Tiệm biến, Lồi lõm, Giao thoa." },
+            { g: "list", q: "Có mấy loại nét cơ bản?", a: "4 loại: Có nghĩa, Liên tưởng, Đa nghĩa, Cấu tạo." },
+            { g: "list", q: "Hệ thống xử lý thông tin con người có mấy cấu trúc?", a: "3 cấu trúc: Giác quan, Làm việc, Dài hạn." },
+            { g: "list", q: "Các hình thức tương phản cơ bản gồm?", a: "Đường nét, Hình khối, Màu sắc, Đậm nhạt, Chất liệu." },
+            
+            // --- G: LIGHT (Ánh sáng) ---
+            { g: "light", q: "Nguồn sáng chính là gì?", a: "Nguồn sáng mạnh nhất chiếu vào vật thể." },
+            { g: "light", q: "Nguồn sáng phụ có tác dụng gì?", a: "Làm mềm bóng đổ, giảm độ tương phản." },
+            { g: "light", q: "Ánh sáng vàng trong nhà hàng có tác dụng gì?", a: "Tạo cảm giác ấm cúng, ngon miệng." },
+            { g: "light", q: "Ánh sáng đèn flash có đặc điểm gì?", a: "Rõ nét nhưng ít bóng đổ, hình ảnh phẳng." },
+            { g: "light", q: "Ánh sáng mặt trời đẹp nhất vào giờ nào?", a: "8h30-10h30 và 13h30-15h30." }
+        ];
+
+        // --- 2. LOGIC GAME ---
         const themes = [
-            { name: "Fantasy", video: "media/1,1.mp4", audio: "audio/a5.mp3", c1: "#7289da", c2: "#00d2ff" }, 
-            { name: "Cosmic",  video: "media/1,22.mp4", audio: "audio/a1.m4a", c1: "#ff00cc", c2: "#333399" }, 
-            { name: "Rain",    video: "media/2.mp4",    audio: "audio/a2.m4a", c1: "#00c6ff", c2: "#0072ff" }, 
-            { name: "City",    video: "media/3.mp4",    audio: "audio/a3.m4a", c1: "#f12711", c2: "#f5af19" }, 
-            
-            // Cyber: Cyan -> Magenta (Neon)
-            { name: "Cyber",   video: "media/7.mp4",    audio: "audio/a4.m4a", c1: "#00DBDE", c2: "#FC00FF" }, 
-            
-            // Urban: Modern Blue -> Purple
-            { name: "Urban",   video: "media/8.mp4",    audio: "audio/a6.m4a", c1: "#4568DC", c2: "#B06AB3" }, 
-            
-            { name: "Lofi",    video: "media/lofigirl-loop-audio.mp4", audio: "audio/a7.m4a", c1: "#e67e22", c2: "#d35400" } 
+            { video: "media/1,1.mp4", audio: "audio/a5.mp3", c1: "#7289da", c2: "#00d2ff" },
+            { video: "media/1,22.mp4", audio: "audio/a1.m4a", c1: "#ff00cc", c2: "#333399" },
+            { video: "media/2.mp4", audio: "audio/a2.m4a", c1: "#00c6ff", c2: "#0072ff" },
+            { video: "media/7.mp4", audio: "audio/a4.m4a", c1: "#00DBDE", c2: "#FC00FF" },
+            { video: "media/8.mp4", audio: "audio/a6.m4a", c1: "#4568DC", c2: "#B06AB3" },
+            { video: "media/lofigirl-loop-audio.mp4", audio: "audio/a7.m4a", c1: "#e67e22", c2: "#d35400" }
         ];
 
-        // --- 2. DỮ LIỆU CÂU HỎI (Logic chuẩn) ---
-        const questionsDB = [
-            { q: "Màu xanh da trời tạo cảm giác gì?", a: "An toàn, tin cậy, hòa bình", wrong: ["Nhiệt huyết, ham muốn, nguy hiểm", "Tinh tế, huyền bí, chung thủy", "Sự tích cực, lạc quan, ấm áp"] },
-            { q: "Màu đỏ tạo cảm giác gì?", a: "Nhiệt huyết, ham muốn, nguy hiểm", wrong: ["An toàn, tin cậy, hòa bình", "Tinh tế, huyền bí, chung thủy", "Sự đơn giản, tinh khiết"] },
-            { q: "Màu tím tạo cảm giác gì?", a: "Tinh tế, huyền bí, chung thủy", wrong: ["Sự hài hước, cởi mở", "Sức khỏe, đổi mới", "Nhiệt huyết, chiến tranh"] },
-            { q: "Màu gốc cơ bản của màu cộng (RGB)?", a: "Đỏ, Xanh lá, Xanh lam", wrong: ["Đỏ, Vàng, Xanh lam", "Xanh lơ, Hồng cánh sen, Vàng", "Đen, Trắng, Xám"] },
-            { q: "Trộn tất cả màu cộng (Ánh sáng) ra màu gì?", a: "Màu trắng", wrong: ["Màu đen", "Màu xám", "Màu nâu"] },
-            { q: "Gam màu nóng bao gồm những màu nào?", a: "Đỏ, Cam, Vàng (bước sóng dài)", wrong: ["Xanh lục, Xanh lam, Tím (bước sóng ngắn)", "Đen, Trắng, Xám", "Tím, Hồng, Xanh lơ"] },
-            { q: "Hình tròn là hình có hướng như thế nào?", a: "Vô hướng", wrong: ["Hướng đối lập", "Đa hướng", "Hình định hướng"] },
-            { q: "Hình vuông và hình chữ nhật là hình có hướng như thế nào?", a: "Hướng đối lập", wrong: ["Vô hướng", "Đa hướng", "Chuyển động xoay"] },
-            { q: "Điểm có đặc tính gì?", a: "Vô hướng, có tính tập trung, không có chiều", wrong: ["Có chiều dài, không có chiều rộng", "Có chiều dài, rộng, sâu", "Có hướng chuyển động rõ ràng"] },
-            { q: "Tỷ lệ vàng (Golden Ratio) xấp xỉ bao nhiêu?", a: "1.618", wrong: ["3.141", "1.414", "0.618"] },
-            { q: "Trong cân bằng thị giác, hình hướng lên cho cảm giác gì?", a: "Cảm giác nhẹ", wrong: ["Cảm giác nặng", "Cảm giác ổn định", "Cảm giác đè nén"] },
-            { q: "Tổng giới hạn trái – phải của trường thị giác con người là bao nhiêu?", a: "130 độ", wrong: ["75 độ", "180 độ", "90 độ"] },
-            { q: "Bố cục đường diềm là gì?", a: "Họa tiết lặp lại theo 1 chiều (dọc/ngang)", wrong: ["Họa tiết lặp lại theo 2 chiều vô tận", "Họa tiết đối xứng qua tâm", "Họa tiết tự do không quy luật"] },
-            { q: "Ánh sáng nhân tạo thường dùng trong nhà hàng (màu vàng) để làm gì?", a: "Tạo cảm giác ấm cúng", wrong: ["Tạo cảm giác sạch sẽ, vô trùng", "Tạo sự tập trung cao độ", "Mô phỏng ánh sáng mặt trời tự nhiên"] },
-            { q: "Nguồn sáng chính là gì?", a: "Nguồn sáng mạnh nhất chiếu vào vật thể", wrong: ["Nguồn sáng bổ trợ làm mềm bóng", "Nguồn sáng phản xạ từ môi trường", "Nguồn sáng ven tạo đường viền"] }
-        ];
-
-        // --- 3. LOGIC APP ---
-        let currentStreak = 0;
-        let currentQuestionObj = null;
-        let isMusicPlaying = false;
-        let c1 = themes[0].c1; 
-
-        // Sound Engine
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        function playSoundEffect(type) {
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            const osc = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            osc.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-
-            if (type === 'correct') {
-                osc.type = 'sine'; osc.frequency.setValueAtTime(600, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(1000, audioCtx.currentTime + 0.1);
-                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.4);
-            } else {
-                osc.type = 'triangle'; osc.frequency.setValueAtTime(150, audioCtx.currentTime); osc.frequency.linearRampToValueAtTime(100, audioCtx.currentTime + 0.2);
-                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.2);
-            }
-        }
-
-        const ui = {
-            questionText: document.getElementById('question-text'),
-            optionsContainer: document.getElementById('options-container'),
-            streakCount: document.getElementById('streak-count'),
-            nextBtn: document.getElementById('next-btn'),
-            bgVideo: document.getElementById('bg-video'),
-            bgMusic: document.getElementById('bg-music'),
-            musicIcon: document.getElementById('music-icon'),
-            themeSelect: document.getElementById('theme-select'),
-            avatarGlow: document.querySelector('.avatar-glow-ring')
+        let state = {
+            deck: [],
+            currentQ: null,
+            streak: 0,
+            playing: false,
+            themeIdx: 0
         };
 
-        themes.forEach((theme, index) => {
-            const opt = document.createElement('option');
-            opt.value = index; opt.innerText = theme.name;
-            ui.themeSelect.appendChild(opt);
-        });
+        const ui = {
+            qText: document.getElementById('q-text'),
+            opts: document.getElementById('opt-container'),
+            nextBtn: document.getElementById('next-btn'),
+            streak: document.getElementById('streak'),
+            prog: document.getElementById('progress'),
+            video: document.getElementById('bg-video'),
+            audio: document.getElementById('bg-music'),
+            musicIcon: document.getElementById('music-icon'),
+            root: document.documentElement
+        };
 
-        function changeTheme(index) {
-            const theme = themes[index];
-            ui.bgVideo.src = theme.video;
-            ui.bgMusic.src = theme.audio;
-            if (isMusicPlaying) ui.bgMusic.play();
-            
-            document.documentElement.style.setProperty('--grad-1', theme.c1);
-            document.documentElement.style.setProperty('--grad-2', theme.c2);
-            ui.avatarGlow.style.background = `radial-gradient(circle, ${theme.c1} 0%, transparent 70%)`;
-            c1 = theme.c1;
+        // --- INIT & UTILS ---
+        function init() {
+            // Tạo bộ bài (Index shuffle)
+            state.deck = Array.from({length: db.length}, (_, i) => i);
+            shuffle(state.deck);
+            loadQuestion();
         }
 
-        function toggleMusic() {
-            if (isMusicPlaying) {
-                ui.bgMusic.pause();
-                ui.musicIcon.classList.replace('fa-volume-up', 'fa-volume-mute');
-                isMusicPlaying = false;
-            } else {
-                ui.bgMusic.play().catch(e => console.log("User interaction required"));
-                ui.musicIcon.classList.replace('fa-volume-mute', 'fa-volume-up');
-                isMusicPlaying = true;
-            }
-        }
-
-        document.body.addEventListener('click', function(e) {
-            createParticles(e.clientX, e.clientY);
-        });
-
-        function createParticles(x, y) {
-            const particleCount = 12; // Nhiều hạt hơn
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.classList.add('particle');
-                
-                const color = Math.random() > 0.3 ? c1 : '#ffffff';
-                particle.style.backgroundColor = color;
-                particle.style.boxShadow = `0 0 10px ${color}, 0 0 20px ${color}`; // Glow mạnh hơn
-                
-                particle.style.left = x + 'px';
-                particle.style.top = y + 'px';
-                
-                const size = Math.random() * 6 + 2; 
-                particle.style.width = size + 'px';
-                particle.style.height = size + 'px';
-                
-                // Tính toán hướng bay tự nhiên hơn (đom đóm bay lên)
-                const angle = (Math.random() * Math.PI) + Math.PI; // Hướng lên trên (đảo ngược Y)
-                const velocity = Math.random() * 80 + 40;
-                
-                const tx = (Math.random() - 0.5) * 150; // Bay ngang rộng hơn
-                const ty = (Math.random() - 0.5) * 150 - 50; // Bay lên xu hướng chính
-                
-                particle.style.setProperty('--tx', `${tx}px`);
-                particle.style.setProperty('--ty', `${ty}px`);
-                particle.style.setProperty('--tx-end', `${tx * 1.5}px`);
-                particle.style.setProperty('--ty-end', `${ty * 1.5 - 50}px`);
-                
-                document.body.appendChild(particle);
-                setTimeout(() => particle.remove(), 1000);
-            }
-        }
-
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
+        function shuffle(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
+                [arr[i], arr[j]] = [arr[j], arr[i]];
             }
         }
 
-        function loadNewQuestion() {
+        function loadQuestion() {
             ui.nextBtn.style.display = 'none';
-            ui.optionsContainer.innerHTML = '';
-
-            const randomIndex = Math.floor(Math.random() * questionsDB.length);
-            currentQuestionObj = questionsDB[randomIndex];
-
-            let options = [
-                { text: currentQuestionObj.a, isCorrect: true },
-                { text: currentQuestionObj.wrong[0], isCorrect: false },
-                { text: currentQuestionObj.wrong[1], isCorrect: false },
-                { text: currentQuestionObj.wrong[2], isCorrect: false }
-            ];
+            ui.opts.innerHTML = '';
             
-            shuffleArray(options);
+            // Hết câu hỏi thì reset
+            if (state.deck.length === 0) {
+                alert("Bạn đã hoàn thành tất cả câu hỏi! Reset.");
+                state.deck = Array.from({length: db.length}, (_, i) => i);
+                shuffle(state.deck);
+            }
 
-            ui.questionText.innerText = currentQuestionObj.q;
+            // Rút bài
+            const idx = state.deck.pop();
+            const q = db[idx];
+            state.currentQ = q;
+
+            ui.qText.innerText = q.q;
+            ui.prog.innerText = db.length - state.deck.length;
+
+            // --- THUẬT TOÁN TẠO ĐÁP ÁN NHIỄU THÔNG MINH ---
+            // 1. Lấy tất cả câu có cùng Group (g)
+            let groupItems = db.filter(item => item.g === q.g && item.a !== q.a);
             
+            let distractors = [];
+            
+            // 2. Nếu Group có đủ 3 đáp án khác, lấy random trong đó
+            if (groupItems.length >= 3) {
+                shuffle(groupItems);
+                distractors = groupItems.slice(0, 3).map(i => i.a);
+            } else {
+                // 3. Nếu không đủ (hiếm), lấy random trong toàn bộ DB nhưng tránh trùng
+                let others = db.filter(i => i.a !== q.a);
+                shuffle(others);
+                distractors = others.slice(0, 3).map(i => i.a);
+            }
+
+            // 4. Trộn đáp án đúng vào
+            let options = [q.a, ...distractors];
+            shuffle(options);
+
+            // 5. Render Buttons (Sử dụng thẻ BUTTON chuẩn)
             const labels = ['A', 'B', 'C', 'D'];
-            options.forEach((opt, index) => {
-                const btn = document.createElement('div');
+            options.forEach((txt, i) => {
+                const btn = document.createElement('button'); // Dùng button để nhận click tốt nhất
                 btn.className = 'option-btn';
-                btn.innerHTML = `<span class="option-tag">${labels[index]}</span> ${opt.text}`;
+                btn.innerHTML = `<div class="tag">${labels[i]}</div><span>${txt}</span>`;
                 
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation(); 
-                    createParticles(e.clientX, e.clientY); 
-                    checkAnswer(btn, opt.isCorrect);
-                });
+                // Gán sự kiện click trực tiếp
+                btn.onclick = (e) => handleAnswer(e, btn, txt === q.a, q.a);
                 
-                ui.optionsContainer.appendChild(btn);
+                ui.opts.appendChild(btn);
             });
         }
 
-        function checkAnswer(btn, isCorrect) {
-            const allBtns = document.querySelectorAll('.option-btn');
-            allBtns.forEach(b => b.style.pointerEvents = 'none'); 
+        function handleAnswer(e, btn, isCorrect, correctTxt) {
+            // Hiệu ứng hạt
+            createParticles(e.clientX, e.clientY);
+
+            // Disable tất cả nút
+            const all = document.querySelectorAll('.option-btn');
+            all.forEach(b => b.disabled = true);
 
             if (isCorrect) {
-                playSoundEffect('correct');
+                playSound('correct');
                 btn.classList.add('correct');
-                currentStreak++;
-                ui.streakCount.innerText = currentStreak;
+                state.streak++;
+                ui.streak.innerText = state.streak;
             } else {
-                playSoundEffect('wrong');
+                playSound('wrong');
                 btn.classList.add('wrong');
-                currentStreak = 0;
-                ui.streakCount.innerText = "0";
-                
-                allBtns.forEach(b => {
-                    if (b.innerText.includes(currentQuestionObj.a)) {
-                        b.classList.add('correct');
-                    }
+                state.streak = 0;
+                ui.streak.innerText = 0;
+                // Hiện đáp án đúng
+                all.forEach(b => {
+                    if (b.innerText.includes(correctTxt)) b.classList.add('correct');
                 });
             }
             ui.nextBtn.style.display = 'block';
         }
 
         function nextQuestion() {
-            loadNewQuestion();
+            loadQuestion();
         }
 
-        loadNewQuestion();
+        // --- MEDIA & THEME ---
+        function changeTheme(idx) {
+            const t = themes[idx];
+            ui.video.src = t.video;
+            ui.audio.src = t.audio;
+            if (state.playing) ui.audio.play();
+            
+            ui.root.style.setProperty('--grad-1', t.c1);
+            ui.root.style.setProperty('--grad-2', t.c2);
+            
+            // Đổi màu viền avatar
+            document.getElementById('avatar-img').style.borderColor = t.c1;
+        }
+
+        function toggleMusic() {
+            if (state.playing) {
+                ui.audio.pause();
+                ui.musicIcon.className = 'fas fa-volume-mute';
+                state.playing = false;
+            } else {
+                ui.audio.play().catch(() => {});
+                ui.musicIcon.className = 'fas fa-volume-up';
+                state.playing = true;
+            }
+        }
+
+        // --- AUDIO ENGINE (Tạo âm thanh không cần file) ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            
+            const now = audioCtx.currentTime;
+            if (type === 'correct') {
+                osc.type = 'sine'; 
+                osc.frequency.setValueAtTime(600, now);
+                osc.frequency.exponentialRampToValueAtTime(1000, now + 0.1);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.start(now); osc.stop(now + 0.3);
+            } else {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(150, now);
+                osc.frequency.linearRampToValueAtTime(100, now + 0.2);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                osc.start(now); osc.stop(now + 0.2);
+            }
+        }
+
+        // --- PARTICLE EFFECT ---
+        function createParticles(x, y) {
+            const count = 10;
+            for(let i=0; i<count; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                // Màu ngẫu nhiên theo theme
+                p.style.color = Math.random() > 0.5 ? getComputedStyle(ui.root).getPropertyValue('--grad-2') : '#fff';
+                p.style.left = x + 'px'; p.style.top = y + 'px';
+                
+                // Random hướng bay
+                const angle = Math.random() * Math.PI * 2;
+                const dist = Math.random() * 60 + 20;
+                const dx = Math.cos(angle) * dist;
+                const dy = Math.sin(angle) * dist;
+                
+                p.style.setProperty('--dx', dx + 'px');
+                p.style.setProperty('--dy', dy + 'px');
+                
+                document.body.appendChild(p);
+                setTimeout(() => p.remove(), 600);
+            }
+        }
+
+        // Start App
+        init();
 
     </script>
 </body>
