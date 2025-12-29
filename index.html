@@ -2,1326 +2,501 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Không Gian Chill - UI Restored v14.2</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ôn Tập CSTH - Chill Mode</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- CORE CSS (CHUẨN v14.2) --- */
         :root {
-            --card-bg: rgba(255, 255, 255, 0.25);
-            --glass-border: 1px solid rgba(255, 255, 255, 0.3);
-            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
-            --text-main: #fff; 
-            --text-sub: #eee;
-            --accent-color: #a29bfe;
-            --correct-color: #00b894;
-            --wrong-color: #ff7675;
-            --radius: 24px;
-            --font-main: 'Quicksand', sans-serif;
-            --btn-text-color: #fff;
+            --primary: #7289da;
+            --correct: #43b581;
+            --wrong: #f04747;
+            --glass-bg: rgba(20, 20, 30, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+            --text-sub: #b9bbbe;
+            --theme-color: #7289da;
         }
 
-        select, input { color: #333 !important; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-main); -webkit-tap-highlight-color: transparent; }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; user-select: none; }
+
         body {
-            height: 100vh; width: 100vw; overflow: hidden; background-color: #111; 
-            background-size: cover; background-position: center; background-repeat: no-repeat;
-            display: flex; justify-content: space-between; padding: 25px;
-            color: var(--text-main); 
-            transition: background-image 1s ease-in-out, background-color 1s ease;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            color: var(--text-main);
+            background: #000;
+        }
+
+        /* --- VIDEO BACKGROUND --- */
+        #bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            filter: brightness(0.7);
+            transition: opacity 0.5s ease;
+        }
+
+        /* --- KHUNG QUIZ --- */
+        .quiz-container {
+            width: 90%;
+            max-width: 700px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px 30px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
             position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: fadeIn 0.8s ease-out;
         }
 
-        /* Video Background */
-        #video-bg-container {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh;
-            z-index: 0; overflow: hidden; background-color: #000; pointer-events: none;
-            opacity: 0; transition: opacity 1s ease-in-out, filter 0.5s ease;
-        }
-        #video-bg-container.active { opacity: 1; }
-        
-        #bg-video-player {
-            position: absolute; top: 50%; left: 50%; min-width: 100%; min-height: 100%;
-            width: auto; height: auto; transform: translate(-50%, -50%);
-            object-fit: cover; width: 100vw; height: 100dvh; 
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* --- UI LAYERS --- */
-        /* QUAN TRỌNG: Đảm bảo các panel nằm trên video nền */
-        .left-sidebar, .right-area, .top-nav-container {
-            position: relative; z-index: 20; pointer-events: auto;
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 15px;
         }
 
-        /* --- NAV BAR (STYLE v14.2) --- */
-        .top-nav-container {
+        .user-info { display: flex; align-items: center; gap: 15px; }
+        .avatar {
+            width: 50px; height: 50px; border-radius: 50%;
+            border: 2px solid var(--theme-color);
+            transition: border-color 0.5s;
+        }
+
+        .controls { display: flex; gap: 10px; align-items: center; }
+
+        #theme-select {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            outline: none;
+            cursor: pointer;
+            font-size: 12px;
+            max-width: 150px;
+        }
+        #theme-select option { background: #222; color: #fff; }
+
+        .streak-badge {
+            background: linear-gradient(45deg, #ff7e5f, #feb47b);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            color: white;
+            box-shadow: 0 4px 10px rgba(255, 126, 95, 0.4);
+            display: flex; align-items: center; gap: 5px;
+        }
+
+        /* Question Area */
+        .question-text {
+            font-size: 18px; font-weight: 600; line-height: 1.5;
+            margin-bottom: 25px; min-height: 60px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .options-grid { display: flex; flex-direction: column; gap: 12px; }
+
+        .option-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px; border-radius: 12px;
+            color: var(--text-sub); text-align: left;
+            cursor: pointer; transition: all 0.2s ease;
+            font-size: 15px; display: flex; align-items: center;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.2);
+            color: white; transform: translateX(5px);
+            border-color: var(--theme-color);
+        }
+
+        .option-tag {
+            background: rgba(255,255,255,0.1);
+            width: 25px; height: 25px;
+            display: flex; justify-content: center; align-items: center;
+            border-radius: 50%; margin-right: 15px;
+            font-size: 12px; font-weight: bold;
+            color: var(--theme-color);
+            transition: color 0.5s;
+        }
+
+        .option-btn.correct { background: rgba(67, 181, 129, 0.25) !important; border-color: var(--correct) !important; color: white !important; }
+        .option-btn.wrong { background: rgba(240, 71, 71, 0.25) !important; border-color: var(--wrong) !important; color: white !important; }
+
+        .quiz-footer { margin-top: 30px; display: flex; justify-content: space-between; align-items: center; }
+        .audio-control { cursor: pointer; color: var(--text-sub); font-size: 20px; transition: 0.3s; }
+        .audio-control:hover { color: white; }
+
+        .next-btn {
+            background: var(--theme-color);
+            color: white; border: none; padding: 12px 30px;
+            border-radius: 12px; font-weight: 600; cursor: pointer;
+            transition: 0.3s; display: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .next-btn:hover { filter: brightness(1.2); transform: translateY(-2px); }
+
+        /* --- CLICK PARTICLE EFFECT --- */
+        .particle {
             position: absolute;
-            background: var(--card-bg);
-            backdrop-filter: blur(20px) saturate(150%);
-            -webkit-backdrop-filter: blur(20px) saturate(150%);
-            border: var(--glass-border); box-shadow: var(--glass-shadow);
-            top: 25px; left: 50%; transform: translateX(-50%); 
-            display: flex; gap: 12px; padding: 10px; 
-            border-radius: 50px; z-index: 999;
-            transition: all 0.5s ease; opacity: 0; pointer-events: none;
-            align-items: center; 
+            pointer-events: none;
+            border-radius: 50%;
+            animation: pop 0.6s cubic-bezier(0, .9, .57, 1) forwards;
         }
-        .top-nav-container.visible { opacity: 1; pointer-events: auto; }
-
-        .nav-pill {
-            padding: 10px 24px;
-            border-radius: 30px; 
-            font-weight: 700; font-size: 14px; cursor: pointer; color: #333; 
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-            line-height: 1.2; 
-        }
-        
-        .nav-pill.active { 
-            background: var(--accent-color); 
-            color: white; 
-            transform: translateY(-4px); 
-            box-shadow: 0 8px 20px rgba(162, 155, 254, 0.6); 
+        @keyframes pop {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
         }
 
-        .nav-clock {
-            background: rgba(0,0,0,0.5); color: #fff; cursor: default;
-            font-variant-numeric: tabular-nums; border: 1px solid rgba(255,255,255,0.2);
-            transform: none !important; box-shadow: none !important;
-        }
-
-        .nav-pill.fire-effect {
-            background: linear-gradient(135deg, #ff4d4d, #ff9f43);
-            color: white; font-weight: 800;
-            box-shadow: 0 0 15px rgba(255, 77, 77, 0.6);
-            animation: firePulse 1.5s infinite alternate;
-            border: 1px solid rgba(255, 255, 255, 0.5);
-        }
-        @keyframes firePulse {
-            0% { box-shadow: 0 0 10px rgba(255, 77, 77, 0.5); transform: scale(1); }
-            100% { box-shadow: 0 0 25px rgba(255, 159, 67, 0.8); transform: scale(1.05); }
-        }
-
-        /* --- INTRO OVERLAY (FIXED) --- */
-        #intro-overlay { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(30px); 
-            z-index: 99999; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            transition: opacity 0.5s ease; 
-        }
-        #intro-overlay.hidden-intro { 
-            opacity: 0; pointer-events: none; display: none !important; 
-        }
-
-        /* --- ZEN OVERLAY (SOS) --- */
-        #zen-overlay { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(20, 40, 50, 0.95); z-index: 10000; 
-            display: none; flex-direction: column; align-items: center; justify-content: center; 
-            color: white; 
-        }
-        #zen-overlay.active { display: flex; pointer-events: auto; }
-        .breathing-circle { width: 200px; height: 200px; background: linear-gradient(135deg, #a8e6cf 0%, #dcedc1 100%); border-radius: 50%; box-shadow: 0 0 50px rgba(168, 230, 207, 0.4); margin-bottom: 80px; transform: scale(1); }
-        .breathing-anim { animation: breathe 8s infinite ease-in-out; }
-        @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.35); opacity: 1; } }
-
-        /* --- PANEL STYLES --- */
-        .cozy-panel { background: var(--card-bg); backdrop-filter: blur(20px) saturate(150%); -webkit-backdrop-filter: blur(20px) saturate(150%); border: var(--glass-border); box-shadow: var(--glass-shadow); border-radius: var(--radius); transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); display: flex; flex-direction: column; position: relative; overflow: hidden; height: auto; min-height: fit-content; flex-shrink: 0; pointer-events: auto; color: white; }
-        .panel-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; padding: 20px 25px; min-height: 70px; }
-        .panel-header h3 { color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.5); font-size: 18px; }
-        .toggle-btn { color: rgba(255,255,255,0.9); }
-        .panel-content { transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); opacity: 1; max-height: 800px; padding: 0 25px 25px 25px; overflow: hidden; }
-        .cozy-panel.collapsed .toggle-btn { transform: rotate(180deg); }
-        .cozy-panel.collapsed .panel-content { opacity: 0; max-height: 0; padding: 0 25px; margin: 0; }
-        .cozy-panel.collapsed { flex-grow: 0 !important; height: auto !important; padding-bottom: 0 !important; }
-        .mini-display { font-size: 14px; margin-left: auto; margin-right: 15px; font-weight: bold; color: var(--accent-color); opacity: 0; transition: opacity 0.3s ease; pointer-events: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px; display: flex; align-items: center; gap: 6px; }
-        .cozy-panel.collapsed .mini-display { opacity: 1; }
-
-        .left-sidebar, .right-area { width: 360px; display: flex; flex-direction: column; gap: 15px; max-height: 100%; overflow-y: auto; padding-right: 5px; padding-bottom: 20px; }
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.5); border-radius: 10px; }
-        :hover::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.8); }
-
-        /* --- QUIZ STYLES (Được làm to ra) --- */
-        .quiz-option-btn { width: 100%; padding: 15px 20px; margin-bottom: 12px; background: rgba(255, 255, 255, 0.8); border: 1px solid rgba(255, 255, 255, 0.5); border-radius: 16px; color: #333; font-weight: 600; font-size: 15px; cursor: pointer; text-align: left; transition: all 0.2s ease; position: relative; overflow: hidden; display: flex; align-items: center; }
-        .quiz-option-btn:hover { background: white; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .quiz-option-btn.correct { background: var(--correct-color) !important; color: white !important; border-color: var(--correct-color) !important; }
-        .quiz-option-btn.wrong { background: var(--wrong-color) !important; color: white !important; border-color: var(--wrong-color) !important; }
-        .quiz-score-badge { background: var(--accent-color); color: white; padding: 5px 10px; border-radius: 12px; font-size: 14px; font-weight: bold; display: inline-block; margin-bottom: 10px; }
-        .quiz-question-text { font-size: 20px; font-weight: bold; margin-bottom: 25px; line-height: 1.5; min-height: 60px; }
-
-        /* --- MODE STYLES (Logic ẩn hiện UI) --- */
-        /* Chế độ Focus: Ẩn sidebar trái, phóng to timer */
-        body.focus-active .left-sidebar { display: none !important; }
-        body.focus-active #panel-flashcards { display: none !important; }
-        body.focus-active #panel-quiz { display: none !important; }
-        body.focus-active .right-area { width: 100%; justify-content: center; align-items: center; height: 100%; }
-        body.focus-active #panel-timer { transform: scale(1.4); transition: transform 0.5s ease; z-index: 50; }
-
-        /* Chế độ Quiz: Ẩn sidebar trái, Ẩn timer, Hiện Quiz */
-        body.quiz-active .left-sidebar { display: none !important; }
-        body.quiz-active #panel-timer { display: none !important; }
-        body.quiz-active #panel-flashcards { display: none !important; }
-        body.quiz-active .right-area { width: 100%; align-items: center; justify-content: center; height: 100%; }
-        body.quiz-active #panel-quiz { display: flex !important; width: 80%; max-width: 800px; transform: scale(1.05); }
-
-        /* Intro & Elements */
-        .intro-content { text-align: center; background: rgba(255, 255, 255, 0.9); padding: 40px 60px; border-radius: 40px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); max-width: 800px; width: 90%; animation: float 3s ease-in-out infinite; color: #333;}
-        .intro-title { font-size: 36px; font-weight: 700; color: #333; margin-bottom: 10px; }
-        .intro-sub { font-size: 16px; color: #666; margin-bottom: 30px; }
-        .mood-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-        .mood-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 20px; border: 1px solid #eee; border-radius: 20px; background: #fff; cursor: pointer; transition: all 0.3s ease; }
-        .mood-icon { font-size: 32px; }
-        .mood-text { font-weight: 700; color: #333; font-size: 14px;}
-        .mood-btn:hover { transform: translateY(-5px); background: var(--accent-color); border-color: var(--accent-color); box-shadow: 0 10px 20px rgba(143, 170, 194, 0.3); }
-        .mood-btn:hover .mood-text { color: white; }
-
-        .zen-instruction { font-size: 24px; font-weight: 300; margin-bottom: 20px; letter-spacing: 2px; }
-        .zen-quote { font-size: 18px; font-style: italic; max-width: 600px; text-align: center; line-height: 1.6; opacity: 0.9; margin-bottom: 40px; }
-        .btn-close-zen { padding: 12px 30px; border: 2px solid rgba(255,255,255,0.3); border-radius: 30px; background: transparent; color: white; cursor: pointer; font-size: 14px; transition: all 0.3s; }
-        .btn-close-zen:hover { background: white; color: #333; }
-
-        .explore-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px; padding-bottom: 5px;}
-        .explore-item { font-size: 26px; cursor: pointer; text-align: center; padding: 8px; border-radius: 16px; background: rgba(255,255,255,0.5); transition: all 0.3s; }
-        .explore-item.active { background: var(--accent-color); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
-        .buddy-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 10px; }
-        .buddy-item { position: relative; height: 70px; border-radius: 12px; cursor: pointer; overflow: hidden; border: 2px solid transparent; background-size: cover; background-position: center; transition: all 0.3s; }
-        .buddy-item:hover { transform: translateY(-4px) scale(1.02) !important; }
-        .buddy-item.active { border-color: var(--accent-color); transform: scale(1.02); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-        .buddy-name { position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.6); color: white; font-size: 11px; padding: 4px; text-align: center; font-weight: bold;}
-
-        .timer-display { font-size: 56px; font-weight: 500; text-align: center; margin: 5px 0; color: white; text-shadow: 0 4px 10px rgba(0,0,0,0.2); font-variant-numeric: tabular-nums; }
-        .timer-controls { display: flex; justify-content: center; gap: 8px; margin-bottom: 10px; background: rgba(255,255,255,0.3); padding: 4px; border-radius: 12px; width: fit-content; margin: 0 auto 10px; }
-        .timer-controls span { padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; color: white; cursor: pointer; }
-        .timer-controls span.active { background: white; color: var(--accent-color); }
-        .btn-timer { width: 100%; padding: 12px; border: none; border-radius: 16px; background: var(--accent-color); color: white; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2);}
-        .adjust-container { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 15px; }
-        .btn-adjust { width: 32px; height: 32px; border-radius: 50%; border: none; background: rgba(255,255,255,0.3); color: white; cursor: pointer; font-weight: bold; font-size: 12px; transition: all 0.2s; display: flex; align-items: center; justify-content: center;}
-        .btn-adjust:hover { background: var(--accent-color); color: white; transform: scale(1.1); }
-        .custom-input { width: 45px; padding: 5px; border: none; background: transparent; text-align: center; font-weight: 700; font-size: 16px; outline: none; color: white; border-bottom: 2px solid rgba(255,255,255,0.5); }
-        .btn-set-confirm { padding: 6px 12px; background: var(--text-main); color: var(--btn-text-color); border: none; border-radius: 12px; font-size: 12px; font-weight: bold; cursor: pointer; transition: color 0.3s ease; }
-        
-        #task-list { list-style: none; max-height: 250px; overflow-y: auto; padding-right: 5px; margin-top: 5px;}
-        .task-item { display: flex; align-items: center; gap: 10px; padding: 10px; background: rgba(255,255,255,0.3); border: 1px solid rgba(255,255,255,0.2); margin-bottom: 8px; border-radius: 12px; transition: all 0.2s; color: white;}
-        .task-checkbox { accent-color: var(--accent-color); width: 18px; height: 18px; cursor: pointer;}
-        .add-task-box { margin-top: auto; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.2); }
-        .task-item.completed .task-text { text-decoration: line-through; color: rgba(255,255,255,0.5); }
-        .music-divider { height: 1px; background: rgba(255,255,255,0.2); margin: 15px 0; border: none; }
-        .music-info { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-        .album-art { width: 48px; height: 48px; background: rgba(255,255,255,0.5); border-radius: 12px; background-size: cover; display: flex; align-items: center; justify-content: center; font-size: 24px; }
-        input[type=range] { width: 100%; height: 4px; background: rgba(255,255,255,0.3); border-radius: 5px; outline: none; margin-top: 5px; cursor: pointer; flex-grow: 1; }
-
-        /* MUSIC STYLES */
-        .spotify-container { margin-top: 15px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); }
-        .spotify-toggle { font-size: 13px; font-weight: bold; color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.8); cursor: pointer; display: flex; align-items: center; gap: 5px; margin-bottom: 8px; opacity: 0.9; transition: 0.3s; }
-        .spotify-toggle:hover { opacity: 1; color: var(--accent-color); }
-        .spotify-input-group { display: none; gap: 5px; margin-bottom: 10px; flex-wrap: wrap; }
-        .spotify-input { flex-grow: 1; padding: 8px; border-radius: 8px; border: none; font-size: 12px; outline: none; background: rgba(255,255,255,0.8); color: #333; }
-        .btn-spotify-load, .btn-spotify-stop { padding: 8px 12px; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; font-size: 12px; }
-        .btn-spotify-load { background: #1DB954; }
-        .btn-spotify-stop { background: #e74c3c; display: none; }
-        #embed-container iframe { width: 100%; border-radius: 12px; border: none; margin-top: 5px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        
-        #external-audio-controls { display: none; margin-top: 10px; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 12px; }
-        .ext-controls-row { display: flex; align-items: center; gap: 10px; font-size: 12px; color: #eee; }
-        
-        #youtube-audio-container { position: absolute; top: -9999px; left: -9999px; width: 1px; height: 1px; opacity: 0; }
-
-        /* MODE TOGGLE & BLUR */
-        .audio-mode-toggle, .blur-control-container { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-size: 11px; color: rgba(255,255,255,0.8); }
-        .blur-control-container { display: block; margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; }
-        
-        .toggle-switch { position: relative; display: inline-block; width: 34px; height: 18px; }
-        .toggle-switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.3); transition: .4s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--accent-color); }
-        input:checked + .slider:before { transform: translateX(16px); }
-
-        .disabled-controls { opacity: 0.3; pointer-events: none; filter: grayscale(100%); transition: all 0.3s ease; }
-
-        .spark-particle { position: fixed; width: 6px; height: 6px; background: radial-gradient(circle, #ffeb3b, #ff5722); border-radius: 50%; pointer-events: none; z-index: 10000; animation: spark-burst 0.8s ease-out forwards; }
-        @keyframes spark-burst { 0% { transform: translate(0, 0) scale(1); opacity: 1; } 100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; } }
-
-        /* --- MOBILE OPTIMIZATION --- */
-        @media (max-width: 768px) {
-            body { flex-direction: column; overflow-y: auto; height: auto; min-height: 100vh; padding: 15px; gap: 20px; justify-content: flex-start; padding-top: 70px; }
-            .top-nav-container { 
-                position: fixed; top: 15px; left: 50%; transform: translateX(-50%) translateY(-150%); margin-bottom: 0; 
-                flex-wrap: nowrap; justify-content: flex-start; 
-                width: 95%; max-width: 500px; 
-                transition: transform 0.5s ease, opacity 0.5s ease; opacity: 0; pointer-events: none; 
-                box-shadow: 0 8px 32px rgba(0,0,0,0.3); 
-                overflow-x: auto; 
-                padding: 10px; 
-            }
-            .top-nav-container::-webkit-scrollbar { display: none; } 
-            .top-nav-container.visible { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
-            
-            .nav-pill { 
-                font-size: 11px; padding: 10px 14px; min-height: auto; white-space: nowrap; flex-shrink: 0; 
-            }
-            .left-sidebar, .right-area { width: 100%; max-height: none; padding: 0; overflow: visible; }
-            .cozy-panel { margin-bottom: 15px; width: 100%; }
-            #video-bg-container { position: fixed; }
-            .btn-tool, .btn-adjust, .btn-fc, .mood-btn { min-height: 44px; }
-            .btn-adjust { width: 40px; height: 40px; }
-            #intro-overlay .mood-grid { grid-template-columns: repeat(2, 1fr); }
-            
-            /* Mobile Quiz Mode */
-            body.quiz-active .right-area { height: auto; display: flex; flex-direction: column; }
-            body.quiz-active #panel-quiz { width: 100%; transform: none; }
-        }
     </style>
 </head>
 <body>
 
-    <div id="video-bg-container"></div>
-    <script src="https://www.youtube.com/iframe_api"></script>
-    <div id="youtube-audio-container"></div>
+    <video autoplay muted id="bg-video">
+        <source src="media/1,1.mp4" type="video/mp4">
+    </video>
 
-    <audio id="ambient-audio" loop></audio>
-    <audio id="sfx-click" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
-    <audio id="sfx-success" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3"></audio>
-    <audio id="sfx-alarm" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
+    <audio id="bg-music" loop>
+        <source src="audio/a5.mp3" type="audio/mpeg">
+    </audio>
 
-    <div id="intro-overlay">
-        <div class="intro-content">
-            <div class="intro-title">Chào bạn, hôm nay bạn thế nào?</div>
-            <div class="intro-sub">Chọn một trạng thái để thiết lập không gian nhé!</div>
-            <div class="mood-grid">
-                <button class="mood-btn" onclick="selectMood('morning'); playSFX('click')"><span class="mood-icon">🌤️</span><span class="mood-text">Hào hứng</span></button>
-                <button class="mood-btn" onclick="selectMood('rain'); playSFX('click')"><span class="mood-icon">🤯</span><span class="mood-text">Căng thẳng</span></button>
-                <button class="mood-btn" onclick="selectMood('library'); playSFX('click')"><span class="mood-icon">📚</span><span class="mood-text">Tập trung</span></button>
-                <button class="mood-btn" onclick="selectMood('night'); playSFX('click')"><span class="mood-icon">🌙</span><span class="mood-text">Chill & Relax</span></button>
-                <button class="mood-btn" onclick="selectMood('sunset'); playSFX('click')"><span class="mood-icon">🎨</span><span class="mood-text">Sáng tạo</span></button>
-                <button class="mood-btn" onclick="selectMood('cafe'); playSFX('click')"><span class="mood-icon">☕</span><span class="mood-text">Buồn chán</span></button>
-            </div>
-        </div>
-    </div>
+    <audio id="click-sound">
+        <source src="audio/a1.m4a" type="audio/mp4">
+    </audio>
 
-    <div id="zen-overlay">
-        <div class="breathing-circle" id="zen-circle"></div>
-        <div class="zen-instruction" id="zen-text">Hít sâu...</div>
-        <div class="zen-quote" id="zen-quote">"..."</div>
-        <button class="btn-close-zen" onclick="closeZenMode(); playSFX('click')">Mình ổn rồi, quay lại thôi</button>
-    </div>
-
-    <div id="update-log-modal" style="display: none;">
-        <div class="log-content">
-            <button class="btn-close-log" onclick="toggleUpdateLog()"><i class="fa-solid fa-xmark"></i></button>
-            <h2 style="margin-bottom: 20px; text-align: center;">Nhật ký cập nhật 📜</h2>
-            
-            <div class="log-item">
-                <div class="log-date"><span class="log-version">v16.6</span> 28/12/2025</div>
-                <div class="log-desc">
-                    - <strong>UI Restored:</strong> Khôi phục hoàn toàn giao diện v14.2.<br>
-                    - <strong>Logic Fix:</strong> Tách biệt chế độ Tập trung và Ôn tập.<br>
-                    - <strong>Bug Fix:</strong> Sửa lỗi đồng hồ và các nút chức năng bị đè.
+    <div class="quiz-container">
+        <div class="header">
+            <div class="user-info">
+                <img src="https://ui-avatars.com/api/?name=Sang&background=random&size=128" alt="User" class="avatar">
+                <div>
+                    <h2 style="font-size: 16px;">Ôn tập CSTH</h2>
+                    <span style="font-size: 12px; color: var(--text-sub);">
+                        <i class="fas fa-infinity"></i> Luyện tập
+                    </span>
                 </div>
             </div>
-            <div class="log-item">
-                <div class="log-date"><span class="log-version">v16.1</span> 28/12/2025</div>
-                <div class="log-desc">
-                    - Thêm tính năng <strong>Ôn tập (Auto-Quiz AI)</strong>.<br>
-                    - Tự động tạo câu hỏi trắc nghiệm từ dữ liệu học tập.<br>
-                </div>
-            </div>
-             <div class="log-item">
-                <div class="log-date"><span class="log-version">v15.0</span> 28/12/2025</div>
-                <div class="log-desc">
-                    - Thêm dữ liệu ôn thi "Cơ sở tạo hình".<br>
-                    - Cập nhật nhật ký từ v10.0 đến hiện tại.<br>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <button class="btn-update-log" onclick="toggleUpdateLog()" title="Xem nhật ký cập nhật">📜</button>
 
-    <div class="top-nav-container" id="main-nav">
-        <div class="nav-pill nav-clock" id="real-time-clock">--:--</div>
-        
-        <div class="nav-pill fire-effect" onclick="triggerFireEffect(event); playSFX('click')"><i class="fa-solid fa-fire"></i> Lửa</div>
-        <div class="nav-pill active" id="btn-myspace" onclick="switchView('myspace'); playSFX('click')">Không gian</div>
-        <div class="nav-pill" id="btn-focus" onclick="switchView('focus'); playSFX('click')">Tập trung</div>
-        <div class="nav-pill" id="btn-quiz" onclick="switchView('quiz'); playSFX('click')"><i class="fa-solid fa-brain"></i> Ôn tập</div>
-        <div class="nav-pill sos-btn" onclick="openZenMode(); playSFX('click')">SOS Stress 🆘</div>
-    </div>
-
-    <div class="left-sidebar">
-        <div class="cozy-panel" id="panel-left">
-            <div class="panel-header" onclick="togglePanel('panel-left'); playSFX('click')">
-                <h3>Khám phá Không gian</h3>
-                <div class="mini-display" id="mini-music"><i class="fa-solid fa-music"></i> <span id="mini-track-name">Chill Lofi</span></div>
-                <i class="fa-solid fa-chevron-up toggle-btn"></i>
-            </div>
-            <div class="panel-content">
-                <p style="font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">Hình nền & Âm thanh</p>
-                <div class="explore-grid" id="explore-grid"></div>
+            <div class="controls">
+                <i class="fas fa-volume-mute audio-control" id="music-toggle" onclick="toggleMusic()" title="Bật/Tắt nhạc nền"></i>
                 
-                <div class="blur-control-container">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                        <span style="font-size: 12px; font-weight: bold;">Làm mờ nền</span>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="blur-toggle" onchange="toggleBlur()">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                    <input type="range" id="blur-slider" min="0" max="20" value="5" oninput="changeBlur(this.value)">
-                </div>
+                <select id="theme-select" onchange="changeTheme(this.value)">
+                    </select>
 
-                <p style="font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-top: 15px;">Học cùng Bạn bè</p>
-                <div class="buddy-grid" id="buddy-grid"></div>
-                <hr class="music-divider">
-                
-                <div id="local-player-controls">
-                    <div class="music-player">
-                        <div class="music-info">
-                            <div class="album-art" id="album-art">🎵</div>
-                            <div>
-                                <p class="track-name" id="track-name" style="font-weight:bold; font-size:14px;">Chill Lofi</p>
-                                <p style="font-size: 10px; opacity: 0.8;">Âm lượng môi trường</p>
-                            </div>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <i class="fa-solid fa-volume-high" id="mute-btn" onclick="toggleAmbientMute(); playSFX('click')" style="cursor: pointer; width: 30px; text-align:center; color: var(--accent-color);"></i>
-                            <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.5" title="Ambient Volume" oninput="changeAmbientVolume(this.value)">
-                        </div>
-                    </div>
-                </div>
-
-                <div id="external-audio-controls">
-                    <div class="ext-controls-row">
-                        <i class="fa-brands fa-youtube" style="color:red; width:30px; text-align:center; font-size:18px;"></i>
-                        <span style="flex-grow:1; font-weight:bold;">Nhạc YouTube</span>
-                        <i class="fa-solid fa-volume-high" id="ext-mute-btn" onclick="toggleExternalMute(); playSFX('click')" style="cursor: pointer; width:20px; text-align:center;"></i>
-                        <input type="range" id="ext-volume-slider" min="0" max="100" value="50" oninput="changeExternalVolume(this.value)" style="width: 80px;">
-                    </div>
-                </div>
-
-                <div class="spotify-container">
-                    <div class="spotify-toggle" onclick="toggleSpotifyInput(); playSFX('click')">
-                        <i class="fa-brands fa-youtube"></i> Nhập link YouTube/SoundCloud
-                    </div>
-                    <div style="font-size: 10px; color: #eee; margin-bottom: 5px; margin-left: 5px; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">(Khuyên dùng SoundCloud để ổn định nhất)</div>
-                    
-                    <div class="spotify-input-group" id="spotify-input-group">
-                        <input type="text" id="spotify-url" class="spotify-input" placeholder="Dán link YouTube hoặc SoundCloud...">
-                        <button class="btn-spotify-load" onclick="loadCustomEmbed(); playSFX('click')">Phát</button>
-                        <button class="btn-spotify-stop" id="btn-ext-stop" onclick="stopExternalMusic(); playSFX('click')" title="Dừng nhạc"><i class="fa-solid fa-stop"></i></button>
-                    </div>
-                    
-                    <div class="audio-mode-toggle">
-                        <span>Chế độ: <strong>Trộn âm</strong></span>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="audio-exclusive-mode" onchange="toggleAudioMode()">
-                            <span class="slider"></span>
-                        </label>
-                        <span><strong>Chỉ một</strong></span>
-                    </div>
-
-                    <div id="embed-container"></div>
-                </div>
-
-            </div>
-        </div>
-
-        <div class="cozy-panel" id="panel-tasks">
-            <div class="panel-header" onclick="togglePanel('panel-tasks'); playSFX('click')">
-                <h3>Danh sách Việc <span id="task-count" style="font-size: 14px; opacity: 0.8; font-weight: normal;">(0)</span></h3>
-                <i class="fa-solid fa-chevron-up toggle-btn"></i>
-            </div>
-            <div class="panel-content">
-                <ul id="task-list"></ul>
-                <div class="add-task-box">
-                    <div id="btn-show-add" onclick="showInput(); playSFX('click')" style="cursor: pointer;"><i class="fa-solid fa-plus-circle"></i> Thêm việc mới</div>
-                    <div id="input-group" style="display:none; gap:5px;">
-                        <input type="text" id="new-task-input" placeholder="Mục tiêu của bạn là gì?" style="flex-grow:1; padding:8px; border:1px solid #eee; border-radius:8px;">
-                        <button class="btn-add-confirm" onclick="addTask(); playSFX('click')" style="padding:5px 10px; background:var(--accent-color); color:white; border:none; border-radius:8px;">Thêm</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="right-area">
-        <div class="cozy-panel" id="panel-timer">
-            <div class="panel-header" onclick="togglePanel('panel-timer'); playSFX('click')">
-                <h3>Đồng hồ</h3>
-                <div class="mini-display" id="mini-timer" style="font-size: 18px;">25:00</div>
-                <i class="fa-solid fa-chevron-up toggle-btn"></i>
-            </div>
-            <div class="panel-content">
-                <div class="timer-controls">
-                    <span id="btn-pomodoro" class="active" onclick="switchMode('pomodoro'); playSFX('click')">Tập trung</span>
-                    <span id="btn-short" onclick="switchMode('short'); playSFX('click')">Nghỉ ngắn</span>
-                    <span id="btn-long" onclick="switchMode('long'); playSFX('click')">Nghỉ dài</span>
-                </div>
-                <div class="timer-display" id="timer-text">25:00</div>
-                <div class="adjust-container">
-                    <button class="btn-adjust" onclick="adjustTime(-5); playSFX('click')">-5</button>
-                    <button class="btn-adjust" onclick="adjustTime(-1); playSFX('click')">-1</button>
-                    <input type="number" id="custom-minutes" class="custom-input" value="25" min="1">
-                    <button class="btn-adjust" onclick="adjustTime(1); playSFX('click')">+1</button>
-                    <button class="btn-adjust" onclick="adjustTime(5); playSFX('click')">+5</button>
-                    <button class="btn-set-confirm" onclick="applyCustomTime(); playSFX('click')">Đặt</button>
-                </div>
-                <button class="btn-timer" id="btn-action" onclick="toggleTimer(); playSFX('click')">Bắt đầu</button>
-            </div>
-        </div>
-
-        <div class="cozy-panel" id="panel-flashcards">
-            <div class="panel-header" onclick="togglePanel('panel-flashcards'); playSFX('click')">
-                <h3>Học Nhanh</h3>
-                <div class="mini-display" id="mini-fc">0 Thẻ xong</div>
-                <i class="fa-solid fa-chevron-up toggle-btn"></i>
-            </div>
-            <div class="panel-content">
-                <div class="learning-filter">
-                    <div class="filter-row">
-                        <button class="btn-tool btn-add-sub" onclick="toggleAddSubjectForm(); playSFX('click')" title="Thêm môn"><i class="fa-solid fa-folder-plus"></i></button>
-                        <button class="btn-tool btn-del-sub" onclick="deleteSubject(); playSFX('click')" title="Xóa môn"><i class="fa-solid fa-trash"></i></button>
-                        <select id="subject-select" class="fc-select"></select>
-                    </div>
-                    <div class="filter-row">
-                        <button class="btn-tool btn-add-lvl" onclick="toggleAddLevelForm(); playSFX('click')" title="Thêm cấp độ"><i class="fa-solid fa-layer-group"></i></button>
-                        <button class="btn-tool btn-del-lvl" onclick="deleteLevel(); playSFX('click')" title="Xóa cấp độ"><i class="fa-solid fa-trash-can"></i></button>
-                        <select id="level-select" class="fc-select"></select>
-                    </div>
-                    <button class="btn-tool btn-add-card" onclick="toggleAddCardForm(); playSFX('click')" title="Thêm thẻ mới"><i class="fa-solid fa-plus"></i>  Thêm Thẻ</button>
-                </div>
-
-                <div id="add-subject-form" class="custom-form" style="display:none;">
-                    <div class="form-title">Tạo môn học mới</div>
-                    <input type="text" id="new-subject-name" class="fc-input" placeholder="Tên môn (VD: Lịch sử)">
-                    <input type="text" id="new-subject-level" class="fc-input" placeholder="Tên cấp độ đầu (VD: Chương 1)">
-                    <button class="btn-save-card" onclick="saveNewSubject(); playSFX('click')">Tạo Môn</button>
-                </div>
-                
-                <div id="add-level-form" class="custom-form" style="display:none;">
-                    <div class="form-title">Thêm cấp độ mới</div>
-                    <input type="text" id="new-level-name" class="fc-input" placeholder="Tên cấp độ (VD: Nâng cao)">
-                    <button class="btn-save-card" onclick="saveNewLevel(); playSFX('click')">Thêm Cấp Độ</button>
-                </div>
-
-                <div id="add-card-form" class="custom-form" style="display:none;">
-                    <div class="form-title">Thêm thẻ vào bài học này</div>
-                    <input type="text" id="new-card-q" class="fc-input" placeholder="Câu hỏi / Từ vựng">
-                    <input type="text" id="new-card-a" class="fc-input" placeholder="Đáp án / Định nghĩa">
-                    <button class="btn-save-card" onclick="saveCustomCard(); playSFX('click')">Lưu Thẻ</button>
-                </div>
-
-                <div class="fc-progress"><div class="fc-bar" id="fc-bar"></div></div>
-                <div class="flashcard-container" onclick="flipCard(this); playSFX('click')">
-                    <div class="flashcard-inner">
-                        <div class="flashcard-front">
-                            <i class="fa-solid fa-trash fc-delete-btn" onclick="deleteCurrentCard(event); playSFX('click')" title="Xóa thẻ này"></i>
-                            <div class="fc-category" id="fc-cat-front">Danh mục</div>
-                            <div class="fc-content" id="fc-q">Đang tải...</div>
-                            <div style="font-size: 12px; opacity: 0.7; margin-top:15px;">(Bấm để lật)</div>
-                        </div>
-                        <div class="flashcard-back">
-                            <div class="fc-category" id="fc-cat-back">Định nghĩa</div>
-                            <div class="fc-content" id="fc-a">Đang tải...</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="fc-controls" id="fc-controls-area">
-                    <button class="btn-fc btn-fc-review" onclick="nextCard(false); playSFX('click')">Cần ôn lại 🧠</button>
-                    <button class="btn-fc btn-fc-master" onclick="nextCard(true); playSFX('success')">Đã thuộc ✅</button>
+                <div class="streak-badge">
+                    <i class="fas fa-fire"></i> <span id="streak-count">0</span>
                 </div>
             </div>
         </div>
 
-        <div class="cozy-panel" id="panel-quiz" style="display:none;">
-            <div class="panel-header" style="cursor: default;">
-                <h3><i class="fa-solid fa-robot"></i> Auto-Quiz AI</h3>
-                <div class="mini-display" id="quiz-streak">Streak: 0 🔥</div>
+        <div id="quiz-screen">
+            <div class="question-box">
+                <div class="question-text" id="question-text">Loading...</div>
+                <div class="options-grid" id="options-container"></div>
             </div>
-            <div class="panel-content" id="quiz-content-area">
-                <div class="quiz-score-badge" id="quiz-category-badge">Đang tải dữ liệu...</div>
-                <div class="quiz-question-text" id="quiz-question">Vui lòng chọn môn học bên tab "Học Nhanh" để bắt đầu!</div>
-                <div id="quiz-options-container">
-                    </div>
-                <button class="btn-fc btn-fc-restart" onclick="generateQuiz()" style="margin-top:15px; width: 100%;">Câu hỏi tiếp theo ➝</button>
+            <div class="quiz-footer">
+                <div style="font-size:12px; color: rgba(255,255,255,0.3)">WEB3 Project</div>
+                <button class="next-btn" id="next-btn" onclick="nextQuestion()">Tiếp theo <i class="fas fa-arrow-right"></i></button>
             </div>
         </div>
-
     </div>
 
     <script>
-        const THEMES = {
-            morning: { emoji: "🌤️", type: "local", bg: "media/8.mp4", track: "Sớm Mai", color: "#f3a683", audio: "audio/a2.m4a" }, 
-            rain: { emoji: "🌧️", type: "local", bg: "media/2.mp4", track: "Ngày Mưa", color: "#546de5", audio: "audio/a1.m4a" }, 
-            cafe: { emoji: "☕", type: "local", bg: "media/4.mp4", track: "Quán Cà Phê", color: "#cf6a87", audio: "audio/a5.mp3" }, 
-            forest: { emoji: "🌲", type: "local", bg: "media/3.mp4", track: "Rừng Sâu", color: "#63cdda", audio: "audio/a7.m4a" },
-            sunset: { emoji: "🌇", type: "local", bg: "media/5.mp4", track: "Hoàng Hôn", color: "#e77f67", audio: "audio/a4.m4a" }, 
-            night: { emoji: "🌙", type: "local", bg: "media/6.mp4", track: "Bầu Trời Đêm", color: "#596275", audio: "audio/a3.m4a" }, 
-            library: { emoji: "📚", type: "local", bg: "media/7.mp4", track: "Thư Viện", color: "#d1d8e0", audio: "audio/a6.m4a" }
-        };
+        // --- 1. CẤU HÌNH THEMES ĐẦY ĐỦ ---
+        const themes = [
+            { name: "Fantasy World",    video: "media/1,1.mp4",     audio: "audio/a5.mp3", color: "#7289da" },
+            { name: "Cosmic Travel",    video: "media/1,22.mp4",    audio: "audio/a1.m4a", color: "#9b59b6" },
+            { name: "Sad Rain",         video: "media/2.mp4",       audio: "audio/a2.m4a", color: "#3498db" },
+            { name: "Night City",       video: "media/3.mp4",       audio: "audio/a3.m4a", color: "#f1c40f" },
+            { name: "Cyberpunk",        video: "media/7.mp4",       audio: "audio/a4.m4a", color: "#e74c3c" },
+            { name: "Urban Life",       video: "media/8.mp4",       audio: "audio/a6.m4a", color: "#1abc9c" },
+            { name: "Lofi Chill Girl",  video: "media/lofigirl-loop-audio.mp4", audio: "audio/a7.m4a", color: "#e67e22" }
+        ];
+
+        // --- 2. XỬ LÝ VIDEO BOOMERANG (LẶP ĐẢO CHIỀU) ---
+        const bgVideo = document.getElementById('bg-video');
         
-        const BUDDIES = {
-            lofi: { type: "local", url: "media/lofigirl-loop-audio.mp4", name: "Lofi Girl (Bản Local)", thumb: "https://img.youtube.com/vi/jfKfPfyJRdk/0.jpg" }
-        };
-
-        // --- DATA LOADED ---
-        const LEARNING_DATABASE = {
-            "Cơ sở tạo hình": {
-                "Ôn tập": [
-                    { q: "Cơ sở tạo hình là gì?", a: "Là tập hợp kiến thức cơ sở nền tảng được nghiên cứu sắp xếp khoa học đạt hiệu quả thị giác cao." },
-                    { q: "Chức năng xung thần kinh thị giác là gì?", a: "Chuyển thông tin tới bộ nhớ giác quan." },
-                    { q: "Thị giác là gì?", a: "Khả năng tiếp nhận và diễn giải thông tin từ ánh sáng truyền vào mắt." },
-                    { q: "Nhận thức thị giác là gì?", a: "Khả năng hiểu nội dung thông tin từ ánh sáng truyền vào mắt." },
-                    { q: "Điều kiện đầy đủ cảm nhận thị giác là gì?", a: "Mắt, Ánh sáng nhìn được, Tín hiệu hình ảnh." },
-                    { q: "Hệ thống xử lý thông tin của con người có bao nhiêu cấu trúc chính?", a: "3 cấu trúc chính: Bộ nhớ giác quan, Bộ nhớ làm việc, Bộ nhớ dài hạn." },
-                    { q: "Nhiệm vụ bộ nhớ giác quan là gì?", a: "Lọc thông tin." },
-                    { q: "Nhiệm vụ bộ nhớ làm việc là gì?", a: "Hiểu thông tin." },
-                    { q: "Nhiệm vụ bộ nhớ dài hạn là gì?", a: "Lưu trữ thông tin." },
-                    { q: "Quy trình nhận thức thị giác của con người?", a: "Ánh sáng -> Hình ảnh -> Bộ nhớ giác quan -> Bộ nhớ làm việc -> Mã hóa -> Bộ nhớ dài hạn." },
-                    { q: "Lực thị giác là gì?", a: "Sự chú ý, tập trung của mắt tới một đối tượng." },
-                    { q: "Trường lực là gì?", a: "Sự hấp dẫn tỏa ra xung quanh tín hiệu hình ảnh." },
-                    { q: "Cường lực thị giác là gì?", a: "Mức độ lớn nhỏ của trường lực." },
-                    { q: "Trường thị giác của con người là gì?", a: "Giới hạn mắt người nhìn được trong một không gian bất kỳ." },
-                    { q: "Tổng giới hạn trái – phải của trường thị giác con người?", a: "130 độ (65 trái + 65 phải)." },
-                    { q: "Tổng giới hạn trên – dưới của trường thị giác con người?", a: "75 độ (30 trên + 45 dưới)." },
-                    { q: "Trường thị giác quy ước được xác định như thế nào?", a: "Hình chóp nón đều đáy tròn, góc ở đỉnh 30 độ." },
-                    { q: "Cân bằng thị giác là gì?", a: "Sự sắp xếp tạo độ nhấn hoặc sức căng thị giác hợp lý cho các yếu tố hình thể." },
-                    { q: "Trọng lượng thị giác là gì?", a: "Khía cạnh nặng nhẹ của hình ảnh." },
-                    { q: "Yếu tố ảnh hưởng tới cân bằng thị giác?", a: "Tương phản, hướng, vị trí." },
-                    { q: "Có bao nhiêu cặp cân bằng thị giác?", a: "3 cặp: Trên-dưới, Trái-phải, Trước-sau." },
-                    { q: "Hình dạng thị giác là gì?", a: "Hình dạng vật lý được nhìn thấy, có thông tin và có nghĩa." },
-                    { q: "Cấu trúc tỷ lệ đơn giản thường gặp?", a: "Tỷ lệ 1/3 và Tỷ lệ vàng (1.618)." },
-                    { q: "Hình tròn là hình có hướng như nào?", a: "Vô hướng." },
-                    { q: "Hình vuông và hình chữ nhật có hướng như nào?", a: "Hướng đối lập." },
-                    { q: "Hình lục giác có hướng như nào?", a: "Đa hướng." },
-                    { q: "Hình định hướng là gì?", a: "Hình có chuyển động rõ về một phía." },
-                    { q: "Định hướng chuyển động thị giác là gì?", a: "Tổ chức hiệu ứng hình ảnh theo hướng đơn tuyến." },
-                    { q: "Tại sao phải định hướng chuyển động thị giác?", a: "Để người xem tiếp nhận toàn bộ thông tin thuận lợi nhất." },
-                    { q: "Tại sao sinh viên Đa phương tiện cần hiểu hệ thống xử lý thông tin?", a: "Để ứng dụng đặc điểm đó vào thiết kế hiệu quả." },
-                    { q: "Mối quan hệ giữa lực thị giác và trường lực?", a: "Tỉ lệ thuận." },
-                    { q: "Cấu trúc ẩn của hình vuông cho thấy gì?", a: "Lực tâm mạnh nhất, giảm dần khi ra xa; trục có xu hướng cân bằng." },
-                    { q: "Lực thị giác bị chi phối bởi gì?", a: "Màu sắc, tương phản, kích thước, số lượng, hình dạng, chuyển động..." },
-                    { q: "Mối quan hệ kích thước và cường độ lực thị giác?", a: "Tỉ lệ thuận." },
-                    { q: "Trong cân bằng thị giác, hình hướng lên cho cảm giác gì?", a: "Nhẹ." },
-                    { q: "Trong cân bằng thị giác, hình hướng xuống cho cảm giác gì?", a: "Nặng." },
-                    { q: "Trong cân bằng thị giác, vị trí trung tâm cho cảm giác gì?", a: "Ổn định nhất." },
-                    { q: "Trong cân bằng thị giác, vị trí lệch tâm cho cảm giác gì?", a: "Kém cân bằng, không ổn định." },
-                    { q: "Trọng lượng thị giác cặp trên - dưới?", a: "Dưới nặng hơn trên." },
-                    { q: "Trọng lượng thị giác cặp trái - phải?", a: "Trái nặng hơn phải." },
-                    { q: "Trọng lượng thị giác cặp trước - sau?", a: "Trước nặng hơn sau." },
-                    { q: "Nguyên lý 'làm bằng nhau' của mắt là gì?", a: "Gộp các hình dạng/màu sắc/kích thước gần giống nhau thành một nhóm chung." },
-                    { q: "Hình vô hướng đặt cạnh hình định hướng sẽ ra sao?", a: "Hình vô hướng có xu hướng chuyển động theo hình định hướng." },
-                    { q: "Yếu tố ảnh hưởng lớn nhất đến định hướng chuyển động thị giác?", a: "Bố cục." },
-                    { q: "Tốc độ chuyển động thị giác phụ thuộc vào?", a: "Phông hình, vị trí, màu sắc." },
-                    { q: "Tại sao quảng cáo hay dùng âm thanh/hình ảnh mạnh?", a: "Tạo lực thị giác lớn để hấp dẫn và gây nhớ." },
-                    { q: "Khi nào tạo ra ảo giác?", a: "Khi cường độ lực thị giác đẩy lên quá cao." },
-                    { q: "Tại sao thiết kế cho trẻ em thường bo tròn?", a: "Tạo cảm giác dễ thương, an toàn." },
-                    { q: "Kịch bản đồ họa (Storyboard) ứng dụng rõ nhất ở đâu?", a: "Làm phim." },
-                    { q: "Giao diện (UI) ứng dụng rõ nhất ở đâu?", a: "Thiết kế Web." },
-                    { q: "Điểm có đặc tính gì?", a: "Vô hướng, có tính tập trung, không có chiều." },
-                    { q: "Nét có đặc tính gì?", a: "Có chiều dài, không có chiều rộng/sâu." },
-                    { q: "Diện có đặc tính gì?", a: "Có dài, rộng, không có sâu." },
-                    { q: "Khối có đặc tính gì?", a: "Có dài, rộng, sâu (3 chiều)." },
-                    { q: "Có bao nhiêu loại nét?", a: "4 loại: Có nghĩa, Liên tưởng, Đa nghĩa, Cấu tạo." },
-                    { q: "Hiệu quả tạo rung là gì?", a: "Mắt bị gián đoạn trước hai trường lực bằng nhau cạnh nhau." },
-                    { q: "Phông hình là gì?", a: "Tín hiệu hình ảnh nhỏ đặt trên nền rộng." },
-                    { q: "Hai loại ánh sáng cơ bản?", a: "Tự nhiên và Nhân tạo." },
-                    { q: "Ánh sáng mặt trời tạo hiệu quả gì?", a: "Hình khối rõ nét." },
-                    { q: "Màu cộng cơ bản?", a: "Đỏ (Red), Xanh lục (Green), Xanh lam (Blue)." },
-                    { q: "Màu trừ cơ bản (in ấn)?", a: "Xanh lơ (Cyan), Hồng cánh sen (Magenta), Vàng (Yellow)." },
-                    { q: "Trộn tất cả màu cộng ra màu gì?", a: "Màu trắng." },
-                    { q: "Trộn tất cả màu trừ ra màu gì?", a: "Màu đen." },
-                    { q: "Màu vô sắc là gì?", a: "Đen, Trắng, Xám." },
-                    { q: "Gam màu nóng là gì?", a: "Bước sóng dài, gây cảm giác ấm áp (Đỏ, Cam, Vàng...)." },
-                    { q: "Gam màu lạnh là gì?", a: "Bước sóng ngắn, gây cảm giác mát mẻ (Xanh...)." },
-                    { q: "Phối cảnh một điểm tụ mạnh về gì?", a: "Chiều sâu." },
-                    { q: "Phối cảnh hai điểm tụ mạnh về gì?", a: "Chiều sâu và chiều rộng." },
-                    { q: "Phối cảnh ba điểm tụ mạnh về gì?", a: "Chiều sâu, rộng và cao." },
-                    { q: "Bố cục đăng đối là gì?", a: "Sắp xếp đối xứng qua trục/tâm." },
-                    { q: "Bố cục đường diềm là gì?", a: "Lặp lại theo một chiều (dọc/ngang)." },
-                    { q: "Bố cục dàn trải là gì?", a: "Lặp lại theo cả hai chiều (hoa văn vải...)." },
-                    { q: "Tỷ lệ vàng là bao nhiêu?", a: "Xấp xỉ 1.618." },
-                    { q: "Ai nghiên cứu tỷ lệ vàng?", a: "Fibonacci (trong tự nhiên)." },
-                    { q: "Ai nghiên cứu hình chữ nhật vàng trong kiến trúc?", a: "Le Corbusier." },
-                    { q: "Nhịp điệu là gì?", a: "Sự lặp lại có tổ chức." },
-                    { q: "4 loại nhịp điệu cơ bản?", a: "Liên tục, Tiệm biến, Lồi lõm, Giao thoa." },
-                    { q: "Tương phản là gì?", a: "Sự khác biệt, trái ngược giữa các tín hiệu thị giác." },
-                    { q: "Vi biến là gì?", a: "Sự tương phản nhẹ, chuyển biến dần dần." },
-                    { q: "Tương phản hay Vi biến tạo ấn tượng mạnh hơn?", a: "Tương phản (thu hút thị giác tốt hơn)." }
-                ]
-            },
-            "Tiếng Anh": { "Cơ bản": [{ q: "Hello", a: "Xin chào" }, { q: "Apple", a: "Quả táo" }], "IELTS": [{ q: "Serendipity", a: "Sự tình cờ may mắn" }] },
-            "Công nghệ": { "HTML": [{ q: "<div>", a: "Thẻ tạo khối" }] }
-        };
-        
-        const ZEN_QUOTES = ["Hít vào sự bình yên...", "Bạn làm tốt lắm...", "Nghỉ ngơi xíu nhé...", "Hãy nhẹ nhàng với bản thân."];
-
-        let studyQueue = [], masteredCount = 0, totalCards = 0, currentSubject = "", currentLevel = "";
-        const exploreGrid = document.getElementById('explore-grid'), buddyGrid = document.getElementById('buddy-grid'), root = document.documentElement;
-        const videoContainer = document.getElementById('video-bg-container');
-        const ambientPlayer = document.getElementById('ambient-audio');
-        
-        let isAmbientMuted = false; 
-        let lastAmbientVolume = 0.5;
-
-        let youtubeAudioPlayer = null;
-        let isYouTubeAudioPlaying = false;
-        let currentExternalType = null; 
-        let isExternalMuted = false;
-        let lastExternalVolume = 50;
-        let isYouTubeReady = false; 
-
-        let isExclusiveMode = false;
-        let pendingYouTubeId = null; 
-        
-        // Quiz vars
-        let quizScore = 0;
-        let currentQuizData = null;
-
-        function toggleUpdateLog() {
-            const modal = document.getElementById('update-log-modal');
-            modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
-        }
-
-        function updateRealTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
-            document.getElementById('real-time-clock').innerText = timeString;
-        }
-        setInterval(updateRealTime, 1000);
-
-        function triggerFireEffect(e) {
-            const numSparks = 12; 
-            const container = document.body;
-            for (let i = 0; i < numSparks; i++) {
-                const spark = document.createElement('div');
-                spark.classList.add('spark-particle');
-                spark.style.left = e.clientX + 'px';
-                spark.style.top = e.clientY + 'px';
-                const angle = Math.random() * Math.PI * 2;
-                const distance = 60 + Math.random() * 60; 
-                const tx = Math.cos(angle) * distance;
-                const ty = Math.sin(angle) * distance;
-                spark.style.setProperty('--tx', `${tx}px`);
-                spark.style.setProperty('--ty', `${ty}px`);
-                container.appendChild(spark);
-                setTimeout(() => spark.remove(), 800);
-            }
-        }
-
-        function toggleAudioMode() {
-            isExclusiveMode = document.getElementById('audio-exclusive-mode').checked;
-            checkExclusiveState();
-        }
-
-        function checkExclusiveState() {
-            const controls = document.getElementById('local-player-controls');
-            const isExternalPlaying = isYouTubeAudioPlaying || currentExternalType === 'soundcloud';
-            
-            if (isExclusiveMode && isExternalPlaying) {
-                ambientPlayer.pause();
-                controls.classList.add('disabled-controls');
-            } else {
-                controls.classList.remove('disabled-controls');
-                if (ambientPlayer.paused && !isAmbientMuted) {
-                    ambientPlayer.play().catch(e=>{});
-                }
-            }
-        }
-
-        function toggleBlur() {
-            const isChecked = document.getElementById('blur-toggle').checked;
-            const val = document.getElementById('blur-slider').value;
-            const video = document.getElementById('video-bg-container');
-            video.style.filter = isChecked ? `blur(${val}px)` : 'none';
-        }
-
-        function changeBlur(val) {
-            const toggle = document.getElementById('blur-toggle');
-            if (!toggle.checked) toggle.checked = true;
-            const video = document.getElementById('video-bg-container');
-            video.style.filter = `blur(${val}px)`;
-        }
-
-        function onYouTubeIframeAPIReady() {
-            youtubeAudioPlayer = new YT.Player('youtube-audio-container', {
-                height: '0', width: '0',
-                playerVars: { 'autoplay': 0, 'controls': 0, 'loop': 1 },
-                events: { 'onReady': onPlayerReady }
-            });
-        }
-        
-        function onPlayerReady(event) {
-            isYouTubeReady = true; 
-            if (pendingYouTubeId) {
-                loadCustomEmbed();
-            }
-        }
-
-        function playSFX(type) {
-            const sound = document.getElementById(`sfx-${type}`);
-            if(sound) { sound.currentTime = 0; sound.play().catch(e => {}); }
-        }
-
-        document.addEventListener('touchstart', function() {
-            if (ambientPlayer.paused && !isYouTubeAudioPlaying) { 
-                ambientPlayer.play().then(() => ambientPlayer.pause());
-            }
-        }, { once: true });
-
-        function toggleSpotifyInput() {
-            const group = document.getElementById('spotify-input-group');
-            group.style.display = group.style.display === 'flex' ? 'none' : 'flex';
-        }
-
-        function getYouTubeId(url) {
-            const regExp = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-            const match = url.match(regExp);
-            return match ? match[1] : null;
-        }
-
-        function stopExternalMusic() {
-            const btn = document.getElementById('btn-ext-stop');
-            const extControls = document.getElementById('external-audio-controls');
-            
-            document.getElementById('embed-container').innerHTML = '';
-            document.getElementById('embed-container').style.display = 'none';
-            btn.style.display = 'none';
-            extControls.style.display = 'none';
-            currentExternalType = null;
-            
-            if (youtubeAudioPlayer && isYouTubeAudioPlaying) {
-                youtubeAudioPlayer.stopVideo();
-                isYouTubeAudioPlaying = false;
-            }
-            
-            checkExclusiveState();
-        }
-
-        function loadCustomEmbed() {
-            let url = document.getElementById('spotify-url').value.trim();
-            const container = document.getElementById('embed-container');
-            const stopBtn = document.getElementById('btn-ext-stop');
-            const extControls = document.getElementById('external-audio-controls');
-            
-            if(!url) return; 
-
-            const youtubeId = getYouTubeId(url);
-            
-            if (youtubeId) {
-                if(!isYouTubeReady || !youtubeAudioPlayer || !youtubeAudioPlayer.loadVideoById) {
-                    pendingYouTubeId = youtubeId;
-                    container.innerHTML = `<div style="padding:10px; font-size:12px; color:var(--accent-color); background:rgba(255,255,255,0.8); border-radius:8px; text-align:center;">⏳ Đang kết nối YouTube...</div>`;
-                    container.style.display = 'block';
-                    return; 
-                }
-
-                youtubeAudioPlayer.loadVideoById(youtubeId);
-                youtubeAudioPlayer.setVolume(lastExternalVolume);
-                isYouTubeAudioPlaying = true;
-                currentExternalType = 'youtube';
-                
-                container.innerHTML = `<div style="padding:15px; font-size:13px; font-weight:bold; color:var(--accent-color); background:rgba(255,255,255,0.8); border-radius:12px; text-align:center;"><i class="fa-brands fa-youtube" style="color:red;"></i> Đang phát từ YouTube...</div>`;
-                container.style.display = 'block';
-                stopBtn.style.display = 'inline-block';
-                extControls.style.display = 'block'; 
-                
-                checkExclusiveState();
-                pendingYouTubeId = null;
-                return;
-            }
-            
-            let embedSrc = "";
-            if (url.includes('soundcloud.com')) {
-                const encodedUrl = encodeURIComponent(url);
-                embedSrc = `https://w.soundcloud.com/player/?url=${encodedUrl}&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true`;
-                currentExternalType = 'soundcloud';
-                extControls.style.display = 'none'; 
-            } 
-            
-            if(embedSrc) {
-                container.innerHTML = `<iframe src="${embedSrc}" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
-                container.style.display = 'block';
-                stopBtn.style.display = 'inline-block';
-                checkExclusiveState();
-            }
-        }
-
-        window.addEventListener('load', () => {
-             document.getElementById('spotify-url').value = "";
-             pendingYouTubeId = null;
-             updateRealTime(); 
+        // Khi video chạy đến cuối
+        bgVideo.addEventListener('ended', () => {
+            bgVideo.playbackRate = -1; // Tua ngược
+            bgVideo.play();
         });
 
-        function changeAmbientVolume(val) {
-            ambientPlayer.volume = val;
-            isAmbientMuted = (val == 0);
-            if (!isAmbientMuted) lastAmbientVolume = val;
-            updateAmbientIcon();
-        }
+        // Kiểm tra liên tục để tua xuôi khi về đầu
+        setInterval(() => {
+            // Nếu đang tua ngược và thời gian gần về 0
+            if (bgVideo.playbackRate < 0 && bgVideo.currentTime < 0.1) {
+                bgVideo.playbackRate = 1; // Tua xuôi
+                bgVideo.play();
+            }
+        }, 200);
 
-        function toggleAmbientMute() {
-            if (ambientPlayer.muted || ambientPlayer.volume === 0) {
-                ambientPlayer.muted = false;
-                ambientPlayer.volume = lastAmbientVolume > 0 ? lastAmbientVolume : 0.5;
-                document.getElementById('volume-slider').value = ambientPlayer.volume;
-                ambientPlayer.play().catch(e => {});
-                isAmbientMuted = false;
+        // --- 3. DỮ LIỆU CÂU HỎI (GIỮ NGUYÊN) ---
+        const rawData = [
+            { q: "Cơ sở tạo hình là gì?", a: "Tập hợp kiến thức cơ sở nền tảng được nghiên cứu sắp xếp khoa học đạt hiệu quả thị giác cao." },
+            { q: "Lực thị giác là gì?", a: "Sự chú ý, tập trung của mắt tới một đối tượng." },
+            { q: "Trường lực là gì?", a: "Sự hấp dẫn toả ra xung quanh tín hiệu hình ảnh." },
+            { q: "Cường lực thị giác là gì?", a: "Mức độ lớn nhỏ của trường lực." },
+            { q: "Trường thị giác của con người là gì?", a: "Giới hạn mắt người nhìn được trong một không gian bất kỳ." },
+            { q: "Tổng giới hạn trái – phải của trường thị giác con người là bao nhiêu?", a: "130 độ (65 trái + 65 phải)." },
+            { q: "Tổng giới hạn trên – dưới của trường thị giác con người là bao nhiêu?", a: "75 độ (30 trên + 45 dưới)." },
+            { q: "Trường thị giác quy ước được xác định bằng hình gì?", a: "Hình chóp nón đều có đáy là hình tròn và góc ở đỉnh bằng 30 độ." },
+            { q: "Cân bằng thị giác là gì?", a: "Sự sắp xếp, tạo độ nhấn hoặc tạo sức căng thị giác một cách hợp lý." },
+            { q: "Trọng lượng thị giác là gì?", a: "Khía cạnh nặng - nhẹ của hình ảnh." },
+            { q: "3 cặp cân bằng thị giác điển hình là gì?", a: "Trên-dưới, Trái-phải, Trước-sau." },
+            { q: "Hình dạng thị giác là gì?", a: "Hình dạng vật lý được nhìn thấy, có thông tin, và có nghĩa." },
+            { q: "Hai cấu trúc tỷ lệ thường gặp trong tính đơn giản là gì?", a: "Cấu trúc tỷ lệ 1/3 và Tỷ lệ vàng." },
+            { q: "Hình tròn là hình có hướng như thế nào?", a: "Vô hướng." },
+            { q: "Hình vuông và hình chữ nhật là hình có hướng như thế nào?", a: "Hướng đối lập." },
+            { q: "Hình lục giác là hình có hướng như thế nào?", a: "Đa hướng." },
+            { q: "Hình định hướng là gì?", a: "Hình có chuyển động rõ về một phía." },
+            { q: "Tại sao phải định hướng chuyển động thị giác?", a: "Để tạo bố cục thuận lợi cho người xem tiếp nhận toàn bộ thông tin." },
+            { q: "Bộ nhớ giác quan có nhiệm vụ gì?", a: "Lọc thông tin." },
+            { q: "Bộ nhớ làm việc có nhiệm vụ gì?", a: "Hiểu thông tin." },
+            { q: "Bộ nhớ dài hạn có nhiệm vụ gì?", a: "Lưu trữ thông tin." },
+            { q: "Có mấy cách thức mã hóa thông tin thành kiến thức dài hạn?", a: "Hai cách: Mã hóa đơn và Mã hóa kép." },
+            { q: "Mối quan hệ giữa lực thị giác và trường lực?", a: "Tỉ lệ thuận." },
+            { q: "Lực thị giác bị chi phối bởi yếu tố nào?", a: "Màu sắc, độ tương phản, kích thước, số lượng, hình dạng, chuyển động." },
+            { q: "Khi đặt hai vật cạnh nhau khoảng cách nhỏ hơn kích thước của chúng thì cường độ thị giác sẽ thế nào?", a: "Lớn hơn so với khi đứng độc lập." },
+            { q: "Mối quan hệ giữa kích thước tín hiệu thị giác và cường độ lực thị giác?", a: "Tỉ lệ thuận." },
+            { q: "Vị trí nhóm chính thường đặt ở đâu?", a: "Đặt trong trường thị giác quy ước." },
+            { q: "Trong cân bằng thị giác, hình hướng lên cho cảm giác gì?", a: "Cảm giác nhẹ." },
+            { q: "Trong cân bằng thị giác, hình hướng xuống cho cảm giác gì?", a: "Cảm giác nặng." },
+            { q: "Trong cân bằng thị giác, hình hướng đối lập cho cảm giác gì?", a: "Cảm giác ổn định." },
+            { q: "Trong cân bằng thị giác, vị trí trung tâm sẽ cho cảm giác gì?", a: "Cân bằng ổn định nhất." },
+            { q: "Ứng dụng cặp cân bằng thị giác trên dưới như thế nào?", a: "Trên nhẹ, dưới nặng." },
+            { q: "Ứng dụng cặp cân bằng thị giác trái phải như thế nào?", a: "Phải nhẹ, trái nặng." },
+            { q: "Ứng dụng cặp cân bằng thị giác trước sau như thế nào?", a: "Sau nhẹ, trước nặng." },
+            { q: "Hình vô hướng đặt cạnh hình định hướng sẽ chịu chi phối thế nào?", a: "Hình vô hướng có xu hướng chuyển động theo hình định hướng." },
+            { q: "Yếu tố nào ảnh hưởng lớn nhất cho định hướng chuyển động thị giác?", a: "Bố cục." },
+            { q: "Bước đầu tiên để tạo ra định hướng chuyển động thị giác là gì?", a: "Phân cấp thông tin và hình ảnh." },
+            { q: "Tại sao quảng cáo thường dùng âm thanh?", a: "Tạo lực thị giác lớn, mã hóa kép giúp nhớ thương hiệu." },
+            { q: "Khi nào tác phẩm thiết kế tạo ra ảo giác?", a: "Khi cường độ lực thị giác đẩy lên quá cao." },
+            { q: "Vật màu xanh lam và vàng chanh trên nền trắng, vật nào có lực thị giác mạnh hơn?", a: "Vật màu xanh lam." },
+            { q: "Hình vuông và Hình tam giác, hình nào dễ mô tả đúng hơn?", a: "Hình vuông." },
+            { q: "Hình tròn và Hình elip, hình nào dễ mô tả đúng hơn?", a: "Hình tròn." },
+            { q: "Điểm có đặc tính gì?", a: "Vô hướng, có tính tập trung, không có chiều." },
+            { q: "Nét có đặc tính gì?", a: "Có chiều dài, không có chiều rộng, không có chiều sâu." },
+            { q: "Diện có đặc tính gì?", a: "Có chiều dài, chiều rộng, không có chiều sâu." },
+            { q: "Có bao nhiêu loại nét?", a: "4 loại: Nét có nghĩa, Nét liên tưởng, Nét đa nghĩa, Nét cấu tạo." },
+            { q: "Hiệu quả tạo rung là gì?", a: "Mắt bị gián đoạn trước hai trường lực bằng nhau của hai tín hiệu cạnh nhau." },
+            { q: "Phông hình là gì?", a: "Là tín hiệu hình ảnh nhỏ đặt trên nền rộng và có đường viền khác." },
+            { q: "Khối có đặc tính gì?", a: "Có chiều dài, rộng, sâu." },
+            { q: "Màu gốc cơ bản của màu cộng (RGB)?", a: "Đỏ, Xanh lá, Xanh lam." },
+            { q: "Màu gốc cơ bản của màu hữu cơ (RYB)?", a: "Đỏ cờ, Vàng chanh, Xanh coban." },
+            { q: "Trộn tất cả màu cộng ra màu gì?", a: "Màu trắng." },
+            { q: "Trộn tất cả màu trừ (CMYK) ra màu gì?", a: "Màu đen." },
+            { q: "Sắc độ là gì?", a: "Độ đậm nhạt của các màu." },
+            { q: "Cường độ màu là gì?", a: "Mức độ mạnh – yếu của màu." },
+            { q: "Gam màu nóng là gì?", a: "Màu bước sóng dài, tạo cảm giác ấm áp (Đỏ, Cam, Vàng)." },
+            { q: "Gam màu lạnh là gì?", a: "Màu bước sóng ngắn, tạo cảm giác mát mẻ (Xanh, Tím)." },
+            { q: "Phối cảnh không gian là gì?", a: "Hình thức tạo không gian ba chiều trên mặt phẳng." },
+            { q: "Nhóm chính là gì?", a: "Hình ảnh quan trọng, nổi bật, thu hút sự chú ý." },
+            { q: "Bố cục đối xứng (đăng đối) là gì?", a: "Sắp xếp họa tiết giống nhau qua trục hoặc tâm." },
+            { q: "Bố cục đường diềm là gì?", a: "Họa tiết lặp lại theo một chiều (dọc/ngang) tạo tín hiệu thăng bằng." },
+            { q: "Bố cục dàn trải là gì?", a: "Họa tiết lặp lại theo cả hai chiều phát triển vô tận." },
+            { q: "Nét cấu tạo là gì?", a: "Nét mô tả cấu trúc hình ảnh." },
+            { q: "Kĩ thuật tạo rung tăng giảm dần đều là gì?", a: "Tăng độ dày nét đồng thời giảm khoảng cách (hoặc ngược lại)." },
+            { q: "Cách tạo ánh sáng gần giống mặt trời trong vẽ?", a: "Pha màu vàng với trắng theo tỉ lệ nhất định." },
+            { q: "Tại sao ánh sáng nhà hàng thường màu vàng?", a: "Tạo cảm giác ấm cúng." },
+            { q: "Hệ màu cộng (RGB) ứng dụng ở đâu?", a: "Màn hình thiết bị điện tử." },
+            { q: "Hệ màu hữu cơ ứng dụng ở đâu?", a: "Hội họa, in ấn thủ công." },
+            { q: "Màu xanh da trời tạo cảm giác gì?", a: "An toàn, tin cậy." },
+            { q: "Màu đỏ tạo cảm giác gì?", a: "Nhiệt huyết, ham muốn, nguy hiểm." },
+            { q: "Màu tím tạo cảm giác gì?", a: "Tinh tế, huyền bí, chung thủy." },
+            { q: "Đường chân trời là gì?", a: "Đường thẳng giả định, ranh giới giữa trời và đất tại vô cùng." },
+            { q: "Thế mạnh của phối cảnh 1 điểm tụ?", a: "Mô tả chiều sâu không gian." },
+            { q: "Thế mạnh của phối cảnh 2 điểm tụ?", a: "Mô tả chiều sâu và chiều rộng." },
+            { q: "Thế mạnh của phối cảnh 3 điểm tụ?", a: "Mô tả chiều sâu, chiều rộng và chiều cao." },
+            { q: "Tỷ lệ vàng xấp xỉ bao nhiêu?", a: "1.618" },
+            { q: "Nhịp điệu là gì?", a: "Sự lặp lại của các nhóm sự vật có tổ chức." },
+            { q: "Có mấy loại nhịp điệu cơ bản?", a: "4 loại: Liên tục, Tiệm biến, Lồi lõm, Giao thoa." },
+            { q: "Tương phản là gì?", a: "Sự khác biệt, trái ngược nhau giữa các tín hiệu thị giác." },
+            { q: "Vi biến là gì?", a: "Sự tương phản nhẹ, chuyển biến dần, khác biệt rất ít." },
+            { q: "Trong thiết kế logo, tỷ lệ nào hay được dùng nhất?", a: "Tỷ lệ vàng." }
+        ];
+
+        // --- GAME LOGIC ---
+        let currentStreak = 0;
+        let currentQuestionObj = null;
+        let currentThemeColor = themes[0].color;
+        let isMusicPlaying = false;
+
+        const ui = {
+            questionText: document.getElementById('question-text'),
+            optionsContainer: document.getElementById('options-container'),
+            streakCount: document.getElementById('streak-count'),
+            nextBtn: document.getElementById('next-btn'),
+            bgVideo: document.getElementById('bg-video'),
+            bgMusic: document.getElementById('bg-music'),
+            clickSound: document.getElementById('click-sound'),
+            musicIcon: document.getElementById('music-toggle'),
+            themeSelect: document.getElementById('theme-select')
+        };
+
+        // Khởi tạo danh sách Theme vào Dropdown
+        function initThemes() {
+            themes.forEach((theme, index) => {
+                const opt = document.createElement('option');
+                opt.value = index;
+                opt.innerText = theme.name;
+                ui.themeSelect.appendChild(opt);
+            });
+        }
+        initThemes();
+
+        // --- ÂM THANH & INTERACTION ---
+        function toggleMusic() {
+            if (isMusicPlaying) {
+                ui.bgMusic.pause();
+                ui.musicIcon.classList.remove('fa-volume-up');
+                ui.musicIcon.classList.add('fa-volume-mute');
+                isMusicPlaying = false;
             } else {
-                ambientPlayer.muted = true;
-                document.getElementById('volume-slider').value = 0;
-                isAmbientMuted = true;
-            }
-            updateAmbientIcon();
-        }
-
-        function updateAmbientIcon() {
-            const btn = document.getElementById('mute-btn');
-            if (isAmbientMuted || ambientPlayer.muted || ambientPlayer.volume === 0) { 
-                btn.className = 'fa-solid fa-volume-xmark'; 
-            } else if (ambientPlayer.volume < 0.5) { 
-                btn.className = 'fa-solid fa-volume-low'; 
-            } else { 
-                btn.className = 'fa-solid fa-volume-high'; 
+                ui.bgMusic.play().catch(e => console.log("Cần tương tác"));
+                ui.musicIcon.classList.remove('fa-volume-mute');
+                ui.musicIcon.classList.add('fa-volume-up');
+                isMusicPlaying = true;
             }
         }
 
-        function changeExternalVolume(val) {
-            lastExternalVolume = val;
-            if(youtubeAudioPlayer && isYouTubeAudioPlaying) {
-                youtubeAudioPlayer.setVolume(val);
-                isExternalMuted = (val == 0);
-                updateExternalIcon();
+        function playClickSound() {
+            ui.clickSound.volume = 0.3; // Giảm âm lượng xuống 30% (nhẹ nhàng hơn)
+            ui.clickSound.currentTime = 0; 
+            ui.clickSound.play().catch(e => {}); 
+        }
+
+        function changeTheme(index) {
+            const theme = themes[index];
+            ui.bgVideo.src = theme.video;
+            ui.bgMusic.src = theme.audio;
+            if (isMusicPlaying) ui.bgMusic.play();
+            document.documentElement.style.setProperty('--theme-color', theme.color);
+            currentThemeColor = theme.color;
+        }
+
+        // --- HIỆU ỨNG TIA LỬA ---
+        document.addEventListener('click', function(e) {
+            playClickSound(); 
+            createParticles(e.clientX, e.clientY);
+        });
+
+        function createParticles(x, y) {
+            const particleCount = 8;
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                particle.style.backgroundColor = currentThemeColor;
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                
+                const size = Math.random() * 5 + 3; 
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                
+                const tx = (Math.random() - 0.5) * 100;
+                const ty = (Math.random() - 0.5) * 100;
+                particle.style.setProperty('--tx', `${tx}px`);
+                particle.style.setProperty('--ty', `${ty}px`);
+                
+                document.body.appendChild(particle);
+                setTimeout(() => { particle.remove(); }, 600);
             }
         }
 
-        function toggleExternalMute() {
-            if(youtubeAudioPlayer && isYouTubeAudioPlaying) {
-                if (youtubeAudioPlayer.isMuted()) {
-                    youtubeAudioPlayer.unMute();
-                    youtubeAudioPlayer.setVolume(lastExternalVolume);
-                    document.getElementById('ext-volume-slider').value = lastExternalVolume;
-                    isExternalMuted = false;
-                } else {
-                    youtubeAudioPlayer.mute();
-                    document.getElementById('ext-volume-slider').value = 0;
-                    isExternalMuted = true;
-                }
-                updateExternalIcon();
+        // --- QUIZ LOGIC ---
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
             }
         }
 
-        function updateExternalIcon() {
-            const btn = document.getElementById('ext-mute-btn');
-            if(isExternalMuted) btn.className = 'fa-solid fa-volume-xmark';
-            else btn.className = 'fa-solid fa-volume-high';
-        }
+        function loadNewQuestion() {
+            ui.nextBtn.style.display = 'none';
+            ui.optionsContainer.innerHTML = '';
 
-        function switchView(view) {
-            document.querySelectorAll('.nav-pill').forEach(el => el.classList.remove('active'));
-            document.body.classList.remove('focus-active', 'quiz-active');
-            
-            // Reset layout
-            document.getElementById('panel-left').style.display = 'flex';
-            document.getElementById('panel-timer').style.display = 'flex';
-            document.getElementById('panel-flashcards').style.display = 'flex'; 
-            document.getElementById('panel-quiz').style.display = 'none';
+            const randomIndex = Math.floor(Math.random() * rawData.length);
+            currentQuestionObj = rawData[randomIndex];
 
-            if(view === 'myspace') {
-                document.getElementById('btn-myspace').classList.add('active');
-            } else if (view === 'focus') {
-                document.getElementById('btn-focus').classList.add('active');
-                document.body.classList.add('focus-active');
-            } else if (view === 'quiz') {
-                document.getElementById('btn-quiz').classList.add('active');
-                document.body.classList.add('quiz-active');
-                generateQuiz(); 
-            }
-        }
-
-        function generateQuiz() {
-            const container = document.getElementById('quiz-options-container');
-            const questionEl = document.getElementById('quiz-question');
-            const badgeEl = document.getElementById('quiz-category-badge');
-            const streakEl = document.getElementById('quiz-streak');
-            
-            container.innerHTML = '';
-            streakEl.innerText = `Streak: ${quizScore} 🔥`;
-
-            if(!currentSubject || !currentLevel || !LEARNING_DATABASE[currentSubject] || !LEARNING_DATABASE[currentSubject][currentLevel]) {
-                questionEl.innerText = "Vui lòng chọn Môn học và Cấp độ ở tab 'Học Nhanh' trước!";
-                badgeEl.innerText = "Chưa chọn môn";
-                return;
-            }
-
-            badgeEl.innerText = `${currentSubject} - ${currentLevel}`;
-            
-            const list = LEARNING_DATABASE[currentSubject][currentLevel];
-            if(list.length < 4) {
-                 questionEl.innerText = "Cần ít nhất 4 thẻ để tạo trắc nghiệm!";
-                 return;
-            }
-
-            const correctItem = list[Math.floor(Math.random() * list.length)];
-            currentQuizData = correctItem;
-            questionEl.innerText = correctItem.q;
-
-            let answers = [correctItem.a];
-            while(answers.length < 4) {
-                const randomItem = list[Math.floor(Math.random() * list.length)];
-                if(!answers.includes(randomItem.a)) {
-                    answers.push(randomItem.a);
+            let options = [currentQuestionObj.a];
+            while (options.length < 4) {
+                const randomDistractor = rawData[Math.floor(Math.random() * rawData.length)].a;
+                if (!options.includes(randomDistractor) && randomDistractor !== currentQuestionObj.a) {
+                    options.push(randomDistractor);
                 }
             }
+            shuffleArray(options);
 
-            answers.sort(() => Math.random() - 0.5);
-
-            answers.forEach(ans => {
+            ui.questionText.innerText = currentQuestionObj.q;
+            
+            const labels = ['A', 'B', 'C', 'D'];
+            options.forEach((opt, index) => {
                 const btn = document.createElement('button');
-                btn.className = 'quiz-option-btn';
-                btn.innerText = ans;
-                btn.onclick = () => checkQuizAnswer(btn, ans, correctItem.a);
-                container.appendChild(btn);
+                btn.className = 'option-btn';
+                btn.innerHTML = `<span class="option-tag">${labels[index]}</span> ${opt}`;
+                btn.onclick = (e) => {
+                    e.stopPropagation(); 
+                    playClickSound();
+                    createParticles(e.clientX, e.clientY);
+                    checkAnswer(btn, opt);
+                };
+                ui.optionsContainer.appendChild(btn);
             });
         }
 
-        function checkQuizAnswer(btn, selected, correct) {
-            const allBtns = document.querySelectorAll('.quiz-option-btn');
-            
+        function checkAnswer(btn, selectedText) {
+            const allBtns = document.querySelectorAll('.option-btn');
             allBtns.forEach(b => b.disabled = true);
 
-            if(selected === correct) {
+            if (selectedText === currentQuestionObj.a) {
                 btn.classList.add('correct');
-                playSFX('success');
-                quizScore++;
-                document.getElementById('quiz-streak').innerText = `Streak: ${quizScore} 🔥`;
-                setTimeout(generateQuiz, 1500); 
+                currentStreak++;
+                ui.streakCount.innerText = currentStreak;
+                if(currentStreak > 5) ui.streakCount.style.color = "#ffeb3b";
             } else {
                 btn.classList.add('wrong');
-                playSFX('click'); 
-                quizScore = 0;
-                document.getElementById('quiz-streak').innerText = `Streak: ${quizScore} 🔥`;
-                
+                currentStreak = 0;
+                ui.streakCount.innerText = "0";
+                ui.streakCount.style.color = "white";
                 allBtns.forEach(b => {
-                    if(b.innerText === correct) b.classList.add('correct');
+                    if (b.innerText.includes(currentQuestionObj.a)) {
+                        b.classList.add('correct');
+                    }
                 });
             }
+            ui.nextBtn.style.display = 'block';
         }
 
-        function initApp() { 
-            initExplore(); initLearningDropdowns(); updateDisplay(); updateCount(); 
-            ambientPlayer.volume = 0.5; 
-            document.getElementById('volume-slider').value = 0.5; 
-            updateAmbientIcon();
+        function nextQuestion() {
+            loadNewQuestion();
         }
 
-        function initLearningDropdowns() {
-            const subjectSelect = document.getElementById('subject-select');
-            const levelSelect = document.getElementById('level-select');
-            subjectSelect.innerHTML = '';
-            if(Object.keys(LEARNING_DATABASE).length === 0) {
-                const opt = document.createElement('option'); opt.innerText = "Trống"; subjectSelect.appendChild(opt);
-                levelSelect.innerHTML = ''; return;
-            }
-            Object.keys(LEARNING_DATABASE).forEach(sub => {
-                const opt = document.createElement('option'); opt.value = sub; opt.innerText = sub;
-                subjectSelect.appendChild(opt);
-            });
-            subjectSelect.onchange = () => {
-                currentSubject = subjectSelect.value;
-                if(!LEARNING_DATABASE[currentSubject]) return;
-                const levels = Object.keys(LEARNING_DATABASE[currentSubject]);
-                levelSelect.innerHTML = '';
-                levels.forEach(lvl => {
-                    const opt = document.createElement('option'); opt.value = lvl; opt.innerText = lvl;
-                    levelSelect.appendChild(opt);
-                });
-                changeTopic();
-            };
-            levelSelect.onchange = changeTopic;
-            subjectSelect.dispatchEvent(new Event('change'));
-        }
+        loadNewQuestion();
 
-        function changeTopic() {
-            currentSubject = document.getElementById('subject-select').value;
-            currentLevel = document.getElementById('level-select').value;
-            if(!currentSubject || !currentLevel) {
-                studyQueue = []; totalCards=0; masteredCount=0; renderCard();
-                return;
-            }
-            const originalCards = LEARNING_DATABASE[currentSubject][currentLevel];
-            studyQueue = JSON.parse(JSON.stringify(originalCards));
-            totalCards = studyQueue.length;
-            masteredCount = 0;
-            renderCard();
-        }
-
-        function toggleAddSubjectForm() { hideAllForms(); const f=document.getElementById('add-subject-form'); f.style.display=f.style.display==='flex'?'none':'flex'; }
-        function toggleAddLevelForm() { hideAllForms(); const f=document.getElementById('add-level-form'); f.style.display=f.style.display==='flex'?'none':'flex'; }
-        function toggleAddCardForm() { hideAllForms(); const f=document.getElementById('add-card-form'); f.style.display=f.style.display==='flex'?'none':'flex'; }
-        function hideAllForms() {
-            document.getElementById('add-subject-form').style.display='none';
-            document.getElementById('add-level-form').style.display='none';
-            document.getElementById('add-card-form').style.display='none';
-        }
-
-        function saveNewSubject() {
-            const subName = document.getElementById('new-subject-name').value;
-            const subLevel = document.getElementById('new-subject-level').value;
-            if(subName && subLevel) {
-                LEARNING_DATABASE[subName] = {}; LEARNING_DATABASE[subName][subLevel] = [];
-                initLearningDropdowns();
-                const subSelect = document.getElementById('subject-select'); subSelect.value = subName; subSelect.dispatchEvent(new Event('change'));
-                document.getElementById('new-subject-name').value=''; document.getElementById('new-subject-level').value=''; toggleAddSubjectForm();
-                playSFX('success');
-            }
-        }
-
-        function saveNewLevel() {
-            const newLvl = document.getElementById('new-level-name').value;
-            if(newLvl && currentSubject) {
-                LEARNING_DATABASE[currentSubject][newLvl] = [];
-                const levelSelect = document.getElementById('level-select');
-                const opt = document.createElement('option'); opt.value = newLvl; opt.innerText = newLvl;
-                levelSelect.appendChild(opt);
-                levelSelect.value = newLvl; 
-                changeTopic();
-                document.getElementById('new-level-name').value=''; toggleAddLevelForm();
-                playSFX('success');
-            }
-        }
-
-        function saveCustomCard() {
-            const q = document.getElementById('new-card-q').value, a = document.getElementById('new-card-a').value;
-            if(q && a) {
-                LEARNING_DATABASE[currentSubject][currentLevel].push({q:q, a:a});
-                studyQueue.push({q:q, a:a}); totalCards++;
-                
-                if (studyQueue.length === 1 && totalCards === 1) {
-                    masteredCount = 0;
-                    renderCard();
-                } else {
-                    document.getElementById('new-card-q').value=''; 
-                    document.getElementById('new-card-a').value=''; 
-                    toggleAddCardForm(); 
-                    renderCard();
-                }
-                playSFX('success');
-            }
-        }
-
-        function deleteSubject() {
-            const sub = document.getElementById('subject-select').value;
-            if(!sub || sub === "Trống") return;
-            if(confirm(`Xóa môn "${sub}"?`)) {
-                delete LEARNING_DATABASE[sub];
-                initLearningDropdowns();
-                if(Object.keys(LEARNING_DATABASE).length === 0) {
-                    studyQueue = []; totalCards=0; masteredCount=0; renderCard();
-                }
-            }
-        }
-
-        function deleteLevel() {
-            const sub = document.getElementById('subject-select').value;
-            const lvl = document.getElementById('level-select').value;
-            if(!sub || !lvl) return;
-            if(confirm(`Xóa cấp độ "${lvl}" của môn "${sub}"?`)) {
-                delete LEARNING_DATABASE[sub][lvl];
-                document.getElementById('subject-select').dispatchEvent(new Event('change'));
-            }
-        }
-
-        function deleteCurrentCard(event) {
-            event.stopPropagation();
-            if (studyQueue.length === 0) return;
-            if(!confirm("Xóa thẻ này?")) return;
-            const currentCard = studyQueue[0];
-            const dbList = LEARNING_DATABASE[currentSubject][currentLevel];
-            const index = dbList.findIndex(c => c.q === currentCard.q && c.a === currentCard.a);
-            if(index > -1) dbList.splice(index, 1);
-            studyQueue.shift(); totalCards--; renderCard();
-        }
-
-        function renderCard() {
-            const container = document.querySelector('.flashcard-container');
-            const controlsArea = document.getElementById('fc-controls-area');
-            
-            container.classList.remove('flipped');
-            
-            setTimeout(() => {
-                if (studyQueue.length === 0) {
-                    const isEmpty = totalCards === 0;
-                    document.getElementById('fc-cat-front').innerText = currentSubject || "Trống";
-                    document.getElementById('fc-q').innerText = isEmpty ? "Chưa có thẻ nào" : "Đã xong!";
-                    document.getElementById('fc-cat-back').innerText = "";
-                    document.getElementById('fc-a').innerText = isEmpty ? "Bấm + để thêm" : "Bạn đã học hết bộ này!";
-                    
-                    if (!isEmpty) {
-                        controlsArea.innerHTML = `<button class="btn-fc btn-fc-restart" onclick="resetLearning(); playSFX('click')">Học lại từ đầu ↺</button>`;
-                    } else {
-                        controlsArea.innerHTML = '';
-                    }
-                    return;
-                }
-                
-                controlsArea.innerHTML = `
-                    <button class="btn-fc btn-fc-review" onclick="nextCard(false); playSFX('click')">Cần ôn lại 🧠</button>
-                    <button class="btn-fc btn-fc-master" onclick="nextCard(true); playSFX('success')">Đã thuộc ✅</button>
-                `;
-                
-                const current = studyQueue[0];
-                document.getElementById('fc-cat-front').innerText = currentSubject;
-                document.getElementById('fc-q').innerText = current.q;
-                document.getElementById('fc-cat-back').innerText = currentLevel;
-                document.getElementById('fc-a').innerText = current.a;
-            }, 200);
-            
-            const percent = totalCards > 0 ? (masteredCount / totalCards) * 100 : 0;
-            document.getElementById('fc-bar').style.width = `${percent}%`;
-            document.getElementById('mini-fc').innerText = `${masteredCount}/${totalCards} Done`;
-        }
-
-        function flipCard(el) { if (studyQueue.length > 0) { el.classList.toggle('flipped'); playSFX('click'); } }
-        
-        function nextCard(isMastered) {
-            if (studyQueue.length === 0) return;
-            document.querySelector('.flashcard-container').classList.remove('flipped');
-            setTimeout(() => {
-                const card = studyQueue.shift();
-                if (isMastered) masteredCount++; else studyQueue.push(card);
-                renderCard();
-            }, 300);
-        }
-        
-        function resetLearning() { changeTopic(); }
-
-        function initExplore() {
-            exploreGrid.innerHTML = '';
-            for (const key in THEMES) {
-                const item = document.createElement('div');
-                item.className = 'explore-item'; 
-                item.innerText = THEMES[key].emoji;
-                item.onclick = (e) => { e.stopPropagation(); setTheme(key); playSFX('click'); }; item.id = `theme-${key}`;
-                exploreGrid.appendChild(item);
-            }
-            buddyGrid.innerHTML = '';
-            for (const key in BUDDIES) {
-                const item = document.createElement('div');
-                item.className = 'buddy-item'; item.style.backgroundImage = `url('${BUDDIES[key].thumb}')`;
-                item.innerHTML = `<div class="buddy-name">${BUDDIES[key].name}</div>`;
-                item.onclick = (e) => { e.stopPropagation(); setBodyDoubling(key); playSFX('click'); }; item.id = `buddy-${key}`;
-                buddyGrid.appendChild(item);
-            }
-        }
-
-        let transitionTimeout;
-
-        function setTheme(key) {
-            const data = THEMES[key]; 
-            const vidContainer = document.getElementById('video-bg-container');
-            vidContainer.classList.remove('active');
-
-            if (transitionTimeout) clearTimeout(transitionTimeout);
-
-            transitionTimeout = setTimeout(() => {
-                if(data.type === "local") {
-                    vidContainer.innerHTML = `<video id="bg-video-player" autoplay muted loop playsinline><source src="${data.bg}" type="video/mp4"></video>`;
-                    vidContainer.classList.add('active');
-                    document.body.style.backgroundImage = 'none';
-                }
-                
-                if (key === 'morning' || key === 'forest' || key === 'rain' || key === 'cafe' || key === 'sunset') {
-                    document.documentElement.style.setProperty('--text-main', '#333');
-                    document.documentElement.style.setProperty('--btn-text-color', '#fff');
-                } else {
-                    document.documentElement.style.setProperty('--text-main', '#fff');
-                    document.documentElement.style.setProperty('--btn-text-color', '#333');
-                }
-                
-                document.body.style.backgroundColor = '#111'; 
-                root.style.setProperty('--accent-color', data.color);
-                if(document.getElementById('track-name')) document.getElementById('track-name').innerText = data.track;
-                
-                const art = document.getElementById('album-art');
-                art.style.backgroundImage = 'none';
-                art.innerHTML = data.emoji;
-
-                if(!isYouTubeAudioPlaying) {
-                    ambientPlayer.src = data.audio;
-                    if (!ambientPlayer.muted && ambientPlayer.volume > 0) { 
-                        ambientPlayer.play().catch(e => {}); 
-                    }
-                }
-
-                resetStates(); document.getElementById(`theme-${key}`).classList.add('active'); 
-                document.getElementById(`theme-${key}`).style.backgroundColor = data.color;
-            }, 800);
-        }
-
-        function setBodyDoubling(key) {
-            const data = BUDDIES[key]; 
-            const vidContainer = document.getElementById('video-bg-container');
-            vidContainer.classList.remove('active');
-
-            if (transitionTimeout) clearTimeout(transitionTimeout);
-            transitionTimeout = setTimeout(() => {
-                if(data.type === "local") {
-                    vidContainer.innerHTML = `<video id="bg-video-player" autoplay muted loop playsinline><source src="${data.url}" type="video/mp4"></video>`;
-                    vidContainer.classList.add('active');
-                    document.body.style.backgroundImage = 'none';
-                }
-                resetStates(); document.getElementById(`buddy-${key}`).classList.add('active');
-                if(document.getElementById('track-name')) document.getElementById('track-name').innerText = `Học cùng ${data.name}`;
-            }, 800);
-        }
-
-        function resetStates() {
-            document.querySelectorAll('.explore-item').forEach(el => { el.classList.remove('active'); el.style.backgroundColor = ''; el.style.boxShadow = ''; });
-            document.querySelectorAll('.buddy-item').forEach(el => el.classList.remove('active'));
-        }
-
-        function selectMood(m) { 
-            setTheme(m); 
-            document.getElementById('intro-overlay').classList.add('hidden-intro');
-            document.getElementById('main-nav').classList.add('visible');
-        }
-        function togglePanel(id) { document.getElementById(id).classList.toggle('collapsed'); }
-        
-        let zenInt, totalMin = 0;
-        function openZenMode() { document.getElementById('zen-overlay').classList.add('active'); document.getElementById('zen-circle').classList.add('breathing-anim'); document.getElementById('zen-quote').innerText = `"${ZEN_QUOTES[Math.floor(Math.random()*ZEN_QUOTES.length)]}"`; updateBreath(); zenInt=setInterval(updateBreath,8000); }
-        function updateBreath() { const t=document.getElementById('zen-text'); t.innerText="Hít sâu..."; setTimeout(()=>t.innerText="Giữ...",3500); setTimeout(()=>t.innerText="Thở ra...",4500); }
-        function closeZenMode() { document.getElementById('zen-overlay').classList.remove('active'); document.getElementById('zen-circle').classList.remove('breathing-anim'); clearInterval(zenInt); }
-
-        const MODES = { pomodoro: 25, short: 5, long: 15 };
-        let timeLeft = 25*60, timerInt, isRunning=false;
-        function updateDisplay() { 
-            const m=Math.floor(timeLeft/60).toString().padStart(2,'0'), s=(timeLeft%60).toString().padStart(2,'0'); 
-            document.getElementById('timer-text').innerText=`${m}:${s}`; document.getElementById('mini-timer').innerText=`${m}:${s}`; document.title=isRunning?`(${m}:${s}) Đang tập trung...`:"Không gian Chill";
-        }
-        function toggleTimer() {
-            if(isRunning) { clearInterval(timerInt); isRunning=false; document.getElementById('btn-action').textContent="Bắt đầu"; }
-            else { isRunning=true; document.getElementById('btn-action').textContent="Tạm dừng"; timerInt=setInterval(()=>{ if(timeLeft>0){ timeLeft--; updateDisplay(); if(timeLeft%60===0) totalMin++; if(totalMin>60){ if(confirm("Bạn đã học lâu rồi, nghỉ ngơi chút nhé?")){openZenMode(); toggleTimer(); totalMin=0;} else totalMin=0; } } else { clearInterval(timerInt); isRunning=false; alert("Hết giờ rồi!"); playSFX('alarm'); } },1000); }
-        }
-        function switchMode(m) { clearInterval(timerInt); isRunning=false; document.getElementById('btn-action').textContent="Bắt đầu"; timeLeft=MODES[m]*60; document.getElementById('custom-minutes').value=MODES[m]; updateDisplay(); document.querySelectorAll('.timer-controls span').forEach(el=>el.classList.remove('active')); document.getElementById(`btn-${m}`).classList.add('active'); }
-        function adjustTime(a) { let v=parseInt(document.getElementById('custom-minutes').value)||0; v+=a; if(v<1)v=1; document.getElementById('custom-minutes').value=v; }
-        function applyCustomTime() { const v=parseInt(document.getElementById('custom-minutes').value); if(v>0){ clearInterval(timerInt); isRunning=false; document.getElementById('btn-action').textContent="Bắt đầu"; timeLeft=v*60; updateDisplay(); } }
-
-        const taskInput = document.getElementById('new-task-input'), taskList = document.getElementById('task-list');
-        function showInput() { document.getElementById('btn-show-add').style.display='none'; document.getElementById('input-group').style.display='flex'; taskInput.focus(); }
-        function addTask() { if(!taskInput.value.trim()) return; const li=document.createElement('li'); li.className='task-item'; li.innerHTML=`<input type="checkbox" class="task-checkbox" onclick="toggleTask(this)"> <span class="task-text">${taskInput.value}</span> <i class="fa-solid fa-trash-can delete-btn" onclick="this.parentElement.remove(); updateCount()" style="color:#ffb8b8; cursor:pointer;"></i>`; taskList.appendChild(li); taskInput.value=''; document.getElementById('input-group').style.display='none'; document.getElementById('btn-show-add').style.display='flex'; updateCount(); }
-        function toggleTask(cb) { cb.parentElement.classList.toggle('completed', cb.checked); if(cb.checked) playSFX('success'); else playSFX('click'); }
-        taskInput.addEventListener('keypress', (e)=>{if(e.key==='Enter')addTask()});
-        function updateCount() { document.getElementById('task-count').innerText=`(${taskList.children.length})`; }
-
-        initApp();
     </script>
 </body>
 </html>
