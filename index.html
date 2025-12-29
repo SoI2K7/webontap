@@ -3,20 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ôn Tập CSTH - Chill Mode</title>
+    <title>Ôn Tập CSTH - Final Fixed</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --primary: #7289da;
-            --correct: #43b581;
-            --wrong: #f04747;
-            --glass-bg: rgba(20, 20, 30, 0.65);
-            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-bg: rgba(15, 15, 25, 0.85); /* Tăng độ tối nền để chữ nổi hơn */
             --text-main: #ffffff;
             --text-sub: #b9bbbe;
-            --theme-color: #7289da;
+            
+            /* Màu Gradient mặc định (Sẽ đổi theo JS) */
+            --grad-1: #7289da;
+            --grad-2: #00d2ff;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; user-select: none; }
@@ -35,36 +34,34 @@
         /* --- VIDEO BACKGROUND --- */
         #bg-video {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             object-fit: cover;
             z-index: -1;
-            filter: brightness(0.7);
+            filter: brightness(0.5); /* Tối video xuống để không lóa mắt */
             transition: opacity 0.5s ease;
         }
 
         /* --- KHUNG QUIZ --- */
         .quiz-container {
             width: 90%;
-            max-width: 700px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--glass-border);
+            max-width: 750px;
+            /* Gradient Border chuẩn */
+            background: linear-gradient(var(--glass-bg), var(--glass-bg)) padding-box,
+                        linear-gradient(135deg, var(--grad-1), var(--grad-2)) border-box;
+            border: 3px solid transparent; /* Độ dày viền */
+            
             border-radius: 24px;
             padding: 40px 30px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8);
             position: relative;
             max-height: 90vh;
             overflow-y: auto;
-            animation: fadeIn 0.8s ease-out;
+            animation: slideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         /* Header */
@@ -72,103 +69,121 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 15px;
+            padding-bottom: 20px;
         }
 
         .user-info { display: flex; align-items: center; gap: 15px; }
+        
+        .avatar-container {
+            position: relative;
+            padding: 3px;
+            background: linear-gradient(135deg, var(--grad-1), var(--grad-2));
+            border-radius: 50%;
+            box-shadow: 0 0 20px var(--grad-1);
+            transition: all 0.5s ease;
+        }
+        
         .avatar {
-            width: 50px; height: 50px; border-radius: 50%;
-            border: 2px solid var(--theme-color);
-            transition: border-color 0.5s;
+            width: 60px; height: 60px; border-radius: 50%;
+            display: block; background: #222; object-fit: cover;
         }
 
         .controls { display: flex; gap: 10px; align-items: center; }
 
         #theme-select {
-            background: rgba(0,0,0,0.4);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 15px;
-            outline: none;
-            cursor: pointer;
-            font-size: 12px;
-            max-width: 150px;
+            background: rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white; padding: 8px 12px;
+            border-radius: 12px; outline: none; cursor: pointer;
+            font-size: 13px; font-weight: 500;
         }
         #theme-select option { background: #222; color: #fff; }
 
         .streak-badge {
-            background: linear-gradient(45deg, #ff7e5f, #feb47b);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 14px;
-            color: white;
-            box-shadow: 0 4px 10px rgba(255, 126, 95, 0.4);
-            display: flex; align-items: center; gap: 5px;
+            background: linear-gradient(135deg, var(--grad-1), var(--grad-2));
+            padding: 6px 18px; border-radius: 20px;
+            font-weight: bold; font-size: 15px; color: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            display: flex; align-items: center; gap: 8px;
+            transition: all 0.5s ease;
         }
 
         /* Question Area */
         .question-text {
-            font-size: 18px; font-weight: 600; line-height: 1.5;
-            margin-bottom: 25px; min-height: 60px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            font-size: 20px; font-weight: 700; line-height: 1.4;
+            margin-bottom: 30px; min-height: 70px;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.8);
         }
 
-        .options-grid { display: flex; flex-direction: column; gap: 12px; }
+        .options-grid { display: flex; flex-direction: column; gap: 15px; }
 
         .option-btn {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 15px; border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 18px 20px; border-radius: 16px;
             color: var(--text-sub); text-align: left;
-            cursor: pointer; transition: all 0.2s ease;
-            font-size: 15px; display: flex; align-items: center;
+            cursor: pointer; transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+            font-size: 16px; display: flex; align-items: center;
+            position: relative;
+            overflow: hidden;
         }
 
         .option-btn:hover:not(:disabled) {
-            background: rgba(255, 255, 255, 0.2);
-            color: white; transform: translateX(5px);
-            border-color: var(--theme-color);
+            background: linear-gradient(90deg, rgba(255,255,255,0.1), rgba(255,255,255,0.15));
+            color: white; transform: translateX(8px);
+            border-color: var(--grad-1);
+            box-shadow: -5px 0 15px rgba(0,0,0,0.2);
         }
 
         .option-tag {
             background: rgba(255,255,255,0.1);
-            width: 25px; height: 25px;
+            min-width: 30px; height: 30px;
             display: flex; justify-content: center; align-items: center;
             border-radius: 50%; margin-right: 15px;
-            font-size: 12px; font-weight: bold;
-            color: var(--theme-color);
-            transition: color 0.5s;
+            font-size: 14px; font-weight: bold;
+            color: var(--grad-2);
         }
 
-        .option-btn.correct { background: rgba(67, 181, 129, 0.25) !important; border-color: var(--correct) !important; color: white !important; }
-        .option-btn.wrong { background: rgba(240, 71, 71, 0.25) !important; border-color: var(--wrong) !important; color: white !important; }
+        /* States */
+        .option-btn.correct { 
+            background: rgba(67, 181, 129, 0.2) !important; 
+            border-color: #43b581 !important; 
+            color: white !important; 
+            box-shadow: 0 0 15px rgba(67, 181, 129, 0.3);
+        }
+        .option-btn.wrong { 
+            background: rgba(240, 71, 71, 0.2) !important; 
+            border-color: #f04747 !important; 
+            color: white !important; 
+        }
 
-        .quiz-footer { margin-top: 30px; display: flex; justify-content: space-between; align-items: center; }
-        .audio-control { cursor: pointer; color: var(--text-sub); font-size: 20px; transition: 0.3s; }
-        .audio-control:hover { color: white; }
+        /* Footer */
+        .quiz-footer { margin-top: 40px; display: flex; justify-content: space-between; align-items: center; }
+        .audio-control { cursor: pointer; color: var(--text-sub); font-size: 22px; transition: 0.3s; }
+        .audio-control:hover { color: white; transform: scale(1.1); }
 
         .next-btn {
-            background: var(--theme-color);
-            color: white; border: none; padding: 12px 30px;
-            border-radius: 12px; font-weight: 600; cursor: pointer;
+            background: linear-gradient(135deg, var(--grad-1), var(--grad-2));
+            color: white; border: none; padding: 14px 40px;
+            border-radius: 14px; font-weight: 700; cursor: pointer;
             transition: 0.3s; display: none;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+            font-size: 16px;
         }
-        .next-btn:hover { filter: brightness(1.2); transform: translateY(-2px); }
+        .next-btn:hover { filter: brightness(1.2); transform: translateY(-3px); }
 
-        /* --- CLICK PARTICLE EFFECT --- */
+        /* --- PARTICLE EFFECT (Quan trọng) --- */
         .particle {
             position: absolute;
             pointer-events: none;
             border-radius: 50%;
-            animation: pop 0.6s cubic-bezier(0, .9, .57, 1) forwards;
+            z-index: 9999; /* Đảm bảo hạt nổi lên trên cùng */
+            animation: pop 0.8s cubic-bezier(0, .9, .57, 1) forwards;
         }
         @keyframes pop {
-            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            0% { transform: translate(0, 0) scale(1); opacity: 1; box-shadow: 0 0 10px currentColor; }
             100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
         }
 
@@ -176,7 +191,7 @@
 </head>
 <body>
 
-    <video autoplay muted id="bg-video">
+    <video autoplay muted loop id="bg-video">
         <source src="media/1,1.mp4" type="video/mp4">
     </video>
 
@@ -184,28 +199,23 @@
         <source src="audio/a5.mp3" type="audio/mpeg">
     </audio>
 
-    <audio id="click-sound">
-        <source src="audio/a1.m4a" type="audio/mp4">
-    </audio>
-
     <div class="quiz-container">
         <div class="header">
             <div class="user-info">
-                <img src="https://ui-avatars.com/api/?name=Sang&background=random&size=128" alt="User" class="avatar">
+                <div class="avatar-container">
+                    <img src="https://ui-avatars.com/api/?name=User&background=random&size=128" alt="User" class="avatar">
+                </div>
                 <div>
-                    <h2 style="font-size: 16px;">Ôn tập CSTH</h2>
-                    <span style="font-size: 12px; color: var(--text-sub);">
-                        <i class="fas fa-infinity"></i> Luyện tập
+                    <h2 style="font-size: 18px; font-weight: 700;">Ôn tập CSTH</h2>
+                    <span style="font-size: 13px; color: var(--text-sub);">
+                        <i class="fas fa-check-circle"></i> Chế độ Chuẩn (Fixed Logic)
                     </span>
                 </div>
             </div>
 
             <div class="controls">
                 <i class="fas fa-volume-mute audio-control" id="music-toggle" onclick="toggleMusic()" title="Bật/Tắt nhạc nền"></i>
-                
-                <select id="theme-select" onchange="changeTheme(this.value)">
-                    </select>
-
+                <select id="theme-select" onchange="changeTheme(this.value)"></select>
                 <div class="streak-badge">
                     <i class="fas fa-fire"></i> <span id="streak-count">0</span>
                 </div>
@@ -219,131 +229,143 @@
             </div>
             <div class="quiz-footer">
                 <div style="font-size:12px; color: rgba(255,255,255,0.3)">WEB3 Project</div>
-                <button class="next-btn" id="next-btn" onclick="nextQuestion()">Tiếp theo <i class="fas fa-arrow-right"></i></button>
+                <button class="next-btn" id="next-btn" onclick="nextQuestion()">Câu tiếp theo <i class="fas fa-arrow-right"></i></button>
             </div>
         </div>
     </div>
 
     <script>
-        // --- 1. CẤU HÌNH THEMES ĐẦY ĐỦ ---
+        // --- 1. CẤU HÌNH THEMES (Đã chỉnh lại màu Urban/Cosmic cho đỡ lạc quẻ) ---
         const themes = [
-            { name: "Fantasy World",    video: "media/1,1.mp4",     audio: "audio/a5.mp3", color: "#7289da" },
-            { name: "Cosmic Travel",    video: "media/1,22.mp4",    audio: "audio/a1.m4a", color: "#9b59b6" },
-            { name: "Sad Rain",         video: "media/2.mp4",       audio: "audio/a2.m4a", color: "#3498db" },
-            { name: "Night City",       video: "media/3.mp4",       audio: "audio/a3.m4a", color: "#f1c40f" },
-            { name: "Cyberpunk",        video: "media/7.mp4",       audio: "audio/a4.m4a", color: "#e74c3c" },
-            { name: "Urban Life",       video: "media/8.mp4",       audio: "audio/a6.m4a", color: "#1abc9c" },
-            { name: "Lofi Chill Girl",  video: "media/lofigirl-loop-audio.mp4", audio: "audio/a7.m4a", color: "#e67e22" }
+            { name: "Fantasy", video: "media/1,1.mp4", audio: "audio/a5.mp3", c1: "#7289da", c2: "#00d2ff" }, // Tím Xanh
+            { name: "Cosmic",  video: "media/1,22.mp4", audio: "audio/a1.m4a", c1: "#ff00cc", c2: "#333399" }, // Hồng Neon - Xanh đậm
+            { name: "Rain",    video: "media/2.mp4",    audio: "audio/a2.m4a", c1: "#00c6ff", c2: "#0072ff" }, // Xanh dương
+            { name: "City",    video: "media/3.mp4",    audio: "audio/a3.m4a", c1: "#f12711", c2: "#f5af19" }, // Đỏ Cam
+            { name: "Cyber",   video: "media/7.mp4",    audio: "audio/a4.m4a", c1: "#ff0099", c2: "#493240" }, // Hồng Đậm
+            { name: "Urban",   video: "media/8.mp4",    audio: "audio/a6.m4a", c1: "#00f260", c2: "#0575e6" }, // Xanh lá - Xanh dương (Style đường phố)
+            { name: "Lofi",    video: "media/lofigirl-loop-audio.mp4", audio: "audio/a7.m4a", c1: "#e67e22", c2: "#d35400" } // Cam
         ];
 
-        // --- 2. XỬ LÝ VIDEO BOOMERANG (LẶP ĐẢO CHIỀU) ---
-        const bgVideo = document.getElementById('bg-video');
-        
-        // Khi video chạy đến cuối
-        bgVideo.addEventListener('ended', () => {
-            bgVideo.playbackRate = -1; // Tua ngược
-            bgVideo.play();
-        });
+        // --- 2. DỮ LIỆU CÂU HỎI "HARDCODED" (Logic chuẩn 100%) ---
+        // 'wrong': Chứa các đáp án sai được chọn lọc kỹ để cùng loại với câu hỏi
+        const questionsDB = [
+            // MÀU SẮC (CẢM GIÁC)
+            {
+                q: "Màu xanh da trời tạo cảm giác gì?",
+                a: "An toàn, tin cậy, hòa bình",
+                wrong: ["Nhiệt huyết, ham muốn, nguy hiểm", "Tinh tế, huyền bí, chung thủy", "Sự tích cực, lạc quan, ấm áp"]
+            },
+            {
+                q: "Màu đỏ tạo cảm giác gì?",
+                a: "Nhiệt huyết, ham muốn, nguy hiểm",
+                wrong: ["An toàn, tin cậy, hòa bình", "Tinh tế, huyền bí, chung thủy", "Sự đơn giản, tinh khiết"]
+            },
+            {
+                q: "Màu tím tạo cảm giác gì?",
+                a: "Tinh tế, huyền bí, chung thủy",
+                wrong: ["Sự hài hước, cởi mở", "Sức khỏe, đổi mới", "Nhiệt huyết, chiến tranh"]
+            },
+            
+            // MÀU SẮC (LÝ THUYẾT)
+            {
+                q: "Màu gốc cơ bản của màu cộng (RGB)?",
+                a: "Đỏ, Xanh lá, Xanh lam",
+                wrong: ["Đỏ, Vàng, Xanh lam", "Xanh lơ, Hồng cánh sen, Vàng", "Đen, Trắng, Xám"]
+            },
+            {
+                q: "Trộn tất cả màu cộng (Ánh sáng) ra màu gì?",
+                a: "Màu trắng",
+                wrong: ["Màu đen", "Màu xám", "Màu nâu"]
+            },
+             {
+                q: "Gam màu nóng bao gồm những màu nào?",
+                a: "Đỏ, Cam, Vàng (bước sóng dài)",
+                wrong: ["Xanh lục, Xanh lam, Tím (bước sóng ngắn)", "Đen, Trắng, Xám", "Tím, Hồng, Xanh lơ"]
+            },
 
-        // Kiểm tra liên tục để tua xuôi khi về đầu
-        setInterval(() => {
-            // Nếu đang tua ngược và thời gian gần về 0
-            if (bgVideo.playbackRate < 0 && bgVideo.currentTime < 0.1) {
-                bgVideo.playbackRate = 1; // Tua xuôi
-                bgVideo.play();
+            // HÌNH KHỐI
+            {
+                q: "Hình tròn là hình có hướng như thế nào?",
+                a: "Vô hướng",
+                wrong: ["Hướng đối lập", "Đa hướng", "Hình định hướng"]
+            },
+            {
+                q: "Hình vuông và hình chữ nhật là hình có hướng như thế nào?",
+                a: "Hướng đối lập",
+                wrong: ["Vô hướng", "Đa hướng", "Chuyển động xoay"]
+            },
+            {
+                q: "Điểm có đặc tính gì?",
+                a: "Vô hướng, có tính tập trung, không có chiều",
+                wrong: ["Có chiều dài, không có chiều rộng", "Có chiều dài, rộng, sâu", "Có hướng chuyển động rõ ràng"]
+            },
+
+            // BỐ CỤC & THỊ GIÁC
+            {
+                q: "Tỷ lệ vàng (Golden Ratio) xấp xỉ bao nhiêu?",
+                a: "1.618",
+                wrong: ["3.141", "1.414", "0.618"]
+            },
+            {
+                q: "Trong cân bằng thị giác, hình hướng lên cho cảm giác gì?",
+                a: "Cảm giác nhẹ",
+                wrong: ["Cảm giác nặng", "Cảm giác ổn định", "Cảm giác đè nén"]
+            },
+            {
+                q: "Tổng giới hạn trái – phải của trường thị giác con người là bao nhiêu?",
+                a: "130 độ",
+                wrong: ["75 độ", "180 độ", "90 độ"]
+            },
+            {
+                q: "Bố cục đường diềm là gì?",
+                a: "Họa tiết lặp lại theo 1 chiều (dọc/ngang)",
+                wrong: ["Họa tiết lặp lại theo 2 chiều vô tận", "Họa tiết đối xứng qua tâm", "Họa tiết tự do không quy luật"]
+            },
+
+            // ÁNH SÁNG
+            {
+                q: "Ánh sáng nhân tạo thường dùng trong nhà hàng (màu vàng) để làm gì?",
+                a: "Tạo cảm giác ấm cúng",
+                wrong: ["Tạo cảm giác sạch sẽ, vô trùng", "Tạo sự tập trung cao độ", "Mô phỏng ánh sáng mặt trời tự nhiên"]
+            },
+            {
+                q: "Nguồn sáng chính là gì?",
+                a: "Nguồn sáng mạnh nhất chiếu vào vật thể",
+                wrong: ["Nguồn sáng bổ trợ làm mềm bóng", "Nguồn sáng phản xạ từ môi trường", "Nguồn sáng ven tạo đường viền"]
             }
-        }, 200);
-
-        // --- 3. DỮ LIỆU CÂU HỎI (GIỮ NGUYÊN) ---
-        const rawData = [
-            { q: "Cơ sở tạo hình là gì?", a: "Tập hợp kiến thức cơ sở nền tảng được nghiên cứu sắp xếp khoa học đạt hiệu quả thị giác cao." },
-            { q: "Lực thị giác là gì?", a: "Sự chú ý, tập trung của mắt tới một đối tượng." },
-            { q: "Trường lực là gì?", a: "Sự hấp dẫn toả ra xung quanh tín hiệu hình ảnh." },
-            { q: "Cường lực thị giác là gì?", a: "Mức độ lớn nhỏ của trường lực." },
-            { q: "Trường thị giác của con người là gì?", a: "Giới hạn mắt người nhìn được trong một không gian bất kỳ." },
-            { q: "Tổng giới hạn trái – phải của trường thị giác con người là bao nhiêu?", a: "130 độ (65 trái + 65 phải)." },
-            { q: "Tổng giới hạn trên – dưới của trường thị giác con người là bao nhiêu?", a: "75 độ (30 trên + 45 dưới)." },
-            { q: "Trường thị giác quy ước được xác định bằng hình gì?", a: "Hình chóp nón đều có đáy là hình tròn và góc ở đỉnh bằng 30 độ." },
-            { q: "Cân bằng thị giác là gì?", a: "Sự sắp xếp, tạo độ nhấn hoặc tạo sức căng thị giác một cách hợp lý." },
-            { q: "Trọng lượng thị giác là gì?", a: "Khía cạnh nặng - nhẹ của hình ảnh." },
-            { q: "3 cặp cân bằng thị giác điển hình là gì?", a: "Trên-dưới, Trái-phải, Trước-sau." },
-            { q: "Hình dạng thị giác là gì?", a: "Hình dạng vật lý được nhìn thấy, có thông tin, và có nghĩa." },
-            { q: "Hai cấu trúc tỷ lệ thường gặp trong tính đơn giản là gì?", a: "Cấu trúc tỷ lệ 1/3 và Tỷ lệ vàng." },
-            { q: "Hình tròn là hình có hướng như thế nào?", a: "Vô hướng." },
-            { q: "Hình vuông và hình chữ nhật là hình có hướng như thế nào?", a: "Hướng đối lập." },
-            { q: "Hình lục giác là hình có hướng như thế nào?", a: "Đa hướng." },
-            { q: "Hình định hướng là gì?", a: "Hình có chuyển động rõ về một phía." },
-            { q: "Tại sao phải định hướng chuyển động thị giác?", a: "Để tạo bố cục thuận lợi cho người xem tiếp nhận toàn bộ thông tin." },
-            { q: "Bộ nhớ giác quan có nhiệm vụ gì?", a: "Lọc thông tin." },
-            { q: "Bộ nhớ làm việc có nhiệm vụ gì?", a: "Hiểu thông tin." },
-            { q: "Bộ nhớ dài hạn có nhiệm vụ gì?", a: "Lưu trữ thông tin." },
-            { q: "Có mấy cách thức mã hóa thông tin thành kiến thức dài hạn?", a: "Hai cách: Mã hóa đơn và Mã hóa kép." },
-            { q: "Mối quan hệ giữa lực thị giác và trường lực?", a: "Tỉ lệ thuận." },
-            { q: "Lực thị giác bị chi phối bởi yếu tố nào?", a: "Màu sắc, độ tương phản, kích thước, số lượng, hình dạng, chuyển động." },
-            { q: "Khi đặt hai vật cạnh nhau khoảng cách nhỏ hơn kích thước của chúng thì cường độ thị giác sẽ thế nào?", a: "Lớn hơn so với khi đứng độc lập." },
-            { q: "Mối quan hệ giữa kích thước tín hiệu thị giác và cường độ lực thị giác?", a: "Tỉ lệ thuận." },
-            { q: "Vị trí nhóm chính thường đặt ở đâu?", a: "Đặt trong trường thị giác quy ước." },
-            { q: "Trong cân bằng thị giác, hình hướng lên cho cảm giác gì?", a: "Cảm giác nhẹ." },
-            { q: "Trong cân bằng thị giác, hình hướng xuống cho cảm giác gì?", a: "Cảm giác nặng." },
-            { q: "Trong cân bằng thị giác, hình hướng đối lập cho cảm giác gì?", a: "Cảm giác ổn định." },
-            { q: "Trong cân bằng thị giác, vị trí trung tâm sẽ cho cảm giác gì?", a: "Cân bằng ổn định nhất." },
-            { q: "Ứng dụng cặp cân bằng thị giác trên dưới như thế nào?", a: "Trên nhẹ, dưới nặng." },
-            { q: "Ứng dụng cặp cân bằng thị giác trái phải như thế nào?", a: "Phải nhẹ, trái nặng." },
-            { q: "Ứng dụng cặp cân bằng thị giác trước sau như thế nào?", a: "Sau nhẹ, trước nặng." },
-            { q: "Hình vô hướng đặt cạnh hình định hướng sẽ chịu chi phối thế nào?", a: "Hình vô hướng có xu hướng chuyển động theo hình định hướng." },
-            { q: "Yếu tố nào ảnh hưởng lớn nhất cho định hướng chuyển động thị giác?", a: "Bố cục." },
-            { q: "Bước đầu tiên để tạo ra định hướng chuyển động thị giác là gì?", a: "Phân cấp thông tin và hình ảnh." },
-            { q: "Tại sao quảng cáo thường dùng âm thanh?", a: "Tạo lực thị giác lớn, mã hóa kép giúp nhớ thương hiệu." },
-            { q: "Khi nào tác phẩm thiết kế tạo ra ảo giác?", a: "Khi cường độ lực thị giác đẩy lên quá cao." },
-            { q: "Vật màu xanh lam và vàng chanh trên nền trắng, vật nào có lực thị giác mạnh hơn?", a: "Vật màu xanh lam." },
-            { q: "Hình vuông và Hình tam giác, hình nào dễ mô tả đúng hơn?", a: "Hình vuông." },
-            { q: "Hình tròn và Hình elip, hình nào dễ mô tả đúng hơn?", a: "Hình tròn." },
-            { q: "Điểm có đặc tính gì?", a: "Vô hướng, có tính tập trung, không có chiều." },
-            { q: "Nét có đặc tính gì?", a: "Có chiều dài, không có chiều rộng, không có chiều sâu." },
-            { q: "Diện có đặc tính gì?", a: "Có chiều dài, chiều rộng, không có chiều sâu." },
-            { q: "Có bao nhiêu loại nét?", a: "4 loại: Nét có nghĩa, Nét liên tưởng, Nét đa nghĩa, Nét cấu tạo." },
-            { q: "Hiệu quả tạo rung là gì?", a: "Mắt bị gián đoạn trước hai trường lực bằng nhau của hai tín hiệu cạnh nhau." },
-            { q: "Phông hình là gì?", a: "Là tín hiệu hình ảnh nhỏ đặt trên nền rộng và có đường viền khác." },
-            { q: "Khối có đặc tính gì?", a: "Có chiều dài, rộng, sâu." },
-            { q: "Màu gốc cơ bản của màu cộng (RGB)?", a: "Đỏ, Xanh lá, Xanh lam." },
-            { q: "Màu gốc cơ bản của màu hữu cơ (RYB)?", a: "Đỏ cờ, Vàng chanh, Xanh coban." },
-            { q: "Trộn tất cả màu cộng ra màu gì?", a: "Màu trắng." },
-            { q: "Trộn tất cả màu trừ (CMYK) ra màu gì?", a: "Màu đen." },
-            { q: "Sắc độ là gì?", a: "Độ đậm nhạt của các màu." },
-            { q: "Cường độ màu là gì?", a: "Mức độ mạnh – yếu của màu." },
-            { q: "Gam màu nóng là gì?", a: "Màu bước sóng dài, tạo cảm giác ấm áp (Đỏ, Cam, Vàng)." },
-            { q: "Gam màu lạnh là gì?", a: "Màu bước sóng ngắn, tạo cảm giác mát mẻ (Xanh, Tím)." },
-            { q: "Phối cảnh không gian là gì?", a: "Hình thức tạo không gian ba chiều trên mặt phẳng." },
-            { q: "Nhóm chính là gì?", a: "Hình ảnh quan trọng, nổi bật, thu hút sự chú ý." },
-            { q: "Bố cục đối xứng (đăng đối) là gì?", a: "Sắp xếp họa tiết giống nhau qua trục hoặc tâm." },
-            { q: "Bố cục đường diềm là gì?", a: "Họa tiết lặp lại theo một chiều (dọc/ngang) tạo tín hiệu thăng bằng." },
-            { q: "Bố cục dàn trải là gì?", a: "Họa tiết lặp lại theo cả hai chiều phát triển vô tận." },
-            { q: "Nét cấu tạo là gì?", a: "Nét mô tả cấu trúc hình ảnh." },
-            { q: "Kĩ thuật tạo rung tăng giảm dần đều là gì?", a: "Tăng độ dày nét đồng thời giảm khoảng cách (hoặc ngược lại)." },
-            { q: "Cách tạo ánh sáng gần giống mặt trời trong vẽ?", a: "Pha màu vàng với trắng theo tỉ lệ nhất định." },
-            { q: "Tại sao ánh sáng nhà hàng thường màu vàng?", a: "Tạo cảm giác ấm cúng." },
-            { q: "Hệ màu cộng (RGB) ứng dụng ở đâu?", a: "Màn hình thiết bị điện tử." },
-            { q: "Hệ màu hữu cơ ứng dụng ở đâu?", a: "Hội họa, in ấn thủ công." },
-            { q: "Màu xanh da trời tạo cảm giác gì?", a: "An toàn, tin cậy." },
-            { q: "Màu đỏ tạo cảm giác gì?", a: "Nhiệt huyết, ham muốn, nguy hiểm." },
-            { q: "Màu tím tạo cảm giác gì?", a: "Tinh tế, huyền bí, chung thủy." },
-            { q: "Đường chân trời là gì?", a: "Đường thẳng giả định, ranh giới giữa trời và đất tại vô cùng." },
-            { q: "Thế mạnh của phối cảnh 1 điểm tụ?", a: "Mô tả chiều sâu không gian." },
-            { q: "Thế mạnh của phối cảnh 2 điểm tụ?", a: "Mô tả chiều sâu và chiều rộng." },
-            { q: "Thế mạnh của phối cảnh 3 điểm tụ?", a: "Mô tả chiều sâu, chiều rộng và chiều cao." },
-            { q: "Tỷ lệ vàng xấp xỉ bao nhiêu?", a: "1.618" },
-            { q: "Nhịp điệu là gì?", a: "Sự lặp lại của các nhóm sự vật có tổ chức." },
-            { q: "Có mấy loại nhịp điệu cơ bản?", a: "4 loại: Liên tục, Tiệm biến, Lồi lõm, Giao thoa." },
-            { q: "Tương phản là gì?", a: "Sự khác biệt, trái ngược nhau giữa các tín hiệu thị giác." },
-            { q: "Vi biến là gì?", a: "Sự tương phản nhẹ, chuyển biến dần, khác biệt rất ít." },
-            { q: "Trong thiết kế logo, tỷ lệ nào hay được dùng nhất?", a: "Tỷ lệ vàng." }
         ];
 
-        // --- GAME LOGIC ---
+        // --- 3. LOGIC APP ---
         let currentStreak = 0;
         let currentQuestionObj = null;
-        let currentThemeColor = themes[0].color;
         let isMusicPlaying = false;
+        let c1 = themes[0].c1; 
+
+        // Sound Engine (Volume thấp)
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSoundEffect(type) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            if (type === 'correct') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(1000, audioCtx.currentTime + 0.1);
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime); // Volume rất nhỏ (0.1)
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.4);
+            } else {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+                osc.frequency.linearRampToValueAtTime(100, audioCtx.currentTime + 0.2);
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime); // Volume rất nhỏ (0.1)
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.2);
+            }
+        }
 
         const ui = {
             questionText: document.getElementById('question-text'),
@@ -352,23 +374,30 @@
             nextBtn: document.getElementById('next-btn'),
             bgVideo: document.getElementById('bg-video'),
             bgMusic: document.getElementById('bg-music'),
-            clickSound: document.getElementById('click-sound'),
             musicIcon: document.getElementById('music-toggle'),
             themeSelect: document.getElementById('theme-select')
         };
 
-        // Khởi tạo danh sách Theme vào Dropdown
-        function initThemes() {
-            themes.forEach((theme, index) => {
-                const opt = document.createElement('option');
-                opt.value = index;
-                opt.innerText = theme.name;
-                ui.themeSelect.appendChild(opt);
-            });
-        }
-        initThemes();
+        // Init Theme Select
+        themes.forEach((theme, index) => {
+            const opt = document.createElement('option');
+            opt.value = index; opt.innerText = theme.name;
+            ui.themeSelect.appendChild(opt);
+        });
 
-        // --- ÂM THANH & INTERACTION ---
+        // Theme Change
+        function changeTheme(index) {
+            const theme = themes[index];
+            ui.bgVideo.src = theme.video;
+            ui.bgMusic.src = theme.audio;
+            if (isMusicPlaying) ui.bgMusic.play();
+            
+            document.documentElement.style.setProperty('--grad-1', theme.c1);
+            document.documentElement.style.setProperty('--grad-2', theme.c2);
+            c1 = theme.c1;
+        }
+
+        // Toggle Music
         function toggleMusic() {
             if (isMusicPlaying) {
                 ui.bgMusic.pause();
@@ -376,54 +405,48 @@
                 ui.musicIcon.classList.add('fa-volume-mute');
                 isMusicPlaying = false;
             } else {
-                ui.bgMusic.play().catch(e => console.log("Cần tương tác"));
+                ui.bgMusic.play().catch(e => console.log("User interaction required"));
                 ui.musicIcon.classList.remove('fa-volume-mute');
                 ui.musicIcon.classList.add('fa-volume-up');
                 isMusicPlaying = true;
             }
         }
 
-        function playClickSound() {
-            ui.clickSound.volume = 0.3; // Giảm âm lượng xuống 30% (nhẹ nhàng hơn)
-            ui.clickSound.currentTime = 0; 
-            ui.clickSound.play().catch(e => {}); 
-        }
-
-        function changeTheme(index) {
-            const theme = themes[index];
-            ui.bgVideo.src = theme.video;
-            ui.bgMusic.src = theme.audio;
-            if (isMusicPlaying) ui.bgMusic.play();
-            document.documentElement.style.setProperty('--theme-color', theme.color);
-            currentThemeColor = theme.color;
-        }
-
-        // --- HIỆU ỨNG TIA LỬA ---
-        document.addEventListener('click', function(e) {
-            playClickSound(); 
+        // --- HIỆU ỨNG HẠT (FIXED) ---
+        // Gắn sự kiện click vào body để bắt mọi cú click
+        document.body.addEventListener('click', function(e) {
             createParticles(e.clientX, e.clientY);
         });
 
         function createParticles(x, y) {
-            const particleCount = 8;
+            const particleCount = 10;
             for (let i = 0; i < particleCount; i++) {
                 const particle = document.createElement('div');
                 particle.classList.add('particle');
-                particle.style.backgroundColor = currentThemeColor;
+                
+                // Random màu giữa màu 1 và màu 2 của theme
+                const color = Math.random() > 0.5 ? c1 : '#ffffff';
+                particle.style.backgroundColor = color;
+                particle.style.boxShadow = `0 0 6px ${color}`;
+                
                 particle.style.left = x + 'px';
                 particle.style.top = y + 'px';
                 
-                const size = Math.random() * 5 + 3; 
+                const size = Math.random() * 6 + 2; 
                 particle.style.width = size + 'px';
                 particle.style.height = size + 'px';
                 
-                const tx = (Math.random() - 0.5) * 100;
-                const ty = (Math.random() - 0.5) * 100;
+                // Tính toán hướng bay
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = Math.random() * 100 + 50;
+                const tx = Math.cos(angle) * velocity;
+                const ty = Math.sin(angle) * velocity;
+                
                 particle.style.setProperty('--tx', `${tx}px`);
                 particle.style.setProperty('--ty', `${ty}px`);
                 
                 document.body.appendChild(particle);
-                setTimeout(() => { particle.remove(); }, 600);
+                setTimeout(() => particle.remove(), 800);
             }
         }
 
@@ -439,62 +462,70 @@
             ui.nextBtn.style.display = 'none';
             ui.optionsContainer.innerHTML = '';
 
-            const randomIndex = Math.floor(Math.random() * rawData.length);
-            currentQuestionObj = rawData[randomIndex];
+            const randomIndex = Math.floor(Math.random() * questionsDB.length);
+            currentQuestionObj = questionsDB[randomIndex];
 
-            let options = [currentQuestionObj.a];
-            while (options.length < 4) {
-                const randomDistractor = rawData[Math.floor(Math.random() * rawData.length)].a;
-                if (!options.includes(randomDistractor) && randomDistractor !== currentQuestionObj.a) {
-                    options.push(randomDistractor);
-                }
-            }
+            // Lấy 1 đúng + 3 sai từ mảng 'wrong' đã soạn sẵn
+            let options = [
+                { text: currentQuestionObj.a, isCorrect: true },
+                { text: currentQuestionObj.wrong[0], isCorrect: false },
+                { text: currentQuestionObj.wrong[1], isCorrect: false },
+                { text: currentQuestionObj.wrong[2], isCorrect: false }
+            ];
+            
             shuffleArray(options);
 
             ui.questionText.innerText = currentQuestionObj.q;
             
             const labels = ['A', 'B', 'C', 'D'];
             options.forEach((opt, index) => {
-                const btn = document.createElement('button');
+                const btn = document.createElement('div'); // Dùng div thay button để dễ style
                 btn.className = 'option-btn';
-                btn.innerHTML = `<span class="option-tag">${labels[index]}</span> ${opt}`;
-                btn.onclick = (e) => {
-                    e.stopPropagation(); 
-                    playClickSound();
-                    createParticles(e.clientX, e.clientY);
-                    checkAnswer(btn, opt);
-                };
+                btn.innerHTML = `<span class="option-tag">${labels[index]}</span> ${opt.text}`;
+                
+                // Xử lý click riêng cho nút
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Ngăn sự kiện nổi bọt
+                    createParticles(e.clientX, e.clientY); // Bắn pháo hoa tại chỗ click
+                    checkAnswer(btn, opt.isCorrect, opt.text);
+                });
+                
                 ui.optionsContainer.appendChild(btn);
             });
         }
 
-        function checkAnswer(btn, selectedText) {
+        function checkAnswer(btn, isCorrect, text) {
             const allBtns = document.querySelectorAll('.option-btn');
-            allBtns.forEach(b => b.disabled = true);
+            allBtns.forEach(b => b.style.pointerEvents = 'none'); // Khóa click
 
-            if (selectedText === currentQuestionObj.a) {
+            if (isCorrect) {
+                playSoundEffect('correct');
                 btn.classList.add('correct');
                 currentStreak++;
                 ui.streakCount.innerText = currentStreak;
                 if(currentStreak > 5) ui.streakCount.style.color = "#ffeb3b";
             } else {
+                playSoundEffect('wrong');
                 btn.classList.add('wrong');
                 currentStreak = 0;
                 ui.streakCount.innerText = "0";
                 ui.streakCount.style.color = "white";
+                
+                // Hiện đáp án đúng
                 allBtns.forEach(b => {
                     if (b.innerText.includes(currentQuestionObj.a)) {
                         b.classList.add('correct');
                     }
                 });
             }
-            ui.nextBtn.style.display = 'block';
+            ui.nextBtn.style.display = 'inline-block';
         }
 
         function nextQuestion() {
             loadNewQuestion();
         }
 
+        // Start
         loadNewQuestion();
 
     </script>
