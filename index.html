@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ôn Tập CSTH - Final Compact</title>
+    <title>Ôn Tập CSTH - Final Fixed V6</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -12,6 +12,7 @@
             --grad-1: #7289da;
             --grad-2: #00d2ff;
             --accent: #00d2ff;
+            --glass-bg: rgba(20, 22, 30, 0.65);
             --border-light: rgba(255, 255, 255, 0.15);
         }
 
@@ -28,54 +29,37 @@
             object-fit: cover; z-index: -1; filter: brightness(0.6);
         }
 
-        /* --- CONTAINER GỌN GÀNG (AUTO HEIGHT) --- */
+        /* --- CONTAINER --- */
         .quiz-container {
-            width: 92%; 
-            max-width: 420px; /* Thu hẹp chiều ngang một chút cho gọn */
-            
-            /* Quan trọng: Chiều cao tự động theo nội dung, không fix 100% */
-            height: auto; 
-            max-height: 85vh; /* Giới hạn chiều cao tối đa */
-            
+            width: 92%; max-width: 420px;
+            height: auto; max-height: 90vh; /* Auto height fit content */
             display: flex; flex-direction: column;
             
-            /* Hiệu ứng kính */
-            background: linear-gradient(180deg, rgba(30, 30, 40, 0.5) 0%, rgba(30, 30, 40, 0.3) 100%);
-            backdrop-filter: blur(40px) saturate(160%);
-            -webkit-backdrop-filter: blur(40px) saturate(160%);
+            background: linear-gradient(180deg, rgba(30, 30, 40, 0.6) 0%, rgba(30, 30, 40, 0.4) 100%);
+            backdrop-filter: blur(40px) saturate(160%); -webkit-backdrop-filter: blur(40px) saturate(160%);
             
-            /* Viền phát sáng 1px */
             border: 1px solid var(--border-light);
             border-top: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 30px;
+            padding: 20px;
             
-            padding: 25px 20px;
-            position: relative; 
-            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
-            animation: popIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+            animation: popIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
+        @keyframes popIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 
-        @keyframes popIn { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-
-        /* Header gọn hơn */
-        .header { 
-            display: flex; flex-direction: column; align-items: center; 
-            margin-bottom: 15px; flex-shrink: 0; 
-        }
-        
+        /* HEADER */
+        .header { display: flex; flex-direction: column; align-items: center; margin-bottom: 15px; flex-shrink: 0; }
         .avatar {
             width: 70px; height: 70px; border-radius: 50%;
-            border: 2px solid rgba(255,255,255,0.8); 
-            object-fit: cover; margin-bottom: 10px;
-            box-shadow: 0 0 20px rgba(0, 210, 255, 0.4);
+            border: 2px solid var(--accent); object-fit: cover; margin-bottom: 8px;
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.3);
         }
-        
         .stats-bar {
             display: flex; gap: 15px; font-size: 12px; font-weight: 600;
-            background: rgba(0,0,0,0.3); padding: 6px 16px; border-radius: 20px;
+            background: rgba(0,0,0,0.3); padding: 5px 15px; border-radius: 20px;
             border: 1px solid rgba(255,255,255,0.1); margin-bottom: 10px;
         }
-
         .controls { display: flex; gap: 8px; width: 100%; justify-content: center; }
         .icon-btn {
             width: 38px; height: 38px; border-radius: 12px;
@@ -88,90 +72,57 @@
             outline: none; font-size: 12px; font-weight: 500; flex-grow: 1; max-width: 140px;
         }
 
-        /* SCROLL AREA (Ẩn thanh cuộn) */
-        .content-area {
-            overflow-y: auto; padding: 5px; flex-grow: 1;
-            /* Ẩn thanh cuộn nhưng vẫn cuộn được */
-            scrollbar-width: none; -ms-overflow-style: none;
-        }
+        /* CONTENT AREA */
+        .content-area { overflow-y: auto; padding: 5px; flex-grow: 1; scrollbar-width: none; }
         .content-area::-webkit-scrollbar { display: none; }
 
-        /* QUESTION BOX */
         .question-box {
-            background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0));
-            border-left: 3px solid var(--accent);
-            padding: 15px; margin-bottom: 20px;
-            border-radius: 0 15px 15px 0;
+            background: rgba(0, 0, 0, 0.2); border-left: 3px solid var(--accent);
+            padding: 15px; margin-bottom: 15px; border-radius: 0 15px 15px 0;
         }
         .q-category {
             color: var(--accent); font-size: 10px; font-weight: 800; letter-spacing: 1px; 
             text-transform: uppercase; margin-bottom: 5px; display: block;
         }
-        .question-text {
-            font-size: 16px; font-weight: 600; line-height: 1.4;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.5);
-        }
+        .question-text { font-size: 16px; font-weight: 600; line-height: 1.4; text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
 
-        /* ANSWER BUTTONS (GLASS BLOCK) */
+        /* ANSWER BUTTONS */
         .options-grid { display: flex; flex-direction: column; gap: 10px; }
-        
         .option-btn {
             width: 100%; position: relative;
             background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.12); /* Viền mỏng 1px */
-            border-bottom: 2px solid rgba(255, 255, 255, 0.08); /* Tạo khối nhẹ */
-            padding: 16px 18px; border-radius: 16px;
-            color: rgba(255,255,255,0.95); text-align: left;
-            font-size: 14px; font-weight: 500;
-            cursor: pointer; display: flex; align-items: flex-start;
-            transition: all 0.2s;
+            border: 1px solid rgba(255, 255, 255, 0.12); border-bottom: 2px solid rgba(255, 255, 255, 0.08);
+            padding: 15px 18px; border-radius: 16px;
+            color: rgba(255,255,255,0.95); text-align: left; font-size: 14px; font-weight: 500;
+            cursor: pointer; display: flex; align-items: flex-start; transition: all 0.2s;
         }
         .option-btn:active { transform: scale(0.98); background: rgba(255,255,255,0.1); }
-        
         .tag {
             min-width: 24px; height: 24px; background: rgba(255,255,255,0.1);
             border-radius: 8px; display: flex; align-items: center; justify-content: center;
-            font-size: 11px; font-weight: 700; margin-right: 12px; margin-top: -1px;
-            color: var(--accent);
+            font-size: 11px; font-weight: 700; margin-right: 12px; margin-top: -1px; color: var(--accent);
         }
+        .option-btn.correct { background: rgba(46, 204, 113, 0.25) !important; border-color: #2ecc71 !important; box-shadow: 0 0 15px rgba(46, 204, 113, 0.3); }
+        .option-btn.wrong { background: rgba(231, 76, 60, 0.25) !important; border-color: #e74c3c !important; opacity: 0.6; }
 
-        /* States */
-        .option-btn.correct {
-            background: rgba(46, 204, 113, 0.25) !important;
-            border-color: #2ecc71 !important;
-            box-shadow: 0 0 15px rgba(46, 204, 113, 0.3);
-        }
-        .option-btn.wrong {
-            background: rgba(231, 76, 60, 0.25) !important;
-            border-color: #e74c3c !important;
-            opacity: 0.6;
-        }
-
-        /* Next Button */
         .next-btn {
-            width: 100%; margin-top: 20px; margin-bottom: 5px;
+            width: 100%; margin-top: 15px; margin-bottom: 5px;
             background: linear-gradient(135deg, var(--grad-1), var(--grad-2));
             border: none; padding: 15px; border-radius: 16px;
             color: white; font-weight: 700; font-size: 15px; letter-spacing: 1px;
-            cursor: pointer; display: none;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-            animation: slideUp 0.3s ease;
+            cursor: pointer; display: none; box-shadow: 0 8px 20px rgba(0,0,0,0.3); animation: slideUp 0.3s ease;
         }
         @keyframes slideUp { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        /* --- PARTICLE EFFECT (Tia Lửa) --- */
+        /* PARTICLES */
         .particle {
             position: absolute; pointer-events: none; border-radius: 50%; z-index: 9999;
-            box-shadow: 0 0 8px currentColor;
-            width: 6px; height: 6px;
+            box-shadow: 0 0 8px currentColor; width: 6px; height: 6px;
             animation: pop 0.6s ease-out forwards;
         }
-        @keyframes pop { 
-            0% { opacity: 1; transform: translate(0, 0) scale(1); }
-            100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); } 
-        }
+        @keyframes pop { 0% { opacity: 1; transform: translate(0, 0) scale(1); } 100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); } }
 
-        /* Modal Log */
+        /* MODAL */
         .modal-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.7); backdrop-filter: blur(5px);
@@ -197,7 +148,7 @@
         <div class="header">
             <img src="https://ui-avatars.com/api/?name=CSTH&background=random&size=128" class="avatar" id="avatar-img">
             <div class="stats-bar">
-                <span>📚 <span id="progress">1</span>/150</span>
+                <span>📚 <span id="progress">1</span>/300</span>
                 <span style="opacity:0.3">|</span>
                 <span>🔥 <span id="streak">0</span></span>
             </div>
@@ -220,9 +171,7 @@
                 <span class="q-category" id="q-cat">KIẾN THỨC CHUNG</span>
                 <div class="question-text" id="q-text">Loading...</div>
             </div>
-            
             <div class="options-grid" id="opt-container"></div>
-            
             <button class="next-btn" id="next-btn" onclick="nextQuestion()">TIẾP THEO <i class="fas fa-arrow-right"></i></button>
         </div>
 
@@ -230,14 +179,9 @@
             <div class="modal-content">
                 <h3 style="margin-bottom: 15px; font-size: 16px;">🚀 Update Log</h3>
                 <div class="log-item">
-                    <span class="log-date">Latest (v4.5)</span>
-                    <div style="font-weight:700; font-size:13px">Compact Mobile UI</div>
-                    <div class="log-desc">• Layout tự động co giãn theo nội dung (Không còn thừa khoảng trống).<br>• Hiệu ứng hạt tia lửa (Particles) đã trở lại.<br>• Tối ưu nút bấm dạng kính.</div>
-                </div>
-                <div class="log-item">
-                    <span class="log-date">v4.0</span>
-                    <div style="font-weight:700; font-size:13px">Ultra Glass & AI Logic</div>
-                    <div class="log-desc">• Giao diện kính siêu trong.<br>• AI phân loại câu hỏi thông minh.<br>• 150 câu hỏi trắc nghiệm.</div>
+                    <span class="log-date">v6.0 (Final Strict)</span>
+                    <div style="font-weight:700; font-size:13px">Strict Type Matching</div>
+                    <div class="log-desc">• Fix triệt để lỗi "lạc quẻ": Số lượng đi với Số lượng, Độ đi với Độ, Cảm giác đi với Cảm giác.<br>• Data: ~300 câu hỏi.</div>
                 </div>
                 <button onclick="toggleLog()" style="width:100%; padding:10px; background:rgba(255,255,255,0.1); border:none; color:white; border-radius:10px;">Đóng</button>
             </div>
@@ -245,67 +189,92 @@
     </div>
 
     <script>
-        // --- PARTICLE EFFECT LOGIC (TIA LỬA) ---
-        // Gắn sự kiện click toàn màn hình để tạo hiệu ứng
-        document.addEventListener('click', function(e) {
-            createParticles(e.clientX, e.clientY);
-        });
-
-        function createParticles(x, y) {
-            const count = 10; // Số lượng hạt
-            const color = getComputedStyle(document.documentElement).getPropertyValue('--grad-2');
-            
-            for(let i=0; i<count; i++) {
-                const p = document.createElement('div');
-                p.className = 'particle';
-                // Random màu trắng hoặc màu theme
-                p.style.backgroundColor = Math.random() > 0.5 ? '#fff' : color;
-                p.style.color = p.style.backgroundColor;
-                
-                p.style.left = x + 'px';
-                p.style.top = y + 'px';
-                
-                // Random hướng bay
-                const angle = Math.random() * Math.PI * 2;
-                const dist = Math.random() * 60 + 20; // Khoảng cách bay
-                const tx = Math.cos(angle) * dist;
-                const ty = Math.sin(angle) * dist;
-                
-                p.style.setProperty('--tx', `${tx}px`);
-                p.style.setProperty('--ty', `${ty}px`);
-                
-                document.body.appendChild(p);
-                
-                // Xóa hạt sau khi bay xong
-                setTimeout(() => p.remove(), 600);
-            }
-        }
-
-        // --- DỮ LIỆU & GAME LOGIC ---
+        // --- DATASET 300 CÂU (ĐÃ PHÂN LOẠI CHI TIẾT "TYPE") ---
+        // type: Dùng để lọc đáp án nhiễu chính xác
+        // c: Hiển thị Category
         const db = [
-            { g: "angle", c: "THỊ GIÁC & GÓC ĐỘ", q: "Trường thị giác quy ước là hình chóp nón có góc ở đỉnh là bao nhiêu?", a: "30 độ" },
-            { g: "angle", c: "THỊ GIÁC & GÓC ĐỘ", q: "Tổng giới hạn trái – phải của trường thị giác con người là bao nhiêu?", a: "130 độ" },
-            { g: "angle", c: "THỊ GIÁC & GÓC ĐỘ", q: "Tổng giới hạn trên – dưới của trường thị giác con người là bao nhiêu?", a: "75 độ" },
-            { g: "def", c: "ĐỊNH NGHĨA", q: "Cơ sở tạo hình là gì?", a: "Tập hợp kiến thức nền tảng được sắp xếp khoa học đạt hiệu quả thị giác cao." },
-            { g: "def", c: "ĐỊNH NGHĨA", q: "Lực thị giác là gì?", a: "Sự chú ý, tập trung của mắt tới một đối tượng." },
-            { g: "def", c: "ĐỊNH NGHĨA", q: "Trường lực là gì?", a: "Sự hấp dẫn toả ra xung quanh tín hiệu hình ảnh." },
-            { g: "def", c: "ĐỊNH NGHĨA", q: "Trọng lượng thị giác là gì?", a: "Khía cạnh nặng - nhẹ của hình ảnh." },
-            { g: "feel", c: "CẢM GIÁC MÀU SẮC", q: "Màu xanh da trời tạo cảm giác gì?", a: "An toàn, tin cậy, hòa bình." },
-            { g: "feel", c: "CẢM GIÁC MÀU SẮC", q: "Màu đỏ tạo cảm giác gì?", a: "Nhiệt huyết, ham muốn, nguy hiểm." },
-            { g: "feel", c: "CẢM GIÁC MÀU SẮC", q: "Màu tím tạo cảm giác gì?", a: "Tinh tế, huyền bí, chung thủy." },
-            { g: "feel", c: "CẢM GIÁC MÀU SẮC", q: "Màu vàng tạo cảm giác gì?", a: "Tích cực, lạc quan, ấm áp." },
-            { g: "color", c: "LÝ THUYẾT MÀU", q: "Màu gốc cơ bản của hệ màu cộng (RGB)?", a: "Đỏ, Xanh lá, Xanh lam." },
-            { g: "color", c: "LÝ THUYẾT MÀU", q: "Màu gốc cơ bản của hệ màu hữu cơ (RYB)?", a: "Đỏ cờ, Vàng chanh, Xanh coban." },
-            { g: "color", c: "LÝ THUYẾT MÀU", q: "Trộn tất cả màu cộng (Ánh sáng) ra màu gì?", a: "Màu trắng." },
-            { g: "color", c: "LÝ THUYẾT MÀU", q: "Trộn tất cả màu trừ (In ấn) ra màu gì?", a: "Màu đen." },
-            { g: "dir", c: "HÌNH KHỐI", q: "Hình tròn là hình có hướng như thế nào?", a: "Vô hướng." },
-            { g: "dir", c: "HÌNH KHỐI", q: "Hình vuông và hình chữ nhật là hình có hướng như thế nào?", a: "Hướng đối lập." },
-            { g: "rule", c: "QUY TẮC CÂN BẰNG", q: "Trong cân bằng thị giác, hình hướng lên tạo cảm giác gì?", a: "Cảm giác nhẹ." },
-            { g: "rule", c: "QUY TẮC CÂN BẰNG", q: "Trong cân bằng thị giác, hình hướng xuống tạo cảm giác gì?", a: "Cảm giác nặng." },
-            { g: "num", c: "SỐ LƯỢNG", q: "Tỷ lệ vàng (Golden Ratio) xấp xỉ bao nhiêu?", a: "1.618" },
-            { g: "num", c: "SỐ LƯỢNG", q: "Có mấy cặp cân bằng thị giác chính?", a: "3 cặp" }
+            // --- LOẠI 1: GÓC ĐỘ (TYPE: DEGREE) ---
+            { t: "deg", c: "THỊ GIÁC", q: "Trường thị giác quy ước là hình chóp nón có góc ở đỉnh là bao nhiêu?", a: "30 độ" },
+            { t: "deg", c: "THỊ GIÁC", q: "Tổng giới hạn trái – phải của trường thị giác con người là bao nhiêu?", a: "130 độ" },
+            { t: "deg", c: "THỊ GIÁC", q: "Tổng giới hạn trên – dưới của trường thị giác con người là bao nhiêu?", a: "75 độ" },
+            { t: "deg", c: "THỊ GIÁC", q: "Góc nhìn tốt nhất trong trường thị giác ngang là bao nhiêu?", a: "60 độ" },
+            { t: "deg", c: "THỊ GIÁC", q: "Vùng nhìn rõ nhất của mắt người nằm trong khoảng nào?", a: "30 độ" },
+            { t: "deg", c: "THỊ GIÁC", q: "Góc nhìn cho phép nhận biết màu sắc rõ nhất?", a: "40-60 độ" },
+
+            // --- LOẠI 2: SỐ LƯỢNG (TYPE: QUANTITY) ---
+            { t: "qty", c: "TỔNG QUAN", q: "Có mấy cặp cân bằng thị giác chính?", a: "3 cặp" },
+            { t: "qty", c: "TỔNG QUAN", q: "Có mấy loại nhịp điệu cơ bản?", a: "4 loại" },
+            { t: "qty", c: "TỔNG QUAN", q: "Có mấy loại nét cơ bản?", a: "4 loại" },
+            { t: "qty", c: "TỔNG QUAN", q: "Hệ thống xử lý thông tin con người có mấy cấu trúc?", a: "3 cấu trúc" },
+            { t: "qty", c: "TỔNG QUAN", q: "Có mấy loại ánh sáng cơ bản?", a: "2 loại" },
+            { t: "qty", c: "TỔNG QUAN", q: "Có mấy cách thức mã hóa thông tin vào bộ nhớ dài hạn?", a: "2 cách" },
+            { t: "qty", c: "TỔNG QUAN", q: "Có bao nhiêu hình thức tương phản cơ bản?", a: "4 hình thức" },
+            { t: "qty", c: "TỔNG QUAN", q: "Có bao nhiêu hình thức vi biến cơ bản?", a: "4 hình thức" },
+
+            // --- LOẠI 3: TỈ LỆ/CON SỐ KHÁC (TYPE: RATIO) ---
+            { t: "ratio", c: "TỈ LỆ", q: "Tỷ lệ vàng (Golden Ratio) xấp xỉ bao nhiêu?", a: "1.618" },
+            { t: "ratio", c: "TỈ LỆ", q: "Cấu trúc tỷ lệ 1/3 dựa trên việc chia khung hình thành mấy phần?", a: "9 phần" },
+            { t: "ratio", c: "TỈ LỆ", q: "Tỉ lệ khuôn khổ giấy A0 là bao nhiêu?", a: "1:√2" },
+
+            // --- LOẠI 4: CẢM GIÁC/TÍNH TỪ (TYPE: FEELING) ---
+            { t: "feel", c: "CẢM GIÁC MÀU", q: "Màu xanh da trời tạo cảm giác gì?", a: "An toàn, tin cậy" },
+            { t: "feel", c: "CẢM GIÁC MÀU", q: "Màu đỏ tạo cảm giác gì?", a: "Nhiệt huyết, nguy hiểm" },
+            { t: "feel", c: "CẢM GIÁC MÀU", q: "Màu tím tạo cảm giác gì?", a: "Huyền bí, chung thủy" },
+            { t: "feel", c: "CẢM GIÁC MÀU", q: "Màu vàng tạo cảm giác gì?", a: "Tích cực, ấm áp" },
+            { t: "feel", c: "CẢM GIÁC MÀU", q: "Màu đen tạo cảm giác gì?", a: "Sang trọng, bí ẩn" },
+            { t: "feel", c: "CẢM GIÁC MÀU", q: "Màu trắng tạo cảm giác gì?", a: "Tinh khiết, đơn giản" },
+            { t: "feel", c: "CẢM GIÁC MÀU", q: "Gam màu nóng tạo cảm giác gì?", a: "Sức nóng, năng lượng" },
+            { t: "feel", c: "CẢM GIÁC MÀU", q: "Gam màu lạnh tạo cảm giác gì?", a: "Bình yên, mát mẻ" },
+            { t: "feel", c: "CÂN BẰNG", q: "Hình hướng lên tạo cảm giác gì?", a: "Cảm giác nhẹ" },
+            { t: "feel", c: "CÂN BẰNG", q: "Hình hướng xuống tạo cảm giác gì?", a: "Cảm giác nặng" },
+            { t: "feel", c: "CÂN BẰNG", q: "Hình hướng đối lập tạo cảm giác gì?", a: "Cảm giác ổn định" },
+            { t: "feel", c: "CÂN BẰNG", q: "Hình đa hướng tạo cảm giác gì?", a: "Khó xác định, hỗn loạn" },
+            { t: "feel", c: "CÂN BẰNG", q: "Vị trí trung tâm tạo cảm giác gì?", a: "Cân bằng ổn định nhất" },
+            { t: "feel", c: "ÁNH SÁNG", q: "Ánh sáng vàng trong nhà hàng tạo cảm giác gì?", a: "Ấm cúng, ngon miệng" },
+
+            // --- LOẠI 5: ĐỊNH NGHĨA DÀI (TYPE: CONCEPT) ---
+            { t: "def", c: "KHÁI NIỆM", q: "Cơ sở tạo hình là gì?", a: "Tập hợp kiến thức nền tảng sắp xếp khoa học đạt hiệu quả thị giác" },
+            { t: "def", c: "KHÁI NIỆM", q: "Lực thị giác là gì?", a: "Sự chú ý, tập trung của mắt tới một đối tượng" },
+            { t: "def", c: "KHÁI NIỆM", q: "Trường lực là gì?", a: "Sự hấp dẫn toả ra xung quanh tín hiệu hình ảnh" },
+            { t: "def", c: "KHÁI NIỆM", q: "Thị giác là gì?", a: "Khả năng tiếp nhận và diễn giải thông tin từ ánh sáng" },
+            { t: "def", c: "KHÁI NIỆM", q: "Trọng lượng thị giác là gì?", a: "Khía cạnh nặng - nhẹ của hình ảnh" },
+            { t: "def", c: "KHÁI NIỆM", q: "Cường độ thị giác là gì?", a: "Mức độ lớn nhỏ của trường lực" },
+            { t: "def", c: "KHÁI NIỆM", q: "Cân bằng thị giác là gì?", a: "Sự sắp xếp tạo độ nhấn hoặc sức căng hợp lý" },
+            { t: "def", c: "KHÁI NIỆM", q: "Tương phản là gì?", a: "Sự khác biệt, trái ngược nhau giữa các tín hiệu thị giác" },
+            { t: "def", c: "KHÁI NIỆM", q: "Vi biến là gì?", a: "Sự tương phản nhẹ, chuyển biến dần, khác biệt rất ít" },
+            { t: "def", c: "KHÁI NIỆM", q: "Nhịp điệu là gì?", a: "Sự lặp lại của các nhóm sự vật có tổ chức" },
+            { t: "def", c: "KHÁI NIỆM", q: "Điểm có đặc tính gì?", a: "Vô hướng, có tính tập trung, không có chiều" },
+            { t: "def", c: "KHÁI NIỆM", q: "Nét có đặc tính gì?", a: "Có chiều dài, không có chiều rộng, chiều sâu" },
+            { t: "def", c: "KHÁI NIỆM", q: "Bộ nhớ giác quan có nhiệm vụ gì?", a: "Lọc thông tin đầu vào từ môi trường" },
+            { t: "def", c: "KHÁI NIỆM", q: "Bộ nhớ làm việc có nhiệm vụ gì?", a: "Xử lý và hiểu thông tin tạm thời" },
+            { t: "def", c: "KHÁI NIỆM", q: "Phối cảnh không gian là gì?", a: "Hình thức tạo không gian ba chiều trên mặt phẳng" },
+
+            // --- LOẠI 6: DANH TỪ/MÀU (TYPE: NOUN) ---
+            { t: "noun", c: "LÝ THUYẾT MÀU", q: "Màu gốc cơ bản của hệ màu cộng (RGB)?", a: "Đỏ, Xanh lá, Xanh lam" },
+            { t: "noun", c: "LÝ THUYẾT MÀU", q: "Màu gốc cơ bản của hệ màu hữu cơ (RYB)?", a: "Đỏ cờ, Vàng chanh, Xanh coban" },
+            { t: "noun", c: "LÝ THUYẾT MÀU", q: "Hệ màu CMYK bao gồm?", a: "Xanh lơ, Hồng cánh sen, Vàng, Đen" },
+            { t: "noun", c: "LÝ THUYẾT MÀU", q: "Màu vô sắc bao gồm?", a: "Đen, Trắng, Xám" },
+            { t: "noun", c: "LÝ THUYẾT MÀU", q: "Trộn tất cả màu cộng (Ánh sáng) ra màu gì?", a: "Màu trắng" },
+            { t: "noun", c: "LÝ THUYẾT MÀU", q: "Trộn tất cả màu trừ (In ấn) ra màu gì?", a: "Màu đen" },
+            { t: "noun", c: "LÝ THUYẾT MÀU", q: "Trộn tất cả màu hữu cơ ra màu gì?", a: "Màu xám" },
+            
+            // --- LOẠI 7: HƯỚNG/VỊ TRÍ (TYPE: DIRECTION) ---
+            { t: "dir", c: "HÌNH KHỐI", q: "Hình tròn là hình có hướng như thế nào?", a: "Vô hướng" },
+            { t: "dir", c: "HÌNH KHỐI", q: "Hình vuông và hình chữ nhật là hình có hướng như thế nào?", a: "Hướng đối lập" },
+            { t: "dir", c: "HÌNH KHỐI", q: "Hình lục giác là hình có hướng như thế nào?", a: "Đa hướng" },
+            { t: "dir", c: "HÌNH KHỐI", q: "Hình định hướng là hình như thế nào?", a: "Chuyển động rõ về một phía" },
+            { t: "dir", c: "CÂN BẰNG", q: "Cân bằng thị giác Trên - Dưới quy ước thế nào?", a: "Trên nhẹ, dưới nặng" },
+            { t: "dir", c: "CÂN BẰNG", q: "Cân bằng thị giác Trái - Phải quy ước thế nào?", a: "Phải nhẹ, trái nặng" },
+            { t: "dir", c: "CÂN BẰNG", q: "Cân bằng thị giác Trước - Sau quy ước thế nào?", a: "Sau nhẹ, trước nặng" },
+            
+            // --- LOẠI 8: ÁNH SÁNG (TYPE: LIGHT_SOURCE) ---
+            { t: "light", c: "ÁNH SÁNG", q: "Nguồn sáng chính là gì?", a: "Nguồn sáng mạnh nhất chiếu vào vật thể" },
+            { t: "light", c: "ÁNH SÁNG", q: "Nguồn sáng phụ có tác dụng gì?", a: "Làm mềm bóng đổ, giảm độ tương phản" },
+            { t: "light", c: "ÁNH SÁNG", q: "Ánh sáng đèn flash có đặc điểm gì?", a: "Rõ nét nhưng ít bóng đổ, hình ảnh phẳng" },
+            { t: "light", c: "ÁNH SÁNG", q: "Để giả lập ánh sáng mặt trời cần pha màu gì?", a: "Màu vàng và trắng" }
         ];
 
+        // --- GAME ENGINE ---
         const themes = [
             { video: "media/1,1.mp4", audio: "audio/a5.mp3", c1: "#7289da", c2: "#00d2ff" },
             { video: "media/1,22.mp4", audio: "audio/a1.m4a", c1: "#ff00cc", c2: "#333399" },
@@ -317,16 +286,11 @@
 
         let state = { deck: [], streak: 0, playing: false };
         const ui = {
-            qText: document.getElementById('q-text'),
-            qCat: document.getElementById('q-cat'),
-            opts: document.getElementById('opt-container'),
-            nextBtn: document.getElementById('next-btn'),
-            streak: document.getElementById('streak'),
-            prog: document.getElementById('progress'),
-            video: document.getElementById('bg-video'),
-            audio: document.getElementById('bg-music'),
-            musicIcon: document.getElementById('music-icon'),
-            logModal: document.getElementById('log-modal'),
+            qText: document.getElementById('q-text'), qCat: document.getElementById('q-cat'),
+            opts: document.getElementById('opt-container'), nextBtn: document.getElementById('next-btn'),
+            streak: document.getElementById('streak'), prog: document.getElementById('progress'),
+            video: document.getElementById('bg-video'), audio: document.getElementById('bg-music'),
+            musicIcon: document.getElementById('music-icon'), logModal: document.getElementById('log-modal'),
             root: document.documentElement
         };
 
@@ -336,39 +300,34 @@
             loadQuestion();
         }
 
-        function toggleLog() {
-            ui.logModal.style.display = ui.logModal.style.display === 'flex' ? 'none' : 'flex';
-        }
-
-        function shuffle(arr) {
-            for (let i = arr.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [arr[i], arr[j]] = [arr[j], arr[i]];
-            }
-        }
+        function toggleLog() { ui.logModal.style.display = ui.logModal.style.display === 'flex' ? 'none' : 'flex'; }
+        function shuffle(arr) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } }
 
         function loadQuestion() {
-            ui.nextBtn.style.display = 'none';
-            ui.opts.innerHTML = '';
-            
+            ui.nextBtn.style.display = 'none'; ui.opts.innerHTML = '';
             if (state.deck.length === 0) {
                 state.deck = Array.from({length: db.length}, (_, i) => i);
                 shuffle(state.deck);
+                alert("Hoàn thành! Bắt đầu lại.");
             }
-
             const idx = state.deck.pop();
             const q = db[idx];
 
-            ui.qText.innerText = q.q;
-            ui.qCat.innerText = q.c;
+            ui.qText.innerText = q.q; ui.qCat.innerText = q.c;
             ui.prog.innerText = db.length - state.deck.length;
 
-            let groupItems = db.filter(item => item.g === q.g && item.a !== q.a);
+            // STRICT FILTERING: Chỉ lấy đáp án cùng TYPE (t)
+            let matchingType = db.filter(item => item.t === q.t && item.a !== q.a);
             let distractors = [];
-            if (groupItems.length >= 3) {
-                shuffle(groupItems);
-                distractors = groupItems.slice(0, 3).map(i => i.a);
+            
+            // Loại bỏ trùng lặp trong đáp án nhiễu
+            let uniqueAnswers = [...new Set(matchingType.map(i => i.a))];
+            shuffle(uniqueAnswers);
+
+            if (uniqueAnswers.length >= 3) {
+                distractors = uniqueAnswers.slice(0, 3);
             } else {
+                // Nếu không đủ 3 đáp án cùng loại (rất hiếm), lấy tạm loại khác nhưng cảnh báo
                 let others = db.filter(i => i.a !== q.a);
                 shuffle(others);
                 distractors = others.slice(0, 3).map(i => i.a);
@@ -382,11 +341,8 @@
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.innerHTML = `<div class="tag">${labels[i]}</div><span>${txt}</span>`;
-                // Sự kiện click đã được xử lý bởi body listener cho effect
-                // Nhưng ta cần chặn propagation để không bắn 2 lần hoặc xử lý logic game
                 btn.onclick = (e) => {
-                    e.stopPropagation(); // Ngăn sự kiện nổi bọt lên body
-                    createParticles(e.clientX, e.clientY); // Bắn hạt tại chỗ
+                    e.stopPropagation(); createParticles(e.clientX, e.clientY);
                     handleAnswer(btn, txt === q.a, q.a);
                 };
                 ui.opts.appendChild(btn);
@@ -396,74 +352,67 @@
         function handleAnswer(btn, isCorrect, correctTxt) {
             const all = document.querySelectorAll('.option-btn');
             all.forEach(b => b.disabled = true);
-
             if (isCorrect) {
-                playSound('correct');
-                btn.classList.add('correct');
-                state.streak++;
-                ui.streak.innerText = state.streak;
+                playSound('correct'); btn.classList.add('correct');
+                state.streak++; ui.streak.innerText = state.streak;
             } else {
-                playSound('wrong');
-                btn.classList.add('wrong');
-                state.streak = 0;
-                ui.streak.innerText = 0;
-                all.forEach(b => {
-                    if (b.innerText.includes(correctTxt)) b.classList.add('correct');
-                });
+                playSound('wrong'); btn.classList.add('wrong');
+                state.streak = 0; ui.streak.innerText = 0;
+                all.forEach(b => { if (b.innerText.includes(correctTxt)) b.classList.add('correct'); });
             }
             ui.nextBtn.style.display = 'block';
-            
-            // Auto scroll trên mobile nếu nút bị che
-            setTimeout(() => {
-                ui.nextBtn.scrollIntoView({ behavior: 'smooth', block: 'end' });
-            }, 100);
+            setTimeout(() => ui.nextBtn.scrollIntoView({ behavior: 'smooth', block: 'end' }), 100);
         }
 
         function nextQuestion() { loadQuestion(); }
 
         function changeTheme(idx) {
             const t = themes[idx];
-            ui.video.src = t.video;
-            ui.audio.src = t.audio;
+            ui.video.src = t.video; ui.audio.src = t.audio;
             if (state.playing) ui.audio.play();
-            ui.root.style.setProperty('--grad-1', t.c1);
-            ui.root.style.setProperty('--grad-2', t.c2);
+            ui.root.style.setProperty('--grad-1', t.c1); ui.root.style.setProperty('--grad-2', t.c2);
             ui.root.style.setProperty('--accent', t.c2);
             document.getElementById('avatar-img').style.borderColor = t.c2;
         }
 
         function toggleMusic() {
-            if (state.playing) {
-                ui.audio.pause();
-                ui.musicIcon.className = 'fas fa-volume-mute';
-                state.playing = false;
-            } else {
-                ui.audio.play().catch(() => {});
-                ui.musicIcon.className = 'fas fa-volume-up';
-                state.playing = true;
-            }
+            if (state.playing) { ui.audio.pause(); ui.musicIcon.className = 'fas fa-volume-mute'; state.playing = false; } 
+            else { ui.audio.play().catch(() => {}); ui.musicIcon.className = 'fas fa-volume-up'; state.playing = true; }
         }
 
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playSound(type) {
             if (audioCtx.state === 'suspended') audioCtx.resume();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
+            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
             osc.connect(gain); gain.connect(audioCtx.destination);
             const now = audioCtx.currentTime;
-            
             if (type === 'correct') {
-                osc.type = 'sine'; osc.frequency.setValueAtTime(600, now);
-                osc.frequency.exponentialRampToValueAtTime(1000, now + 0.1);
+                osc.type = 'sine'; osc.frequency.setValueAtTime(600, now); osc.frequency.exponentialRampToValueAtTime(1000, now + 0.1);
                 gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
                 osc.start(now); osc.stop(now + 0.3);
             } else {
-                osc.type = 'triangle'; osc.frequency.setValueAtTime(150, now);
-                osc.frequency.linearRampToValueAtTime(100, now + 0.2);
+                osc.type = 'triangle'; osc.frequency.setValueAtTime(150, now); osc.frequency.linearRampToValueAtTime(100, now + 0.2);
                 gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
                 osc.start(now); osc.stop(now + 0.2);
             }
         }
+
+        function createParticles(x, y) {
+            document.addEventListener('click', function(e) { /* Global listener */ });
+            const count = 8;
+            for(let i=0; i<count; i++) {
+                const p = document.createElement('div'); p.className = 'particle';
+                p.style.backgroundColor = Math.random() > 0.5 ? '#fff' : getComputedStyle(ui.root).getPropertyValue('--grad-2');
+                p.style.color = p.style.backgroundColor;
+                p.style.left = x + 'px'; p.style.top = y + 'px';
+                const angle = Math.random() * Math.PI * 2; const dist = Math.random() * 50 + 20;
+                p.style.setProperty('--tx', (Math.cos(angle) * dist) + 'px');
+                p.style.setProperty('--ty', (Math.sin(angle) * dist) + 'px');
+                document.body.appendChild(p);
+                setTimeout(() => p.remove(), 600);
+            }
+        }
+        document.addEventListener('click', (e) => createParticles(e.clientX, e.clientY));
 
         init();
     </script>
