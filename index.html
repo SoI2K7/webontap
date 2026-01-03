@@ -3,455 +3,446 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ôn Tập Pro - Sidebar Nav</title>
+    <title>Ôn Thi Triết Học - Update 81-120</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --grad-1: #7289da; --grad-2: #00d2ff; --accent: #00d2ff;
-            --border-light: rgba(255, 255, 255, 0.15);
-            --sidebar-w: 260px;
+            --primary: #d90429; --accent: #ef233c; --correct: #2ecc71; --wrong: #e74c3c;
+            --bg-dark: #1a1a2e; --sidebar-bg: #101015;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
         
         body { 
             height: 100vh; width: 100vw; display: flex; justify-content: center; align-items: center; overflow: hidden; color: white; 
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); 
+            background: linear-gradient(135deg, #2b0505 0%, #1a1a2e 100%); 
         }
-        #bg-video { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; filter: brightness(0.5); transition: 0.5s; }
+        #bg-video { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; filter: brightness(0.3); opacity: 0.4; }
 
-        /* MAIN LAYOUT */
-        .app-wrapper {
-            display: flex; width: 95%; max-width: 1200px; height: 90vh;
-            gap: 20px; position: relative;
+        /* CONTAINER */
+        .app-container {
+            display: flex; width: 95%; max-width: 1400px; height: 92vh;
+            background: rgba(30, 20, 20, 0.9); backdrop-filter: blur(30px);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 24px;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.8); overflow: hidden; position: relative;
         }
 
-        /* --- SIDEBAR (NEW) --- */
+        /* SIDEBAR */
         .sidebar {
-            width: 80px; /* Thu gọn trên mobile/tablet */
-            background: rgba(30, 32, 45, 0.9); backdrop-filter: blur(20px);
-            border: 1px solid var(--border-light); border-radius: 24px;
-            display: flex; flex-direction: column; padding: 15px;
-            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 50;
-            overflow: hidden;
+            width: 280px; background: var(--sidebar-bg); border-right: 1px solid rgba(255,255,255,0.1);
+            display: flex; flex-direction: column; flex-shrink: 0; z-index: 50; transition: transform 0.3s ease;
         }
-        
-        /* Khi hover hoặc active (trên PC) mở rộng ra */
-        @media (min-width: 768px) {
-            .sidebar { width: var(--sidebar-w); }
-        }
-        
-        /* Mobile: Sidebar ẩn, hiện khi toggle */
-        @media (max-width: 767px) {
-            .sidebar {
-                position: absolute; left: -100%; top: 0; bottom: 0; width: 280px;
-                box-shadow: 10px 0 30px rgba(0,0,0,0.5);
-            }
-            .sidebar.open { left: 0; }
-        }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; background: rgba(217, 4, 41, 0.1); }
+        .question-grid { flex-grow: 1; overflow-y: auto; padding: 15px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; align-content: start; }
+        .q-node { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.1); border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; border: 1px solid transparent; color: rgba(255,255,255,0.7); }
+        .q-node:hover { background: rgba(255,255,255,0.2); }
+        .q-node.active { border-color: var(--accent); background: rgba(239, 35, 60, 0.2); color: white; box-shadow: 0 0 10px rgba(239, 35, 60, 0.4); }
+        .q-node.correct { background: var(--correct); color: #000; border-color: var(--correct); }
+        .q-node.wrong { background: var(--wrong); color: white; border-color: var(--wrong); }
 
-        .sidebar-header { font-size: 14px; font-weight: 700; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; }
-        
-        .nav-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(35px, 1fr)); gap: 8px;
-            overflow-y: auto; padding-right: 5px; flex-grow: 1;
-            /* Scrollbar styling */
-            scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.2) transparent;
-        }
-        .nav-grid::-webkit-scrollbar { width: 4px; }
-        .nav-grid::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
-
-        .nav-box {
-            height: 35px; border-radius: 8px; background: rgba(255,255,255,0.1);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.2s;
-            border: 1px solid transparent;
-        }
-        .nav-box:hover { background: rgba(255,255,255,0.2); }
-        
-        /* Trạng thái màu sắc */
-        .nav-box.current { border-color: var(--accent); background: rgba(0, 210, 255, 0.2); color: var(--accent); }
-        .nav-box.correct { background: #2ecc71; color: #000; border-color: #2ecc71; }
-        .nav-box.wrong { background: #e74c3c; color: white; border-color: #e74c3c; }
-        .nav-box.skipped { background: #f1c40f; color: #000; border-color: #f1c40f; }
-
-        /* QUIZ CONTAINER */
-        .quiz-container {
-            flex-grow: 1; display: flex; flex-direction: column;
-            background: linear-gradient(180deg, rgba(30, 32, 45, 0.95) 0%, rgba(20, 22, 30, 0.9) 100%);
-            backdrop-filter: blur(50px); -webkit-backdrop-filter: blur(50px);
-            border: 1px solid var(--border-light); border-top: 1px solid rgba(255, 255, 255, 0.25);
-            border-radius: 32px; padding: 24px; position: relative; overflow: hidden;
-            box-shadow: 0 40px 80px -10px rgba(0,0,0,0.8);
-        }
-
-        /* SCREENS & COMMON UI */
-        .screen { display: none; flex-direction: column; height: 100%; width: 100%; }
+        /* CONTENT */
+        .main-content { flex-grow: 1; position: relative; overflow: hidden; display: flex; flex-direction: column; }
+        .screen { display: none; flex-direction: column; height: 100%; width: 100%; padding: 30px; overflow-y: auto; }
         .screen.active { display: flex; }
-        .menu-title { font-size: 22px; font-weight: 700; text-align: center; margin-bottom: 30px; }
-        
-        .card-btn {
-            width: 100%; padding: 20px; margin-bottom: 15px;
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 20px; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 15px; transition: 0.2s;
+
+        /* HOME */
+        .menu-title { font-size: 26px; font-weight: 800; text-align: center; margin-bottom: 40px; text-transform: uppercase; letter-spacing: 1px; color: #ffeb3b; text-shadow: 0 0 10px rgba(217, 4, 41, 0.8); }
+        .menu-grid { display: flex; flex-direction: column; gap: 15px; max-width: 600px; margin: auto; width: 100%; }
+        .card-btn { padding: 25px; background: linear-gradient(90deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 20px; }
+        .card-btn:hover { transform: translateX(10px); background: rgba(217, 4, 41, 0.15); border-color: var(--primary); }
+        .card-icon { width: 50px; height: 50px; border-radius: 12px; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; }
+        .card-info h3 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+        .card-info p { font-size: 13px; color: #aaa; }
+
+        /* QUIZ */
+        .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
+        .question-box { background: rgba(0, 0, 0, 0.3); border-left: 4px solid var(--primary); padding: 25px; border-radius: 0 20px 20px 0; margin-bottom: 30px; }
+        .question-text { font-size: 17px; font-weight: 500; line-height: 1.6; }
+        .options-list { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn { padding: 18px 25px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; color: rgba(255,255,255,0.95); text-align: left; font-size: 15px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; }
+        .option-btn:hover { background: rgba(255,255,255,0.15); }
+        .option-tag { width: 32px; height: 32px; background: rgba(255,255,255,0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-weight: 700; color: var(--primary); font-size: 14px; }
+        .option-btn.correct { background: rgba(46, 204, 113, 0.25) !important; border-color: #2ecc71 !important; }
+        .option-btn.wrong { background: rgba(231, 76, 60, 0.25) !important; border-color: #e74c3c !important; }
+
+        .controls { margin-top: auto; display: flex; justify-content: space-between; padding-top: 20px; }
+        .nav-btn { padding: 14px 30px; background: var(--primary); border: none; border-radius: 30px; color: white; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .nav-btn.secondary { background: transparent; border: 1px solid rgba(255,255,255,0.2); }
+
+        /* SCORE MODAL */
+        .score-overlay { position: absolute; inset: 0; background: rgba(20, 5, 5, 0.98); z-index: 100; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: 0.3s; }
+        .score-overlay.active { opacity: 1; visibility: visible; }
+        .score-circle { width: 160px; height: 160px; border-radius: 50%; border: 8px solid var(--primary); display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 30px; font-size: 56px; font-weight: 800; }
+
+        /* MOBILE */
+        .mobile-toggle { display: none; position: absolute; top: 20px; left: 20px; z-index: 200; background: #333; border: none; color: white; padding: 12px; border-radius: 8px; font-size: 20px; }
+        @media (max-width: 768px) {
+            .app-container { width: 100%; height: 100%; border-radius: 0; border: none; }
+            .sidebar { position: absolute; left: 0; top: 0; bottom: 0; z-index: 150; transform: translateX(-100%); width: 280px; box-shadow: 10px 0 50px rgba(0,0,0,0.9); }
+            .sidebar.open { transform: translateX(0); }
+            .mobile-toggle { display: block; }
+            .screen { padding: 20px; padding-top: 70px; }
         }
-        .card-btn:active { background: rgba(255,255,255,0.15); transform: scale(0.98); }
-        .card-icon { width: 50px; height: 50px; border-radius: 12px; background: linear-gradient(135deg, var(--grad-1), var(--grad-2)); display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; }
-        .card-info h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
-        .card-info p { font-size: 12px; color: #aaa; }
-
-        .header { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; flex-shrink: 0; }
-        .stats-bar { display: flex; gap: 15px; font-size: 13px; font-weight: 600; background: rgba(0,0,0,0.5); padding: 8px 20px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 10px; }
-        .controls { display: flex; gap: 10px; justify-content: center; width: 100%; }
-        .icon-btn { width: 40px; height: 40px; border-radius: 12px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1); color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        
-        /* MENU TOGGLE BTN (Mobile Only) */
-        .menu-toggle {
-            display: none; position: absolute; top: 20px; left: 20px; z-index: 60;
-            width: 40px; height: 40px; background: var(--accent); border-radius: 10px;
-            align-items: center; justify-content: center; border: none; color: white;
-        }
-        @media (max-width: 767px) { .menu-toggle { display: flex; } }
-
-        .content-area { overflow-y: auto; padding: 2px; flex-grow: 1; scrollbar-width: none; display: flex; flex-direction: column; }
-        .question-box { background: rgba(255, 255, 255, 0.05); border-left: 4px solid var(--accent); padding: 18px; margin-bottom: 25px; border-radius: 0 16px 16px 0; }
-        .q-category { color: var(--accent); font-size: 11px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; display: block; }
-        .question-text { font-size: 16px; font-weight: 600; line-height: 1.5; }
-
-        .options-grid { display: flex; flex-direction: column; gap: 12px; }
-        .option-btn { width: 100%; position: relative; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); padding: 16px 20px; border-radius: 18px; color: rgba(255,255,255,0.95); text-align: left; font-size: 15px; font-weight: 500; cursor: pointer; display: flex; align-items: flex-start; transition: 0.2s; }
-        .option-btn:active { transform: scale(0.98); background: rgba(255,255,255,0.15); }
-        .tag { min-width: 28px; height: 28px; background: rgba(255,255,255,0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; margin-right: 15px; margin-top: -3px; color: var(--accent); }
-        .option-btn.correct { background: rgba(46, 204, 113, 0.25) !important; border-color: #2ecc71 !important; box-shadow: 0 0 20px rgba(46, 204, 113, 0.2); }
-        .option-btn.wrong { background: rgba(231, 76, 60, 0.25) !important; border-color: #e74c3c !important; opacity: 0.6; }
-
-        .next-btn { width: 100%; margin-top: 25px; margin-bottom: 10px; background: linear-gradient(135deg, var(--grad-1), var(--grad-2)); border: none; padding: 18px; border-radius: 18px; color: white; font-weight: 700; font-size: 16px; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.3); animation: slideUp 0.3s ease; }
-        @keyframes slideUp { from { transform: translateY(15px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        
-        .score-modal { position: absolute; right: 0; top: 0; bottom: 0; width: 100%; background: rgba(20, 20, 30, 0.95); backdrop-filter: blur(20px); z-index: 100; opacity: 0; visibility: hidden; pointer-events: none; transition: all 0.4s; padding: 30px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .score-modal.active { opacity: 1; visibility: visible; pointer-events: all; }
-        .score-circle { width: 140px; height: 140px; border-radius: 50%; border: 6px solid var(--grad-2); margin-bottom: 25px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 42px; font-weight: 800; color: #fff; background: rgba(255,255,255,0.05); }
-        
-        .back-btn { position: absolute; top: 25px; left: 20px; background: none; border: none; color: rgba(255,255,255,0.6); font-size: 20px; cursor: pointer; z-index: 10; padding: 10px; }
-        .particle { position: absolute; pointer-events: none; border-radius: 50%; z-index: 9999; box-shadow: 0 0 10px currentColor; width: 6px; height: 6px; animation: pop 0.6s ease-out forwards; }
-        @keyframes pop { 0% { opacity: 1; transform: translate(0, 0) scale(1); } 100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); } }
-        
-        /* OVERLAY for mobile sidebar */
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 40; display: none; }
-        .overlay.active { display: block; }
     </style>
 </head>
 <body>
     <video autoplay muted loop id="bg-video"><source src="media/1,1.mp4" type="video/mp4"></video>
     <audio id="bg-music" loop><source src="audio/a5.mp3" type="audio/mpeg"></audio>
 
-    <div class="app-wrapper">
-        
+    <div class="app-container">
+        <button class="mobile-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <span>CÂU HỎI</span>
-                <span id="nav-progress">0/0</span>
+                <span style="font-weight:700; color:#ffeb3b">CÂU HỎI</span>
+                <span style="font-size:12px; opacity:0.8" id="progress-text">0/0</span>
             </div>
-            <div class="nav-grid" id="nav-grid">
-                </div>
+            <div class="question-grid" id="q-grid"></div>
+            <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); text-align: center;">
+                <button class="nav-btn secondary" style="width: 100%;" onclick="goHome()">Thoát</button>
+            </div>
         </div>
-        <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
-        <div class="quiz-container">
-            
-            <button class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-
+        <div class="main-content">
             <div id="screen-home" class="screen active">
-                <img src="https://ui-avatars.com/api/?name=HOME&background=random&size=128" style="width:80px; height:80px; border-radius:50%; align-self:center; margin: 40px 0; border: 2px solid white;">
-                <div class="menu-title">Ngân Hàng Câu Hỏi</div>
-                <div class="card-btn" onclick="selectSubject('csth')">
-                    <div class="card-icon"><i class="fas fa-palette"></i></div>
-                    <div class="card-info"><h3>Cơ Sở Tạo Hình</h3><p>300 Câu • AI Mode</p></div>
+                <div style="text-align: center; margin-bottom: 40px;">
+                    <img src="https://ui-avatars.com/api/?name=ML&background=d90429&color=fff&size=128" style="width:100px; border-radius:50%; margin-bottom:15px; box-shadow: 0 0 30px rgba(217, 4, 41, 0.6); border: 3px solid #ffeb3b;">
+                    <div class="menu-title">Triết Học Mác-Lênin</div>
                 </div>
-                <div class="card-btn" onclick="selectSubject('triet')">
-                    <div class="card-icon" style="background: linear-gradient(135deg, #ff9966, #ff5e62);"><i class="fas fa-book-open"></i></div>
-                    <div class="card-info"><h3>Triết Học Mác-Lênin</h3><p>Full 3 Chương • 500+ Câu</p></div>
+                <div class="menu-grid">
+                    <div class="card-btn" onclick="startChapter(1)">
+                        <div class="card-icon">1</div>
+                        <div class="card-info"><h3>Chương 1 (160 Câu)</h3><p>Khái luận & Triết học Mác</p></div>
+                    </div>
+                    <div class="card-btn" onclick="startChapter(2)">
+                        <div class="card-icon">2</div>
+                        <div class="card-info"><h3>Chương 2 (155 Câu)</h3><p>CNDV Biện chứng</p></div>
+                    </div>
+                    <div class="card-btn" onclick="startChapter(3)">
+                        <div class="card-icon">3</div>
+                        <div class="card-info"><h3>Chương 3 (188 Câu)</h3><p>CNDV Lịch sử</p></div>
+                    </div>
                 </div>
-            </div>
-
-            <div id="screen-chapters" class="screen">
-                <button class="back-btn" onclick="goHome()"><i class="fas fa-arrow-left"></i></button>
-                <h2 class="menu-title" style="margin-top: 50px;" id="subject-title">Mục Lục</h2>
-                <div id="chapter-list" style="overflow-y: auto; padding-right: 5px;"></div>
             </div>
 
             <div id="screen-quiz" class="screen">
-                <div class="header">
-                    <img src="https://ui-avatars.com/api/?name=Quiz&background=random&size=128" class="avatar" id="avatar-img">
-                    <div class="stats-bar">
-                        <span>📚 <span id="current-q-num">1</span>/<span id="total-q">160</span></span>
-                        <span>🔥 <span id="streak">0</span></span>
-                    </div>
-                    <div class="controls">
-                        <button class="icon-btn" onclick="goChapters()"><i class="fas fa-list"></i></button>
-                        <button class="icon-btn" onclick="toggleMusic()"><i class="fas fa-volume-mute" id="music-icon"></i></button>
+                <div class="quiz-header">
+                    <span class="quiz-title" id="quiz-title">CHƯƠNG 1</span>
+                    <div style="display:flex; gap:10px">
+                        <span id="score-live" style="font-size:14px; font-weight:700; color:#2ecc71">0 Đúng</span>
+                        <button onclick="toggleMusic()" style="background:none; border:none; color:white; font-size:20px; cursor:pointer"><i class="fas fa-volume-mute" id="music-icon"></i></button>
                     </div>
                 </div>
-                <div class="content-area">
-                    <div class="question-box">
-                        <span class="q-category" id="q-cat">CÂU HỎI</span>
-                        <div class="question-text" id="q-text">Loading...</div>
-                    </div>
-                    <div class="options-grid" id="opt-container"></div>
-                    <button class="next-btn" id="next-btn" onclick="nextQuestion()">TIẾP THEO <i class="fas fa-arrow-right"></i></button>
+                <div class="question-box">
+                    <div class="question-text" id="q-text">Đang tải...</div>
+                </div>
+                <div class="options-list" id="opt-container"></div>
+                <div class="controls">
+                    <button class="nav-btn secondary" onclick="prevQ()">Trước</button>
+                    <button class="nav-btn" onclick="nextQ()">Tiếp</button>
                 </div>
             </div>
 
-            <div class="score-modal" id="score-panel">
-                <div class="score-circle">
-                    <span id="score-val">10</span>
-                    <span class="score-label" style="font-size:12px">Điểm</span>
-                </div>
-                <div class="score-details">
-                    <h3 id="score-msg">Tuyệt Vời!</h3>
-                    <p>Kết quả đợt này: <span id="correct-count" style="color:white; font-weight:bold">0</span>/40 câu.</p>
-                </div>
-                <button onclick="closeScore()" class="next-btn" style="margin:0; width:100%">Tiếp Tục Học <i class="fas fa-arrow-right"></i></button>
+            <div class="score-overlay" id="score-overlay">
+                <div class="score-circle"><span id="score-val">10</span></div>
+                <h2 style="margin-bottom: 10px;">Kết Quả</h2>
+                <p style="color: #aaa; margin-bottom: 30px;">Hoàn thành 40 câu.</p>
+                <button class="nav-btn" onclick="closeScore()">Tiếp Tục</button>
             </div>
-
         </div>
     </div>
 
     <script>
-    window.onload = function() {
-        // --- REAL DATA (Triết Học) ---
-        const db_triet = [
-            // CHƯƠNG 1
-            { ch: 1, q: "Theo quan niệm của Người Hy Lạp cổ đại, triết học (philosophia) mang nghĩa là...", a: "Cả A, B, C", opts: ["giải thích vũ trụ", "định hướng nhận thức và hành vi", "khát vọng tìm kiếm chân lý", "Cả A, B, C"] },
-            { ch: 1, q: "Triết học ra đời ở đâu?", a: "Cả phương Đông và phương Tây", opts: ["Chỉ ở phương Đông", "Chỉ ở phương Tây", "Cả phương Đông và phương Tây", "Không có đáp án đúng"] },
-            { ch: 1, q: "Vấn đề cơ bản của triết học là gì?", a: "Mối quan hệ giữa tư duy và tồn tại", opts: ["Vật chất và ý thức", "Mối quan hệ giữa tư duy và tồn tại", "Thế giới quan", "Nhân sinh quan"] },
-            // ... (Dữ liệu đã có ở các phiên bản trước, tôi giữ ngắn gọn ở đây để code chạy nhanh.
-            // Trong thực tế bạn paste đủ 503 câu vào đây).
-        ];
-        // Mockup dữ liệu để test tính năng (Fill đủ số lượng)
-        function fillData(ch, target) {
-            let current = db_triet.filter(i => i.ch === ch);
-            for(let i = current.length + 1; i <= target; i++) {
-                db_triet.push({ ch: ch, q: `Câu ${i} (Chương ${ch}): Nội dung câu hỏi mẫu...`, a: "Đáp án A", opts: ["Đáp án A", "Đáp án B", "Đáp án C", "Đáp án D"] });
-            }
-        }
-        fillData(1, 160); fillData(2, 155); fillData(3, 188);
-
-        // --- REAL DATA (CSTH) ---
-        const db_csth = [
-            { t: "def", q: "Cơ sở tạo hình là gì?", a: "Tập hợp kiến thức nền tảng sắp xếp khoa học" },
-            { t: "deg", q: "Trường thị giác quy ước là hình chóp nón có góc ở đỉnh bao nhiêu?", a: "30 độ" }
-        ];
-        // Mockup CSTH
-        for(let i=0; i<300; i++) db_csth.push({ t: "def", q: `Câu hỏi CSTH số ${i+3}`, a: "Đáp án đúng" });
-
-        const fallbacks = {
-            "deg": ["15 độ", "45 độ", "90 độ"], "qty": ["2 loại", "4 bước", "5 thành phần"],
-            "feel_color": ["Nóng bức", "Lạnh lẽo", "Rực rỡ"], "def": ["Khái niệm A", "Khái niệm B"]
-        };
-
-        // --- STATE ---
-        let state = { 
-            activeDB: [], 
-            currentIdx: 0, 
-            streak: 0, 
-            playingMusic: false,
-            sessionCorrect: 0, 
-            sessionCount: 0,
-            questionStatus: [] // Mảng lưu trạng thái từng câu: 0=chưa, 1=đúng, 2=sai
-        };
-
-        const ui = {
-            screens: { home: document.getElementById('screen-home'), chapters: document.getElementById('screen-chapters'), quiz: document.getElementById('screen-quiz') },
-            subTitle: document.getElementById('subject-title'), chapList: document.getElementById('chapter-list'),
-            qText: document.getElementById('q-text'), qCat: document.getElementById('q-cat'), opts: document.getElementById('opt-container'),
-            nextBtn: document.getElementById('next-btn'), streak: document.getElementById('streak'), 
-            prog: document.getElementById('current-q-num'), total: document.getElementById('total-q'),
-            video: document.getElementById('bg-video'), audio: document.getElementById('bg-music'),
-            musicIcon: document.getElementById('music-icon'), scorePanel: document.getElementById('score-panel'),
-            navGrid: document.getElementById('nav-grid'), sidebar: document.getElementById('sidebar'), overlay: document.getElementById('overlay')
-        };
-
-        // --- NAVIGATION ---
-        window.selectSubject = function(sub) {
-            state.subject = sub;
-            ui.screens.home.classList.remove('active');
-            if(sub === 'csth') {
-                state.activeDB = db_csth;
-                startQuizMode("Cơ Sở Tạo Hình", true);
-            } else {
-                ui.screens.chapters.classList.add('active');
-                renderChapters();
-            }
-        };
-
-        function renderChapters() {
-            ui.chapList.innerHTML = ""; ui.subTitle.innerText = "MỤC LỤC TRIẾT HỌC";
-            createPartBtn("Chương 1: Khái luận & Triết học Mác", "160 Câu hỏi", 1);
-            createPartBtn("Chương 2: CNDV Biện chứng", "155 Câu hỏi", 2);
-            createPartBtn("Chương 3: CNDV Lịch sử", "188 Câu hỏi", 3);
-        }
-
-        function createPartBtn(title, desc, chId) {
-            let btn = document.createElement('div'); btn.className = 'card-btn';
-            btn.innerHTML = `<div class="card-icon">${chId}</div><div class="card-info"><h3>${title}</h3><p>${desc}</p></div><i class="fas fa-chevron-right" style="margin-left:auto; opacity:0.5"></i>`;
-            btn.onclick = () => {
-                state.activeDB = db_triet.filter(i => i.ch === chId);
-                startQuizMode("CHƯƠNG " + chId, false);
-            };
-            ui.chapList.appendChild(btn);
-        }
-
-        window.startQuizMode = function(catName, isShuffle) {
-            state.currentIdx = 0; state.streak = 0; state.sessionCount = 0; state.sessionCorrect = 0;
-            
-            // Tạo mảng trạng thái cho Sidebar (0: chưa làm)
-            state.questionStatus = new Array(state.activeDB.length).fill(0);
-            
-            // Tạo Deck (nếu cần xáo trộn) hoặc dùng Index tuần tự
-            state.deck = Array.from({length: state.activeDB.length}, (_, i) => i);
-            if(isShuffle) shuffle(state.deck);
-
-            ui.streak.innerText = 0; ui.total.innerText = state.activeDB.length;
-            ui.screens.chapters.classList.remove('active'); ui.screens.home.classList.remove('active');
-            ui.screens.quiz.classList.add('active');
-            
-            state.catName = catName; state.isShuffle = isShuffle;
-            
-            renderSidebar(); // Vẽ sidebar
-            loadQuestion();
-        }
-
-        // --- SIDEBAR FUNCTION ---
-        function renderSidebar() {
-            ui.navGrid.innerHTML = "";
-            state.activeDB.forEach((_, idx) => {
-                let box = document.createElement('div');
-                box.className = 'nav-box';
-                box.innerText = idx + 1;
-                box.id = `nav-${idx}`;
-                // Sự kiện click vào ô số
-                box.onclick = () => {
-                    if(state.isShuffle) return; // Chế độ AI không hỗ trợ nhảy câu (vì xáo trộn)
-                    state.currentIdx = idx;
-                    loadQuestion();
-                    toggleSidebar(); // Đóng menu trên mobile khi chọn xong
-                };
-                ui.navGrid.appendChild(box);
-            });
-            updateSidebarStatus();
-        }
-
-        function updateSidebarStatus() {
-            // Update màu sắc từng ô
-            state.questionStatus.forEach((status, idx) => {
-                let box = document.getElementById(`nav-${idx}`);
-                if(box) {
-                    box.className = 'nav-box'; // Reset
-                    if (idx === state.currentIdx) box.classList.add('current');
-                    if (status === 1) box.classList.add('correct'); // Đúng
-                    if (status === 2) box.classList.add('wrong');   // Sai
-                }
-            });
-            document.getElementById('nav-progress').innerText = `${state.currentIdx + 1}/${state.activeDB.length}`;
-        }
-
-        window.toggleSidebar = function() {
-            ui.sidebar.classList.toggle('open');
-            ui.overlay.classList.toggle('active');
-        }
-
-        // --- QUIZ LOGIC ---
-        function loadQuestion() {
-            if (state.sessionCount > 0 && state.sessionCount % 40 === 0) { showScore(); return; }
-            ui.nextBtn.style.display = 'none'; ui.opts.innerHTML = '';
-            
-            let qIndex = state.isShuffle ? state.deck[state.deck.length - 1 - state.currentIdx] : state.currentIdx;
-            // Note: Logic xáo trộn hơi khác chút để đơn giản hóa navigation, ở đây tập trung vào mode tuần tự của Triết.
-            // Nếu mode tuần tự:
-            if (!state.isShuffle) qIndex = state.currentIdx;
-
-            if (state.currentIdx >= state.activeDB.length) { alert("Hoàn thành!"); goHome(); return; }
-
-            const q = state.activeDB[qIndex];
-            ui.qText.innerText = q.q;
-            ui.prog.innerText = state.currentIdx + 1;
-            ui.qCat.innerText = state.catName + (state.subject === 'triet' ? ` (Câu ${qIndex + 1})` : "");
-
-            updateSidebarStatus(); // Cập nhật sidebar để highlight câu hiện tại
-
-            if (state.subject === 'csth') {
-                let matchingType = db_csth.filter(item => item.t === q.t && item.a !== q.a);
-                let uniqueAnswers = [...new Set(matchingType.map(i => i.a))];
-                let distractors = uniqueAnswers.length >= 3 ? uniqueAnswers.slice(0,3) : (fallbacks[q.t] || ["A","B","C"]).slice(0,3);
-                shuffle(distractors); renderOptions([q.a, ...distractors], q.a);
-            } else {
-                let options = [...q.opts]; shuffle(options); renderOptions(options, q.a);
-            }
-        }
-
-        function renderOptions(options, correctAns) {
-            const labels = ['A', 'B', 'C', 'D'];
-            options.forEach((txt, i) => {
-                const btn = document.createElement('button');
-                btn.className = 'option-btn';
-                btn.innerHTML = `<div class="tag">${labels[i]}</div><span>${txt}</span>`;
-                btn.onclick = (e) => { e.stopPropagation(); handleAnswer(btn, txt === correctAns, correctAns); };
-                ui.opts.appendChild(btn);
-            });
-        }
-
-        function handleAnswer(btn, isCorrect, correctTxt) {
-            const all = document.querySelectorAll('.option-btn');
-            all.forEach(b => b.disabled = true);
-            state.sessionCount++;
-
-            // Cập nhật trạng thái câu hỏi
-            // 1: Đúng, 2: Sai
-            state.questionStatus[state.currentIdx] = isCorrect ? 1 : 2;
-            updateSidebarStatus(); // Cập nhật màu sidebar ngay lập tức
-
-            if (isCorrect) { 
-                playSound('correct'); btn.classList.add('correct'); 
-                state.streak++; state.sessionCorrect++; ui.streak.innerText = state.streak; 
-            } else { 
-                playSound('wrong'); btn.classList.add('wrong'); 
-                state.streak = 0; ui.streak.innerText = 0; 
-                all.forEach(b => { if (b.innerText.includes(correctTxt)) b.classList.add('correct'); }); 
-            }
-            
-            // Tự động chuyển câu (nếu không phải shuffle mode thì tăng index)
-            if(!state.isShuffle) state.currentIdx++; 
-            else state.currentIdx++; // Logic shuffle đơn giản hóa: cứ tăng tiến độ
-
-            ui.nextBtn.style.display = 'block'; 
-            setTimeout(() => ui.nextBtn.scrollIntoView({ behavior: 'smooth', block: 'end' }), 100);
-        }
-
-        // --- SCORE & UTILS ---
-        function showScore() {
-            let score = (state.sessionCorrect / 40) * 10;
-            document.getElementById('score-val').innerText = score.toFixed(1);
-            document.getElementById('correct-count').innerText = state.sessionCorrect;
-            let msg = score >= 8 ? "Xuất Sắc! 🌟" : (score >= 5 ? "Cần Cố Gắng 💪" : "Học Lại Nhé 😅");
-            document.getElementById('score-msg').innerText = msg;
-            ui.scorePanel.classList.add('active');
-        }
-        window.closeScore = function() { ui.scorePanel.classList.remove('active'); state.sessionCorrect = 0; loadQuestion(); }
-        window.nextQuestion = loadQuestion;
-        window.goHome = function() { ui.screens.chapters.classList.remove('active'); ui.screens.home.classList.add('active'); };
-        window.goChapters = function() { if(confirm("Thoát?")) { ui.screens.quiz.classList.remove('active'); ui.screens.chapters.classList.add('active'); } };
-        window.toggleMusic = function() { state.playingMusic ? ui.audio.pause() : ui.audio.play().catch(()=>{}); state.playingMusic = !state.playingMusic; };
+    // --- DATABASE CHUẨN (1-120 CÂU) ---
+    const db_triet = [
+        // 1-10
+        { ch: 1, q: "Theo quan niệm của Người Hy Lạp cổ đại, triết học (philosophia) mang nghĩa là...", a: "Cả A, B, C", opts: ["giải thích vũ trụ", "định hướng nhận thức và hành vi", "khát vọng tìm kiếm chân lý của con người", "Cả A, B, C"] },
+        { ch: 1, q: "Triết học ra đời ở đâu?", a: "Cả phương Đông và phương Tây", opts: ["Chỉ ở phương Đông", "Chỉ ở phương Tây", "Cả phương Đông và phương Tây", "Không có đáp án đúng"] },
+        { ch: 1, q: "Vấn đề cơ bản của triết học là gì?", a: "Mối quan hệ giữa tư duy và tồn tại", opts: ["Vật chất và ý thức", "Mối quan hệ giữa tư duy và tồn tại", "Thế giới quan", "Nhân sinh quan"] },
+        { ch: 1, q: "Thế giới quan là gì?", a: "Hệ thống quan điểm về thế giới", opts: ["Kiến thức khoa học", "Hệ thống quan điểm về thế giới", "Niềm tin tôn giáo", "Tình cảm con người"] },
+        { ch: 1, q: "Triết học Mác – Lênin phục vụ giai cấp nào?", a: "Giai cấp công nhân", opts: ["Giai cấp tư sản", "Giai cấp công nhân", "Tầng lớp trí thức", "Giai cấp nông dân"] },
+        { ch: 1, q: "Ai là người sáng lập ra chủ nghĩa Mác?", a: "C.Mác và Ph.Ăngghen", opts: ["C.Mác", "Ph.Ăngghen", "C.Mác và Ph.Ăngghen", "V.I.Lênin"] },
+        { ch: 1, q: "Nguồn gốc nhận thức của triết học là gì?", a: "Tư duy trừu tượng phát triển", opts: ["Tư duy hình ảnh", "Tư duy trừu tượng phát triển", "Kinh nghiệm thực tiễn", "Tín ngưỡng"] },
+        { ch: 1, q: "Hạt nhân lý luận của thế giới quan là gì?", a: "Triết học", opts: ["Khoa học", "Triết học", "Tôn giáo", "Đạo đức"] },
+        { ch: 1, q: "Chủ nghĩa duy vật chất phác xuất hiện ở thời kỳ nào?", a: "Cổ đại", opts: ["Cổ đại", "Trung đại", "Cận đại", "Hiện đại"] },
+        { ch: 1, q: "Đặc điểm của chủ nghĩa duy vật siêu hình?", a: "Xem xét sự vật trong trạng thái tĩnh tại", opts: ["Xem xét sự vật trong trạng thái động", "Xem xét sự vật trong trạng thái tĩnh tại", "Xem xét mối liên hệ phổ biến", "Cả A, B, C"] },
         
-        function shuffle(arr) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } }
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        function playSound(type) {
-            if(audioCtx.state==='suspended') audioCtx.resume(); const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination); const t=audioCtx.currentTime;
-            if(type==='correct'){ o.type='sine'; o.frequency.setValueAtTime(600,t); o.frequency.exponentialRampToValueAtTime(1000,t+0.1); g.gain.setValueAtTime(0.1,t); g.gain.exponentialRampToValueAtTime(0.01,t+0.3); o.start(t); o.stop(t+0.3); }
-            else { o.type='triangle'; o.frequency.setValueAtTime(150,t); g.gain.setValueAtTime(0.1,t); g.gain.exponentialRampToValueAtTime(0.01,t+0.2); o.start(t); o.stop(t+0.2); }
+        // 11-20
+        { ch: 1, q: "Hệ thống triết học nào quan niệm, triết học là “yêu mến sự thông thái”?", a: "Triết học Hy Lạp cổ đại", opts: ["Trung Quốc", "Ấn Độ", "Triết học Hy Lạp cổ đại", "Đức"] },
+        { ch: 1, q: "Hệ thống triết học nào quan niệm, triết học là “Chiêm ngưỡng”?", a: "Triết học Ấn Độ cổ đại", opts: ["Trung Quốc", "Triết học Ấn Độ cổ đại", "Hy Lạp", "Đức"] },
+        { ch: 1, q: "Điền thuật ngữ: 'Triết học là hệ thống quan điểm ... về thế giới'", a: "lí luận chung nhất", opts: ["kinh nghiệm", "lí luận chung nhất", "khoa học cụ thể", "tôn giáo"] },
+        { ch: 1, q: "Hệ thống triết học nào quan niệm: Triết học là khoa học về những quy luật chung nhất?", a: "Triết học Mác - Lênin", opts: ["Cổ điển Đức", "Trung Quốc", "Ấn Độ", "Triết học Mác - Lênin"] },
+        { ch: 1, q: "Điền từ: ... là hệ thống tri thức lý luận chung nhất của con người về thế giới.", a: "Triết học", opts: ["Chủ nghĩa duy vật", "Chủ nghĩa duy tâm", "Triết học", "Thế giới quan"] },
+        { ch: 1, q: "Triết học là...", a: "hạt nhân của thế giới quan", opts: ["hạt nhân của thế giới quan", "một phần của thế giới quan", "toàn bộ thế giới quan", "không có đáp án đúng"] },
+        { ch: 1, q: "Nền 'Triết học tự nhiên' đạt thành tựu rực rỡ ở đâu?", a: "Triết học Hy Lạp cổ đại", opts: ["Trung Quốc", "Ấn Độ", "Triết học Hy Lạp cổ đại", "Đức"] },
+        { ch: 1, q: "Nền 'Triết học kinh viện' thống trị thời kỳ nào?", a: "Triết học Tây Âu thời Trung cổ", opts: ["Trung Quốc", "Triết học Tây Âu thời Trung cổ", "Hy Lạp", "Đức"] },
+        { ch: 1, q: "Nền triết học nào được Ăngghen đánh giá là có mầm mống của hầu hết các loại thế giới quan?", a: "Triết học Hy Lạp cổ đại", opts: ["Trung Quốc", "Trung cổ", "Triết học Hy Lạp cổ đại", "Đức"] },
+        { ch: 1, q: "Triết học Mác xác định đối tượng nghiên cứu là những ... của tự nhiên, xã hội và tư duy.", a: "quy luật chung nhất", opts: ["quy luật chung nhất", "quy luật đặc thù", "tất cả quy luật", "một số quy luật"] },
+        
+        // 21-30
+        { ch: 1, q: "Thế giới quan bao gồm những thành phần chủ yếu nào?", a: "Cả A,B,C", opts: ["Tri thức", "Niềm tin", "Lý tưởng", "Cả A,B,C"] },
+        { ch: 1, q: "Hãy chỉ ra một thành phần đúng thuộc về thế giới quan...", a: "tri thức", opts: ["tri thức", "kinh tế", "chính trị", "xã hội"] },
+        { ch: 1, q: "Hãy chỉ ra một thành phần đúng thuộc về thế giới quan...", a: "niềm tin", opts: ["niềm tin", "kinh tế", "chính trị", "xã hội"] },
+        { ch: 1, q: "Thế giới quan bao gồm những hình thức chủ yếu...", a: "Cả A,B,C", opts: ["thần thoại", "tôn giáo", "triết học", "Cả A,B,C"] },
+        { ch: 1, q: "Thế giới quan duy vật biện chứng bao gồm...", a: "Cả A,B,C", opts: ["tri thức khoa học", "niềm tin khoa học", "lý tưởng khoa học", "Cả A,B,C"] },
+        { ch: 1, q: "Theo Ph. Ăngghen, vấn đề cơ bản lớn của mọi triết học là...", a: "mối quan hệ giữa tư duy và tồn tại", opts: ["vật chất", "ý thức", "mối quan hệ giữa tư duy và tồn tại", "thế giới vật chất"] },
+        { ch: 1, q: "Vấn đề cơ bản lớn của mọi triết học có mấy mặt?", a: "2", opts: ["1", "2", "3", "4"] },
+        { ch: 1, q: "Việc giải quyết mặt thứ nhất vấn đề cơ bản chia triết học thành...?", a: "Chủ nghĩa duy vật và chủ nghĩa duy tâm", opts: ["Chủ nghĩa duy vật và chủ nghĩa duy tâm", "Khả tri và bất khả tri", "Biện chứng và siêu hình", "Chủ quan và khách quan"] },
+        { ch: 1, q: "Chủ nghĩa duy tâm có mấy hình thức cơ bản?", a: "2", opts: ["5", "2", "3", "4"] },
+        { ch: 1, q: "Trường phái cho rằng ý thức có trước, quyết định giới tự nhiên là...", a: "Chủ nghĩa duy tâm", opts: ["Chủ nghĩa duy vật", "Chủ nghĩa duy tâm", "Bất khả tri", "Nhị nguyên"] },
+        
+        // 31-40
+        { ch: 1, q: "Trường phái cho rằng vật chất có trước, quyết định ý thức là...", a: "Chủ nghĩa duy vật", opts: ["Chủ nghĩa duy vật", "Chủ nghĩa duy tâm", "Bất khả tri", "Nhị nguyên"] },
+        { ch: 1, q: "Học thuyết thừa nhận chỉ 1 thực thể (vật chất hoặc tinh thần) là nguồn gốc thế giới?", a: "Nhất nguyên luận", opts: ["Nhất nguyên luận", "Nhị nguyên luận", "Đa nguyên", "Sai"] },
+        { ch: 1, q: "Học thuyết thừa nhận cả vật chất và tinh thần cùng quyết định thế giới?", a: "Nhị nguyên luận", opts: ["Nhất nguyên luận", "Nhị nguyên luận", "Đa nguyên", "Sai"] },
+        { ch: 1, q: "Việc giải quyết mặt thứ nhất chia các nhà triết học thành mấy trường phái?", a: "2", opts: ["2", "3", "4", "5"] },
+        { ch: 1, q: "Trường phái giải thích thế giới bằng nguyên nhân vật chất là...", a: "Chủ nghĩa duy vật", opts: ["Chủ nghĩa duy vật", "Chủ nghĩa duy tâm", "Bất khả tri", "Nhị nguyên"] },
+        { ch: 1, q: "Trường phái giải thích thế giới bằng nguyên nhân tinh thần là...", a: "Chủ nghĩa duy tâm", opts: ["Chủ nghĩa duy vật", "Chủ nghĩa duy tâm", "Bất khả tri", "Nhị nguyên"] },
+        { ch: 1, q: "Chủ nghĩa duy tâm chủ quan thừa nhận...", a: "tính thứ nhất của ý thức con người", opts: ["tính thứ nhất của vật chất", "tính thứ nhất của thế giới", "tính thứ nhất của ý niệm tuyệt đối", "tính thứ nhất của ý thức con người"] },
+        { ch: 1, q: "Câu 'Cha mẹ sinh con, trời sinh tính' thuộc lập trường nào?", a: "Chủ nghĩa duy tâm khách quan", opts: ["Chủ nghĩa duy tâm khách quan", "Duy vật chất phác", "Duy tâm chủ quan", "Duy vật siêu hình"] },
+        { ch: 1, q: "Trường phái nào khẳng định sự vật là 'phức hợp của những cảm giác'?", a: "Chủ nghĩa duy tâm chủ quan", opts: ["Duy tâm khách quan", "Duy vật chất phác", "Chủ nghĩa duy tâm chủ quan", "Duy vật siêu hình"] },
+        { ch: 1, q: "Trường phái nào khẳng định tính thứ nhất của ý thức con người?", a: "Chủ nghĩa duy tâm chủ quan", opts: ["Duy tâm khách quan", "Duy vật chất phác", "Chủ nghĩa duy tâm chủ quan", "Duy vật siêu hình"] },
+
+        // 41-50
+        { ch: 1, q: "Trường phái triết học nào khẳng định tính thứ nhất của ý thức, coi đó là thứ tinh thần khách quan có trước và tồn tại độc lập với con người?", a: "Chủ nghĩa duy tâm khách quan", opts: ["Chủ nghĩa duy tâm khách quan", "Chủ nghĩa duy vật chất phác", "Chủ nghĩa duy tâm chủ quan", "Chủ nghĩa duy vật siêu hình"] },
+        { ch: 1, q: "Điền vào chỗ trống: Những nhà triết học cho rằng vật chất, giới tự nhiên là cái có trước và quyết định đối với ý thức... được gọi là...", a: "các nhà duy vật", opts: ["các nhà duy tâm", "các nhà duy vật", "các nhà có thể biết", "các nhà nhị nguyên"] },
+        { ch: 1, q: "Điền vào chỗ trống: Những nhà triết học cho rằng ý thức, tinh thần, ý niệm, cảm giác là cái có trước... được gọi là...", a: "các nhà duy tâm", opts: ["các nhà duy tâm", "các nhà duy vật", "các nhà có thể biết", "các nhà nhị nguyên"] },
+        { ch: 1, q: "Thuyết có thể biết (Khả tri luận) là những học thuyết...", a: "khẳng định khả năng nhận thức của con người đối với thế giới", opts: ["khẳng định khả năng nhận thức của con người đối với thế giới", "phủ nhận khả năng nhận thức", "nghi ngờ khả năng nhận thức", "tất cả đều sai"] },
+        { ch: 1, q: "Thuyết không thể biết (Bất khả tri luận) là những học thuyết...", a: "phủ nhận khả năng nhận thức của con người đối với thế giới", opts: ["khẳng định khả năng nhận thức", "phủ nhận khả năng nhận thức của con người đối với thế giới", "nghi ngờ khả năng nhận thức", "khẳng định con người nắm bắt được bản chất sự vật"] },
+        { ch: 1, q: "Thuyết hoài nghi (Hoài nghi luận) là những học thuyết...", a: "nghi ngờ khả năng nhận thức thế giới của con người", opts: ["khẳng định khả năng nhận thức", "phủ nhận khả năng nhận thức", "nghi ngờ khả năng nhận thức thế giới của con người", "tin tưởng vào nhận thức"] },
+        { ch: 1, q: "Sự khác biệt giữa chủ nghĩa duy tâm và tôn giáo là ở chỗ...", a: "tôn giáo lấy lòng tin là cơ sở chủ yếu, còn CNDT là sản phẩm của tư duy lý tính", opts: ["tôn giáo lấy lòng tin là cơ sở chủ yếu, còn CNDT là sản phẩm của tư duy lý tính", "CNDT lấy lòng tin là cơ sở", "cả hai đều phủ nhận siêu nhiên", "không có đáp án đúng"] },
+        { ch: 1, q: "Sự giống nhau giữa chủ nghĩa duy tâm và tôn giáo là ở chỗ...", a: "đều thừa nhận sự sáng tạo của một lực lượng siêu nhiên nào đó đối với thế giới", opts: ["đều lấy lòng tin làm cơ sở", "đều đề cao ý thức con người", "đều thừa nhận sự sáng tạo của một lực lượng siêu nhiên nào đó đối với thế giới", "đều thừa nhận vật chất có trước"] },
+        { ch: 1, q: "Việc giải quyết mặt thứ hai vấn đề cơ bản của triết học là căn cứ để phân chia thành...", a: "Khả tri luận và bất khả tri luận", opts: ["CNDV và CNDT", "Khả tri luận và bất khả tri luận", "Biện chứng và siêu hình", "Duy tâm chủ quan và duy tâm khách quan"] },
+        { ch: 1, q: "Khả tri luận là những học thuyết...", a: "thừa nhận khả năng nhận thức thế giới của con người", opts: ["thừa nhận khả năng nhận thức thế giới của con người", "phủ nhận khả năng nhận thức", "nghi ngờ khả năng nhận thức", "cho rằng con người chỉ biết bề ngoài"] },
+        
+        // 51-60
+        { ch: 1, q: "Bất khả tri luận là những học thuyết...", a: "phủ nhận khả năng nhận thức của con người", opts: ["thừa nhận khả năng nhận thức", "phủ nhận khả năng nhận thức của con người", "cho rằng con người hiểu được bản chất", "tin vào khoa học"] },
+        { ch: 1, q: "Triết học Mác – Lênin xác định đối tượng nghiên cứu của triết học là...", a: "các quan hệ phổ biến và những quy luật chung nhất của tự nhiên, xã hội và tư duy", opts: ["các quy luật của tự nhiên", "các quy luật của xã hội", "các quy luật của tư duy", "các quan hệ phổ biến và những quy luật chung nhất của tự nhiên, xã hội và tư duy"] },
+        { ch: 1, q: "Cấu trúc của thế giới quan gồm...", a: "Tri thức, niềm tin và lý tưởng", opts: ["Tri thức và lý tưởng", "Niềm tin và lý tưởng", "Tri thức, niềm tin và lý tưởng", "Tri thức và niềm tin"] },
+        { ch: 1, q: "Các hình thức cơ bản của thế giới quan gồm...", a: "thế giới quan thần thoại, tôn giáo và triết học", opts: ["thần thoại, tôn giáo", "thế giới quan thần thoại, tôn giáo và triết học", "tôn giáo, triết học", "duy vật, tôn giáo"] },
+        { ch: 1, q: "Vai trò cơ bản của thế giới quan là...", a: "Định hướng cho con người trong nhận thức và thực tiễn", opts: ["Định hướng cho con người trong nhận thức và thực tiễn", "Định hướng hành động", "Định hướng suy nghĩ", "Định hướng tình cảm"] },
+        { ch: 1, q: "Nguồn gốc xã hội của chủ nghĩa duy tâm là...", a: "Cả A, B, C", opts: ["Sự tách rời lao động trí óc với chân tay", "Địa vị thống trị của lao động trí óc", "Đề cao lao động trí óc", "Cả A, B, C"] },
+        { ch: 1, q: "Chủ nghĩa duy vật chất phác là kết quả nhận thức của...", a: "các nhà triết học duy vật thời cổ đại", opts: ["các nhà triết học duy vật thời cổ đại", "các nhà triết học siêu hình", "các nhà triết học biện chứng", "các nhà duy tâm"] },
+        { ch: 1, q: "Chủ nghĩa duy vật siêu hình là hình thức cơ bản thứ mấy trong lịch sử CNDV?", a: "Thứ hai", opts: ["Thứ nhất", "Thứ hai", "Thứ ba", "Thứ tư"] },
+        { ch: 1, q: "Phương pháp siêu hình thống trị trong triết học Tây Âu vào những thế kỷ nào?", a: "XVII - XVIII", opts: ["X - XI", "XVII - XVIII", "XI - XII", "XIII - XIV"] },
+        { ch: 1, q: "Đặc điểm của phương pháp siêu hình?", a: "Nhận thức đối tượng ở trạng thái cô lập, tách rời", opts: ["Nhận thức đối tượng ở trạng thái cô lập, tách rời", "Nhận thức trong mối liên hệ", "Nhận thức sự vận động", "Tất cả đều đúng"] },
+        
+        // 61-70
+        { ch: 1, q: "Đặc điểm của phương pháp siêu hình?", a: "Nhận thức đối tượng ở trạng thái tĩnh", opts: ["Nhận thức đối tượng ở trạng thái tĩnh", "Nhận thức trong mối liên hệ", "Nhận thức sự vận động", "Tất cả đều đúng"] },
+        { ch: 1, q: "Đặc điểm của phương pháp biện chứng?", a: "Nhận thức đối tượng trong mối liên hệ phổ biến", opts: ["Nhận thức ở trạng thái tĩnh", "Nhận thức đối tượng trong mối liên hệ phổ biến", "Nhận thức cô lập", "Tất cả đều đúng"] },
+        { ch: 1, q: "Đặc điểm của phương pháp biện chứng?", a: "Nhận thức đối tượng ở trạng thái luôn vận động, biến đổi", opts: ["Nhận thức ở trạng thái tĩnh", "Nhận thức đối tượng ở trạng thái luôn vận động, biến đổi", "Nhận thức cô lập", "Tất cả đều đúng"] },
+        { ch: 1, q: "Trong hoạt động nhận thức và thực tiễn, nếu xem thường phương pháp luận triết học sẽ dẫn đến...", a: "mò mẫm, dễ mất phương hướng, thiếu chủ động", opts: ["giáo điều", "mò mẫm, dễ mất phương hướng, thiếu chủ động", "duy ý chí", "thành công"] },
+        { ch: 1, q: "Chức năng cơ bản của triết học Mác-Lênin là...", a: "Thế giới quan và phương pháp luận", opts: ["Nghiên cứu quy luật chung", "Giải quyết quan hệ VC-YT", "Thế giới quan và phương pháp luận", "Nghiên cứu quy luật cụ thể"] },
+        { ch: 1, q: "Thế giới quan của triết học Mác- Lênin là...", a: "Thế giới quan duy vật biện chứng", opts: ["Thế giới quan duy vật", "Thế giới quan duy vật biện chứng", "Thế giới quan duy tâm", "Thế giới quan duy tâm biện chứng"] },
+        { ch: 1, q: "Thế giới quan duy vật biện chứng là cơ sở khoa học để đấu tranh chống lại...", a: "Chủ nghĩa duy tâm, tôn giáo, phản khoa học", opts: ["Chủ nghĩa kinh viện", "Chủ nghĩa duy tâm, tôn giáo, phản khoa học", "Chủ nghĩa kinh nghiệm", "Chủ nghĩa giáo điều"] },
+        { ch: 1, q: "Cuộc cách mạng công nghiệp lần thứ nhất diễn ra đầu tiên ở...", a: "Anh", opts: ["Anh", "Pháp", "Đức", "Nga"] },
+        { ch: 1, q: "Công lao lớn nhất của G.W.Ph. Hêghen là...", a: "phê phán phương pháp siêu hình và xây dựng phép biện chứng duy tâm", opts: ["phê phán phương pháp siêu hình", "phê phán phương pháp siêu hình và xây dựng phép biện chứng duy tâm", "xây dựng phép biện chứng duy vật", "xây dựng chủ nghĩa duy vật"] },
+        { ch: 1, q: "Công lao lớn nhất của L. Phoiơbắc là...", a: "đấu tranh chống chủ nghĩa duy tâm và tôn giáo", opts: ["chống chủ nghĩa duy vật", "đấu tranh chống chủ nghĩa duy tâm và tôn giáo", "chống phương pháp siêu hình", "sai hết"] },
+        
+        // 71-80
+        { ch: 1, q: "C. Mác và Ph. Ăngghen đã phê phán tính chất gì trong triết học Hêghen?", a: "duy tâm thần bí", opts: ["duy vật chất phác", "duy vật siêu hình", "duy tâm thần bí", "duy tâm chủ quan"] },
+        { ch: 1, q: "Tiền đề chuyển biến tư tưởng của C.Mác và Ph.Ăngghen là...", a: "chủ nghĩa duy vật vô thần của L. Phoiơbắc", opts: ["phép biện chứng của Hêghen", "chủ nghĩa duy vật vô thần của L. Phoiơbắc", "kinh tế của A. Xmít", "XHCN của Xanh Ximông"] },
+        { ch: 1, q: "Những tiền đề khoa học tự nhiên cho sự ra đời của chủ nghĩa Mác là...", a: "học thuyết Tế bào; Định luật Bảo toàn năng lượng; Học thuyết Tiến hóa", opts: ["triết học cổ điển Đức...", "học thuyết Tế bào; Định luật Bảo toàn năng lượng; Học thuyết Tiến hóa", "học thuyết Tiến hóa...", "sai hết"] },
+        { ch: 1, q: "Đối tượng nghiên cứu của triết học Mác - Lênin là...", a: "giải quyết mối quan hệ giữa vật chất và ý thức trên lập trường duy vật biện chứng", opts: ["giải quyết mối quan hệ giữa vật chất và ý thức trên lập trường duy vật biện chứng", "quy luật chính trị", "quy luật kinh tế", "sai hết"] },
+        { ch: 1, q: "Tác phẩm thể hiện việc V.I. Lênin kế thừa và phát triển quan niệm của Mác về vật chất?", a: "Chủ nghĩa duy vật và chủ nghĩa kinh nghiệm phê phán", opts: ["Làm gì", "Chủ nghĩa duy vật và chủ nghĩa kinh nghiệm phê phán", "Ba nguồn gốc...", "Bút ký triết học"] },
+        { ch: 1, q: "Chức năng của triết học mácxít là...", a: "Chức năng thế giới quan và phương pháp luận", opts: ["Làm cầu nối khoa học", "Sáng tỏ ngôn ngữ", "Khoa học của khoa học", "Chức năng thế giới quan và phương pháp luận"] },
+        { ch: 1, q: "Chủ nghĩa duy vật triết học bao gồm trường phái nào?", a: "Các phán đoán kia đều đúng", opts: ["CNDV cổ đại", "CNDV siêu hình", "CNDV biện chứng", "Các phán đoán kia đều đúng"] },
+        { ch: 1, q: "Khoa học nào là hạt nhân của thế giới quan?", a: "Triết học", opts: ["Toán học", "Triết học", "Chính trị học", "KHTN"] },
+        { ch: 1, q: "Những điều kiện kinh tế - xã hội của sự ra đời chủ nghĩa Mác?", a: "Cả A, B, C đều đúng", opts: ["Sự phát triển của PTSX tư bản", "Sự xuất hiện của giai cấp vô sản", "Thực tiễn cách mạng vô sản", "Cả A, B, C đều đúng"] },
+        { ch: 1, q: "Ba nguồn gốc lý luận trực tiếp của chủ nghĩa Mác là...", a: "Triết học cổ điển Đức, KTCT cổ điển Anh, CNXH không tưởng Pháp", opts: ["Triết học Đức, KTCT Anh, CNXH Pháp", "Triết học Anh, KTCT Đức, CNXH Pháp", "Triết học Pháp, KTCT Anh, CNXH Đức", "Sai hết"] },
+
+        // --- CẬP NHẬT 81-120 (NEW) ---
+        { ch: 1, q: "Tiền đề lý luận của sự ra đời chủ nghĩa Mác? Chọn câu trả lời đúng.", a: "Triết học cổ điển Đức, Kinh tế chính trị cổ điển Anh, Chủ nghĩa xã hội không tưởng", opts: ["Chủ nghĩa duy vật triết học của Phoiơbắc...", "Triết học biện chứng của Hêghen...", "Kinh tế học của Anh...", "Triết học cổ điển Đức, Kinh tế chính trị cổ điển Anh, Chủ nghĩa xã hội không tưởng"] },
+        { ch: 1, q: "Tiền đề khoa học tự nhiên của sự ra đời chủ nghĩa Mác? Chọn phán đoán SAI.", a: "Nguyên tử luận", opts: ["Quy luật bảo toàn và chuyển hoá năng lượng", "Thuyết tiến hoá của Đacuyn", "thuyết Tế bào", "Nguyên tử luận"] },
+        { ch: 1, q: "Trong phương thức sản xuất tư bản chủ nghĩa, mâu thuẫn trong lĩnh vực kinh tế là mâu thuẫn giữa...", a: "Lực lượng sản xuất mang tính xã hội hóa với quan hệ sản xuất mang tính tư nhân tư bản chủ nghĩa", opts: ["LLSX xã hội hóa với QHSX xã hội TBCN", "LLSX cá nhân với QHSX xã hội TBCN", "Lực lượng sản xuất mang tính xã hội hóa với quan hệ sản xuất mang tính tư nhân tư bản chủ nghĩa", "LLSX cá nhân với QHSX tư nhân"] },
+        { ch: 1, q: "Trong phương thức sản xuất tư bản chủ nghĩa, mâu thuẫn về phương diện chính trị - xã hội là mâu thuẫn giữa giai cấp...", a: "Vô sản với tư sản", opts: ["Vô sản với tư sản", "Chủ nô với nô lệ", "Nông dân với địa chủ", "Tất cả các phương án đều sai"] },
+        { ch: 1, q: "Trong phương thức sản xuất tư bản chủ nghĩa, mâu thuẫn sâu sắc giữa lực lượng sản xuất với quan hệ sản xuất bộc lộ qua cuộc khủng hoảng kinh tế lần thứ nhất vào năm...", a: "1825", opts: ["1824", "1825", "1826", "1827"] },
+        { ch: 1, q: "Phong trào đấu tranh của giai cấp vô sản vào những năm 30, 40 của thế kỷ XIX chứng tỏ rằng...", a: "Giai cấp vô sản là một lực lượng chính trị - xã hội độc lập", opts: ["Giai cấp tư sản là một lực lượng chính trị độc lập", "Giai cấp vô sản là một lực lượng chính trị - xã hội độc lập", "Phong trào vô sản là một phong trào tự giác", "Giai cấp vô sản cần liên minh với địa chủ"] },
+        { ch: 1, q: "Theo G.W.Ph. Hêghen, giới tự nhiên và xã hội loài người đều chỉ là sản phẩm của...", a: "Sự tự tha hóa của ý niệm tuyệt đối", opts: ["Sự tự tha hóa của ý niệm tuyệt đối", "Sự sáng tạo của ý thức con người", "Quá trình tiến hóa của giới tự nhiên", "Tất cả các phương án đều sai"] },
+        { ch: 1, q: "G.W.Ph. Hêghen sử dụng khái niệm “tha hóa” để chỉ sự “tha hóa” của...", a: "Ý niệm tuyệt đối", opts: ["Ý niệm tuyệt đối", "Bản chất con người", "Lao động", "Đạo đức con người"] },
+        { ch: 1, q: "Phát minh nào KHÔNG phải là một trong những tiền đề khoa học tự nhiên cho sự ra đời của triết học Mác?", a: "Thuyết Nguyên tử", opts: ["Học thuyết Tế bào", "Học thuyết Tiến hóa", "Thuyết Nguyên tử", "Định luật Bảo toàn và Chuyển hóa năng lượng"] },
+        { ch: 1, q: "Chủ nghĩa Mác - Lênin được cấu thành từ ba bộ phận lý luận cơ bản là...", a: "Triết học Mác - Lênin, kinh tế chính trị Mác - Lênin, chủ nghĩa xã hội khoa học", opts: ["CNXH không tưởng, triết học, kinh tế", "Triết học Mác - Lênin, kinh tế chính trị Mác - Lênin, chủ nghĩa xã hội khoa học", "Kinh tế, CNXH, triết học", "CNXH khoa học, kinh tế Anh, triết Đức"] },
+        { ch: 1, q: "L. Phoiơbắc sử dụng khái niệm “tha hóa” để chỉ sự tha hóa của...", a: "Bản chất con người trong tôn giáo", opts: ["Bản chất con người trong tôn giáo", "Ý niệm tuyệt đối", "Lao động", "Đạo đức con người"] },
+        { ch: 1, q: "Nhà triết học đầu tiên diễn đạt nội dung của phép biện chứng dưới dạng lý luận chặt chẽ thông qua hệ thống các quy luật, phạm trù là:", a: "G.W. Ph. Hêghen", opts: ["G.W. Ph. Hêghen", "L. Phoiơbắc", "Ph. Ăngghen", "C. Mác"] },
+        { ch: 1, q: "Các nhà sáng lập chủ nghĩa Mác đã kế thừa “hạt nhân hợp lí trong triết học của G.W. Ph. Hêghen để trực tiếp xây dựng nên:", a: "Phép biện chứng duy vật", opts: ["Chủ nghĩa duy vật biện chứng", "Phép biện chứng duy vật", "Chủ nghĩa duy vật lịch sử", "Tất cả các phương án đều sai"] },
+        { ch: 1, q: "Những nhà chủ nghĩa xã hội không tưởng nào đã không luận chứng được một cách khoa học về bản chất và quy luật phát triển của chủ nghĩa tư bản?", a: "H.Xanh Ximông, S. Phuriê và R. Ôoen", opts: ["A.Xmit và Đ. Ricácđô", "H.Xanh Ximông, S. Phuriê và R. Ôoen", "C. Mác và Ph. Ăngghen", "Tất cả các phương án đều sai"] },
+        { ch: 1, q: "Hai phát kiến vĩ đại của C. Mác trên lĩnh vực nghiên cứu triết học và kinh tế chính trị học là sáng tạo ra:", a: "Chủ nghĩa duy vật lịch sử và học thuyết giá trị thặng dư", opts: ["CNDV biện chứng và học thuyết giá trị", "Phép biện chứng duy vật và học thuyết giá trị thặng dư", "Chủ nghĩa duy vật và chủ nghĩa tư bản độc quyền", "Chủ nghĩa duy vật lịch sử và học thuyết giá trị thặng dư"] },
+        { ch: 1, q: "Những nhà lý luận nào đã không thấy được tính hai mặt của lao động sản xuất hàng hóa...", a: "A. Xmít và Đ. Ricácđô", opts: ["A. Xmít và Đ. Ricácđô", "H. Xanh Ximông, S. Phuriê và R. Ôoen", "C. Mác và Ph. Ăngghen", "G.W.Ph. Hêghen và L. Phoiơbắc"] },
+        { ch: 1, q: "Một trong những hạn chế của chủ nghĩa xã hội không tưởng Anh và Pháp là:", a: "Không luận chứng được một cách khoa học về bản chất của chủ nghĩa tư bản", opts: ["Không thấy được tính lịch sử của giá trị", "Không phân tích được chính xác biểu hiện của giá trị", "Không luận chứng được một cách khoa học về bản chất của chủ nghĩa tư bản", "Cả A, B, C"] },
+        { ch: 1, q: "Một trong những hạn chế của các nhà kinh tế - chính trị học cổ điển Anh là:", a: "Không phân tích được một cách chính xác những biểu hiện của giá trị trong phương thức sản xuất tư bản chủ nghĩa", opts: ["Không nhận thức được vai trò giai cấp công nhân", "Không phân tích được một cách chính xác những biểu hiện của giá trị trong phương thức sản xuất tư bản chủ nghĩa", "Không luận chứng được bản chất CNTB", "Tất cả các phương án đều sai"] },
+        { ch: 1, q: "Hạn chế của chủ nghĩa xã hội không tưởng trước Mác là...", a: "Cả A, B, C", opts: ["Chưa thấy được sứ mệnh lịch sử của giai cấp công nhân", "Chưa chỉ ra được con đường đấu tranh cách mạng", "Không luận chứng được khoa học về bản chất CNTB", "Cả A, B, C"] },
+        { ch: 1, q: "Cơ sở khoa học khẳng định sự phát sinh, phát triển bởi tính đa dạng di truyền, biến dị và mối liên hệ hữu cơ giữa các loài động, thực vật trong quá trình chọn lọc tự nhiên là:", a: "Thuyết Tiến hóa", opts: ["Thuyết Tiến hóa", "Thuyết Tế bào", "Lý thuyết Di truyền của Men - đê - lê - ép", "Tất cả các phương án đều sai"] },
+        { ch: 1, q: "Cơ sở khoa học chứng minh sự thống nhất về mặt nguồn gốc hình thái và cấu tạo vật chất của cơ thể động, thực vật...", a: "Thuyết Tế bào", opts: ["Thuyết Tiến hóa", "Thuyết Tế bào", "Lý thuyết Di truyền", "Tất cả các phương án đều sai"] },
+        { ch: 1, q: "Phong trào đấu tranh nào sau đây là một trong những điều kiện ra đời của chủ nghĩa Mác?", a: "Phong trào Hiến chương ở Anh", opts: ["Phong trào Hiến chương ở Anh", "Công xã Pari", "Cách mạng Tháng Mười Nga", "Tất cả các phương án đều sai"] },
+        { ch: 1, q: "Cơ sở khoa học chứng minh mối quan hệ không tách rời nhau, sự chuyển hóa và được bảo toàn của các hình thức vận động của vật chất...", a: "Định luật bảo toàn và Chuyển hóa năng lượng", opts: ["Định luật Vạn vật hấp dẫn", "Thuyết Nguyên tử", "Định luật bảo toàn và Chuyển hóa năng lượng", "Thuyết Tiến hóa"] },
+        { ch: 1, q: "Hạt nhân thế giới quan của chủ nghĩa Mác - Lênin là:", a: "Chủ nghĩa duy vật biện chứng", opts: ["Chủ nghĩa duy vật biện chứng", "Phép biện chứng duy vật", "Chủ nghĩa duy vật lịch sử", "Tất cả các phương án đều sai"] },
+        { ch: 1, q: "Chủ nghĩa Mác - Lênin là học thuyết do:", a: "C. Mác và Ph. Ăngghen sáng lập, V.I. Lênin bảo vệ và phát triển", opts: ["C. Mác sáng lập, Ph. Ăngghen bảo vệ", "C. Mác sáng lập, V.I. Lênin bảo vệ", "C. Mác và Ph. Ăngghen sáng lập, V.I. Lênin bảo vệ và phát triển", "C. Mác và V.I. Lênin sáng lập"] },
+        { ch: 1, q: "Đường lối cách mạng của Đảng Cộng sản Việt Nam xuất phát từ cơ sở lí luận:", a: "Chủ nghĩa Mác - Lênin và tư tưởng Hồ Chí Minh", opts: ["Chủ nghĩa Mác", "Chủ nghĩa Mác - Lênin và tư tưởng Hồ Chí Minh", "Chủ nghĩa Mác - Lênin", "Chủ nghĩa Mác và tư tưởng Hồ Chí Minh"] },
+        { ch: 1, q: "Chủ nghĩa duy vật biện chứng do ai sáng lập?", a: "C. Mác và Ph. Ăngghen", opts: ["C. Mác và V.I. Lênin", "C. Mác và Ph. Ăngghen", "C. Mác", "G.W. Ph. Hêghen"] },
+        { ch: 1, q: "Một trong những điều kiện kinh tế - xã hội dẫn đến sự ra đời của chủ nghĩa Mác là sự ra đời và phát triển của phương thức sản xuất...", a: "Tư bản chủ nghĩa", opts: ["Chiếm hữu nô lệ", "Phong kiến", "Tư bản chủ nghĩa", "Cộng sản chủ nghĩa"] },
+        { ch: 1, q: "Giá trị lớn nhất trong triết học của G.W.Ph. Hêghen đã trở thành tiền đề lý luận cho sự ra đời của triết học Mác là:", a: "Phép biện chứng", opts: ["Quan điểm duy vật tự nhiên", "Quan điểm duy vật xã hội", "Phép biện chứng", "Tất cả các phương án đều sai"] },
+        { ch: 1, q: "Triết học Mác là hệ thống triết học...", a: "Thống nhất giữa lý luận và thực tiễn", opts: ["Tách rời giữa lý luận và thực tiễn", "Thống nhất giữa lý luận và thực tiễn", "Chỉ coi trọng thực tiễn", "Chỉ coi trọng lí luận"] },
+        { ch: 1, q: "Giá trị lớn nhất trong triết học của L. Phoiơbắc đã trở thành tiền đề lý luận cho sự ra đời của triết học Mác là:", a: "Chủ nghĩa duy vật, vô thần", opts: ["Quan điểm duy tâm về xã hội", "Phép biện chứng", "Chủ nghĩa duy vật, vô thần", "Tư duy siêu hình"] },
+        { ch: 1, q: "Hạn chế lớn nhất của chủ nghĩa xã hội không tưởng Anh và Pháp cuối thế kỷ XVIII đầu thế kỷ XIX là không phát hiện ra sứ mệnh lịch sử của giai cấp:", a: "Công nhân", opts: ["Nông dân", "Công nhân", "Tư sản", "Địa chủ"] },
+        { ch: 1, q: "Cơ sở khoa học để C. Mác và Ph. Ăngghen khẳng định tư tưởng về tính vĩnh viễn, vô tận của thế giới vật chất là:", a: "Định luật Bảo toàn và Chuyển hóa năng lượng", opts: ["Học thuyết Tế bào", "Thuyết Nguyên tử", "Học thuyết Tiến hóa", "Định luật Bảo toàn và Chuyển hóa năng lượng"] },
+        { ch: 1, q: "Cơ sở khoa học chứng minh không gian và thời gian là hình thức tồn tại của vật chất, luôn gắn liền với vật chất là:", a: "Thuyết Tương đối của Anh - xtanh", opts: ["Hình học O - clít", "Thuyết Tiến hóa", "Thuyết Tế bào", "Thuyết Tương đối của Anh - xtanh"] },
+        { ch: 1, q: "Phát minh khoa học được Ph. Ănghen khẳng định là Quy luật cơ bản vĩ đại của sự vận động là...", a: "Định luật Bảo toàn và Chuyển hóa năng lượng", opts: ["Hình học O - clít", "Cơ học Cổ điển", "Định luật Bảo toàn và Chuyển hóa năng lượng", "Định luật Vạn vật hấp dẫn"] },
+        { ch: 1, q: "Điền cụm từ đúng vào chỗ trống sau: ... là lý luận về phương pháp, là hệ thống các quan điểm, các nguyên tắc chỉ đạo con người tìm tòi...", a: "Phương pháp luận", opts: ["Triết học", "Thế giới quan", "Ý thức xã hội", "Phương pháp luận"] },
+        { ch: 1, q: "Bộ phận giữ vai trò là thế giới quan và phương pháp luận chung nhất của chủ nghĩa Mác - Lênin là...", a: "triết học Mác - Lênin", opts: ["triết học Mác - Lênin", "kinh tế - chính trị học Mác - Lênin", "chủ nghĩa xã hội khoa học", "tất cả các phương án đều sai"] },
+        { ch: 1, q: "Trong chủ nghĩa Mác - Lênin, bộ phận lí luận có chức năng làm sáng tỏ bản chất và những quy luật chung nhất của mọi sự vận động...", a: "triết học Mác - Lênin", opts: ["triết học Mác - Lênin", "kinh tế - chính trị học Mác - Lênin", "chủ nghĩa xã hội khoa học", "tất cả các phương án đều sai"] },
+        { ch: 1, q: "Những học thuyết kinh tế có ảnh hưởng lớn nhất đến sự ra đời của chủ nghĩa Mác là:", a: "Học thuyết của A.Xmít và Đ.Ricácđô", opts: ["Học thuyết của A.Xmít và Đ.Ricácđô", "Học thuyết của Đ.Ricácđô và H.Xanh Ximông", "Học thuyết của G.W.Ph. Hêghen và L. Phoiơbắc", "Học thuyết của H.Xanh Ximông và A.Xmít"] },
+        { ch: 1, q: "Các chức năng cơ bản của triết học là:", a: "Thế giới quan và phương pháp luận", opts: ["Thế giới quan và nhân sinh quan", "Thế giới quan và phương pháp luận", "Dự báo và nhân sinh quan", "Tất cả các phương án đều sai"] },
+
+        // Placeholder 121-160
+    ];
+
+    // Điền Placeholder
+    function fillPlaceholders() {
+        // Chương 1 (còn lại từ 121 đến 160)
+        for(let i = 121; i <= 160; i++) {
+            db_triet.push({ ch: 1, q: `Câu hỏi ${i} (Chương 1): [Nội dung đang cập nhật...]`, a: "A", opts: ["A", "B", "C", "D"] });
+        }
+        // Chương 2 (155 câu)
+        for(let i = 1; i <= 155; i++) {
+            db_triet.push({ ch: 2, q: `Câu hỏi ${i} (Chương 2): [Nội dung đang cập nhật...]`, a: "A", opts: ["A", "B", "C", "D"] });
+        }
+        // Chương 3 (188 câu)
+        for(let i = 1; i <= 188; i++) {
+            db_triet.push({ ch: 3, q: `Câu hỏi ${i} (Chương 3): [Nội dung đang cập nhật...]`, a: "A", opts: ["A", "B", "C", "D"] });
+        }
+    }
+    fillPlaceholders();
+
+    // --- LOGIC ---
+    let state = { activeDB: [], currentIdx: 0, statusArr: [], sessionCorrect: 0, sessionCount: 0, musicPlaying: false };
+    
+    const ui = {
+        screens: { home: document.getElementById('screen-home'), quiz: document.getElementById('screen-quiz') },
+        sidebar: document.getElementById('sidebar'), qGrid: document.getElementById('q-grid'),
+        qText: document.getElementById('q-text'), opts: document.getElementById('opt-container'),
+        progress: document.getElementById('progress-text'), title: document.getElementById('quiz-title'),
+        scoreOverlay: document.getElementById('score-overlay'), scoreVal: document.getElementById('score-val'),
+        bgAudio: document.getElementById('bg-music'), musicIcon: document.getElementById('music-icon'),
+        scoreLive: document.getElementById('score-live')
+    };
+
+    window.startChapter = function(ch) {
+        state.activeDB = db_triet.filter(i => i.ch === ch);
+        state.currentIdx = 0; state.sessionCount = 0; state.sessionCorrect = 0;
+        state.statusArr = new Array(state.activeDB.length).fill(0);
+
+        ui.title.innerText = "CHƯƠNG " + ch;
+        ui.scoreLive.innerText = "0 Đúng";
+        ui.screens.home.classList.remove('active'); ui.screens.quiz.classList.add('active');
+        renderSidebar(); loadQuestion();
+    };
+
+    window.goHome = function() {
+        if(confirm("Thoát bài làm?")) {
+            ui.screens.quiz.classList.remove('active'); ui.screens.home.classList.add('active');
+            document.querySelector('.mobile-toggle').classList.remove('active'); document.getElementById('sidebar').classList.remove('open');
         }
     };
+
+    function renderSidebar() {
+        ui.qGrid.innerHTML = '';
+        state.activeDB.forEach((_, i) => {
+            let node = document.createElement('div');
+            node.className = 'q-node'; node.innerText = i + 1; node.id = `node-${i}`;
+            node.onclick = () => jumpTo(i);
+            ui.qGrid.appendChild(node);
+        });
+        updateSidebarUI();
+    }
+
+    function updateSidebarUI() {
+        ui.progress.innerText = `${state.currentIdx + 1}/${state.activeDB.length}`;
+        state.statusArr.forEach((st, i) => {
+            let node = document.getElementById(`node-${i}`);
+            if(node) {
+                node.className = 'q-node';
+                if(i === state.currentIdx) node.classList.add('active');
+                if(st === 1) node.classList.add('correct');
+                if(st === 2) node.classList.add('wrong');
+            }
+        });
+    }
+
+    window.jumpTo = function(idx) {
+        state.currentIdx = idx; loadQuestion();
+        if(window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
+    };
+
+    window.toggleSidebar = function() { document.getElementById('sidebar').classList.toggle('open'); };
+
+    function loadQuestion() {
+        if(state.sessionCount > 0 && state.sessionCount % 40 === 0) { showScore(); return; }
+        if(state.currentIdx >= state.activeDB.length) { alert("Hoàn thành chương!"); goHome(); return; }
+
+        const q = state.activeDB[state.currentIdx];
+        ui.qText.innerText = q.q; ui.opts.innerHTML = '';
+
+        let options = [...q.opts]; options.sort(() => Math.random() - 0.5);
+        const labels = ['A', 'B', 'C', 'D'];
+        options.forEach((txt, i) => {
+            let btn = document.createElement('div'); btn.className = 'option-btn';
+            btn.innerHTML = `<div class="option-tag">${labels[i]}</div> ${txt}`;
+            btn.onclick = () => checkAnswer(txt, q.a, btn);
+            ui.opts.appendChild(btn);
+        });
+        updateSidebarUI();
+    }
+
+    function checkAnswer(selected, correct, btnElem) {
+        const allBtns = document.querySelectorAll('.option-btn');
+        allBtns.forEach(b => b.style.pointerEvents = 'none');
+
+        let isCorrect = (selected === correct);
+        state.sessionCount++; state.statusArr[state.currentIdx] = isCorrect ? 1 : 2;
+
+        if(isCorrect) {
+            btnElem.classList.add('correct'); state.sessionCorrect++;
+            ui.scoreLive.innerText = state.sessionCorrect + " Đúng"; playSound(true);
+        } else {
+            btnElem.classList.add('wrong'); playSound(false);
+            allBtns.forEach(b => { if(b.innerText.includes(correct)) b.classList.add('correct'); });
+        }
+        updateSidebarUI();
+    }
+
+    window.nextQ = function() { if(state.currentIdx < state.activeDB.length - 1) { state.currentIdx++; loadQuestion(); } };
+    window.prevQ = function() { if(state.currentIdx > 0) { state.currentIdx--; loadQuestion(); } };
+
+    function showScore() {
+        let score = (state.sessionCorrect / 40) * 10;
+        document.getElementById('score-val').innerText = score.toFixed(1);
+        ui.scoreOverlay.classList.add('active');
+    }
+
+    window.closeScore = function() {
+        ui.scoreOverlay.classList.remove('active'); state.sessionCorrect = 0; state.currentIdx++; loadQuestion();
+    };
+
+    window.toggleMusic = function() {
+        if(state.musicPlaying) { ui.bgAudio.pause(); ui.musicIcon.className = 'fas fa-volume-mute'; }
+        else { ui.bgAudio.play().catch(()=>{}); ui.musicIcon.className = 'fas fa-volume-up'; }
+        state.musicPlaying = !state.musicPlaying;
+    };
+
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(isCorrect) {
+        if(audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        if(isCorrect) {
+            osc.type = 'sine'; osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime); osc.start(); osc.stop(audioCtx.currentTime + 0.2);
+        } else {
+            osc.type = 'triangle'; osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime); osc.start(); osc.stop(audioCtx.currentTime + 0.2);
+        }
+    }
     </script>
 </body>
 </html>
